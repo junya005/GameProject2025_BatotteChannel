@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/GenerateSettingDataBase")]
 public class GenerateSettingDataBase : ScriptableObject
 {
-    public List<GenerateSettingScriptableObject> generateSettingDataBase;
+    public List<GenerateSettingScriptableObject> generateSettingList;
 }

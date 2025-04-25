@@ -7,7 +7,7 @@ namespace MusicSystem
     public class BeatCounter : MonoBehaviour
     {
         [SerializeField] private float _bpm;
-        [SerializeField] private float _bps;
+        [SerializeField] private float _spb;
         private float _secCounter;
         [SerializeField] private float _beat;
         public float Beat
@@ -17,14 +17,14 @@ namespace MusicSystem
 
         void Start()
         {
-            _bps = 60.0f / _bpm;
+            _spb = 60.0f / _bpm;
         }
 
         void Update()
         {
             _secCounter += Time.deltaTime;
 
-            if (_secCounter >= _bps)
+            if (_secCounter >= _spb)
             {
                 _beat++;
                 _secCounter = 0;

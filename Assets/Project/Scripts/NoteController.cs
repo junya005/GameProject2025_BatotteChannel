@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using Unity.VisualScripting;
 
 public class NoteController : MonoBehaviour
 {
@@ -15,7 +11,17 @@ public class NoteController : MonoBehaviour
     [Tooltip("GOOD判定の距離"), SerializeField]
     private float _goodJudgmentRange = 0.1f;
 
+    /// <summary>ボディとフレームのサイズ比較を格納</summary>
     private float _distance;
+
+    /// <summary>このノーツが有効か</summary>
+    private bool _isEnableThisNotes = true;
+
+    /// <summary>ノーツが有効かどうかのプロパティ</summary>
+    public bool IsEnableThisNotes
+    {
+        get { return _isEnableThisNotes; }
+    }
 
     [Header("オブジェクト参照")]
     [Tooltip("フレームのオブジェクトを設定してください"), SerializeField]
@@ -44,6 +50,7 @@ public class NoteController : MonoBehaviour
             _frame.SetActive(false);
             _body.SetActive(false);
             _t.text = "GOOD!";
+            _isEnableThisNotes = false;
             Destroy(this.gameObject, 1.0f);
         }
         else
@@ -51,6 +58,7 @@ public class NoteController : MonoBehaviour
             _frame.SetActive(false);
             _body.SetActive(false);
             _t.text = "MISS...";
+            _isEnableThisNotes = false;
             Destroy(this.gameObject, 1.0f);
         }
         _judgmentText.SetActive(true);
@@ -61,6 +69,7 @@ public class NoteController : MonoBehaviour
     /// </summary>
     private void DeleteThisNote()
     {
+        _isEnableThisNotes = false;
         Destroy(this.gameObject);
     }
 

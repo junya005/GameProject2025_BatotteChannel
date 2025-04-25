@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/GenerateSettingScriptableObject")]
 public class GenerateSettingScriptableObject : ScriptableObject
 {
-    public int player;
+    public int playerNum;
     public float timing;
     public Vector3 generatePos;
 }
