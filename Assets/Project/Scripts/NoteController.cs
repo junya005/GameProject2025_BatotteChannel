@@ -1,3 +1,4 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 namespace Notes
@@ -158,7 +159,7 @@ namespace Notes
             string judgementText = distance <= _goodJudgmentRange ? TEXT_JUDGEMENT_GOOD : TEXT_JUDGEMENT_MISS;
             DisplayJudgementResult(judgementText);
 #if UNITY_EDITOR
-            Debug.Log($"ノーツを判定しました(判定結果：{judgement})");
+            Debug.Log($"ノーツを判定しました(判定結果：{judgement}, 距離：{_distance}, GOODの距離：|{_goodJudgmentRange}|)");
 #endif
             DeleteThisNote(1.0f);
         }
