@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 namespace TimeSystem
 {
+    /// <summary>残り時間を表示するクラス</summary>
     public class RemainingTimeManager : MonoBehaviour
     {
         #region 定数
@@ -12,7 +11,7 @@ namespace TimeSystem
         private readonly float MINUTE_IN_SECOND = 60.0f;
         private readonly float TIME_ZERO = 0.0f;
 
-        #endregion 
+        #endregion
 
         #region 変数
 
@@ -20,8 +19,18 @@ namespace TimeSystem
         [Tooltip("楽曲の分数を入れてください"), SerializeField]
         private int _musicTimeMinute;
 
+        public int MusicTimeMinute
+        {
+            get { return _musicTimeMinute; }
+        }
+
         [Tooltip("楽曲の秒数を入れてください"), SerializeField]
         private float _musicTimeSecond;
+
+        public float MusicTimeSecond
+        {
+            get { return _musicTimeSecond; }
+        }
 
         /// <summary>秒数へ変換済みの楽曲時間を格納</summary>
         private float _musicTime;
@@ -39,6 +48,12 @@ namespace TimeSystem
         #endregion
 
         #region 関数
+
+        public void SetMusicTime(int minute, float second)
+        {
+            _musicTimeMinute = minute;
+            _musicTimeSecond = second;
+        }
 
         /// <summary>
         /// 楽曲時間を秒数へ変換

@@ -1,45 +1,90 @@
-using System.Collections.Generic;
 using UnityEngine;
+using Notes;
 
-public class PlayerController : MonoBehaviour
+namespace Players
 {
-    [Tooltip("プレイヤーの番号を入力(0から)"), SerializeField]
-    private int _playerNumber = 0;
-
-    /// <summary>
-    /// プレイヤー番号のプロパティ
-    /// </summary>
-    public int PlayerNumber
+    /// <summary>プレイヤー入力に関するクラス</summary>
+    public class PlayerController : MonoBehaviour
     {
-        get { return _playerNumber; }
-    }
+        [Tooltip("プレイヤーの番号を入力(0から)"), SerializeField]
+        private int _playerNumber = 0;
 
-    /// <summary>このプレイヤー用のノーツを格納</summary>
-    private List<GameObject> _notes;
+        [Tooltip("このプレイヤー用のNoteManagerオブジェクト"), SerializeField]
+        private GameObject _noteManagerForThisPlayer;
 
-    public void SetNote(GameObject gameObject)
-    {
-        _notes.Add(gameObject);
-    }
+        /// <summary>_noteManagerForThisPlayerのNoteManagerを格納</summary>
+        private NoteManager _noteManager;
 
-    private void GetNote()
-    {
-        if (_notes[0] == null) return;
-        _notes[0].GetComponent<NoteController>().JudgementNote();
-    }
+        /// <summary>スタン状態フラグ</summary>
+        private bool _isStan;
 
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
+        /// <summary>
+        /// プレイヤー番号のプロパティ
+        /// </summary>
+        public int PlayerNumber
         {
-            GetNote();
+            get { return _playerNumber; }
+        }
+
+        public void SetPlayerNumber(int playerNumber)
+        {
+            _playerNumber = playerNumber;
+            Debug.Log($"プレイヤー番号をセット：{_playerNumber} (引数：{playerNumber})");
+        }
+
+        private void GetNote(int buttonNumber)
+        {
+            _noteManager.JudgeMentNoteFromList(buttonNumber);
+        }
+
+        private void PlayerHandle()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha7))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha8))
+            {
+
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha9))
+            {
+
+            }
+        }
+
+        void Start()
+        {
+            _noteManager = _noteManagerForThisPlayer.GetComponent<NoteManager>();
+        }
+
+        void Update()
+        {
+
         }
     }
-
-
 }

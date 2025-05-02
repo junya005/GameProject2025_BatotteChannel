@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c06d1274aff74a74fa192c911cadc37a, type: 3}
   m_Name: BGM1
   m_EditorClassIdentifier: 
-  generateSettingDataBase:
+  generateSettingList:
+  - {fileID: 11400000, guid: 4fe54d1eab952154c9c9b6b054e3cc2a, type: 2}
+  - {fileID: 11400000, guid: 13be15bdde1fd9a4eb4e751b30182632, type: 2}
+  - {fileID: 11400000, guid: c15514032c5dcb04eaf6cd4a0e5cc10b, type: 2}
+  - {fileID: 11400000, guid: ddf5deabc38794544b4a440ff267287e, type: 2}
   - {fileID: 11400000, guid: 7a854353e6ddb4944a6d529dcf6fc52e, type: 2}
