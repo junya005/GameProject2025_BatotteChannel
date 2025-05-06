@@ -1,7 +1,7 @@
 using UnityEngine;
-using Notes;
+using BatotteChannel.Notes;
 
-namespace Players
+namespace BatotteChannel.Players
 {
     /// <summary>プレイヤー入力に関するクラス</summary>
     public class PlayerController : MonoBehaviour

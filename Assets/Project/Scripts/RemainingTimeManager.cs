@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace TimeSystem
+namespace BatotteChannel.TimeSystem
 {
     /// <summary>残り時間を表示するクラス</summary>
     public class RemainingTimeManager : MonoBehaviour

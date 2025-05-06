@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MusicSystem
+namespace BatotteChannel.MusicSystem
 {
     public class BeatCounter : MonoBehaviour
     {

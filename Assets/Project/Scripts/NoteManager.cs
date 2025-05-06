@@ -1,7 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Notes
+namespace BatotteChannel.Notes
 {
     /// <summary>ノーツの管理に関するクラス</summary>
     public class NoteManager : MonoBehaviour
@@ -174,8 +175,8 @@ namespace Notes
         /// ノーツの生成を停止する
         /// </summary>
         /// <param name="hideTime">停止時間</param>
-        /// <returns>コンパイルエラーのためfloat指定でリターン</returns>
-        private IEnumerator<float> StopGenerateNote(float hideTime)
+        /// <returns>コンパイルエラー(CS0305)のためfloat指定でリターン</returns>
+        private IEnumerator StopGenerateNote(float hideTime)
         {
             Debug.Log($"ノーツの生成を{hideTime}秒停止します。");
             float time = 0.0f;
@@ -184,20 +185,20 @@ namespace Notes
             while (time < hideTime)
             {
                 time += Time.deltaTime;
-                yield return hideTime;
+                yield return null;
             }
 
             _isStopNoteGenerate = false;
         }
 
-        private IEnumerator<int> TestGenerate()
+        private IEnumerator TestGenerate()
         {
             float time = 0.0f;
 
             while (time < 1.0f)
             {
                 time += Time.deltaTime;
-                yield return 1;
+                yield return null;
             }
 
             GenerateNote(new Vector2(0, 0));
@@ -205,7 +206,7 @@ namespace Notes
             while (time < 3.0f)
             {
                 time += Time.deltaTime;
-                yield return 1;
+                yield return null;
             }
 
             GenerateNote(new Vector2(1, -2));
@@ -213,7 +214,7 @@ namespace Notes
             while (time < 6.0f)
             {
                 time += Time.deltaTime;
-                yield return 1;
+                yield return null;
             }
 
             GenerateNote(new Vector2(-3, 1));

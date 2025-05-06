@@ -1,7 +1,7 @@
 using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
-namespace Notes
+namespace BatotteChannel.Notes
 {
     /// <summary>NoteControllerの全ての権限を持ったinterface</summary>
     public interface INoteController
