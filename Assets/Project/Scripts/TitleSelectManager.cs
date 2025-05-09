@@ -11,9 +11,18 @@ public class TitleSelectManager : MonoBehaviour
 {
     #region 変数定義
     /// <summary>
-    /// タイトル状態かのBool
+    /// 現在の画面状況、モード
     /// </summary>
-    private bool _isStart = false;
+    public enum GameSceneEnum
+    {
+        Title,
+        Select,
+        Tutorial,
+        Game,
+        //Result 別シーン
+    }
+    private GameSceneEnum _gameScene = GameSceneEnum.Title;
+
     /// <summary>
     /// ボタンを押せる状態かのBool
     /// </summary>
@@ -23,26 +32,49 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     private Camera _mainCamera;
 
+    /// <summary>
+    /// タイトル画面Canvas
+    /// </summary>
     [SerializeField, Label("タイトル画面UICanvas")]
     private Canvas _titleCanvas;
+    /// <summary>
+    /// タイトル画面CanvasGroup
+    /// </summary>
     private CanvasGroup _titleCanvasGroup;
+    /// <summary>
+    /// 難易度選択画面Canvas
+    /// </summary>
     [SerializeField, Label("選択画面UICanvas")]
     private Canvas _selectCanvas;
+    /// <summary>
+    /// 難易度選択画面CanvasGroup
+    /// </summary>
     private CanvasGroup _selectCanvasGroup;
-
-    /* カメラサイズ使用時
     /// <summary>
-    /// タイトル画面カメラサイズ
+    /// ゲーム画面UICanvas
     /// </summary>
-    private readonly float _titleCameraSize = 2.5f;
+    [SerializeField, Label("ゲーム画面UICanvas")]
+    private Canvas _ingameCanvas;
     /// <summary>
-    /// 選択画面カメラサイズ
+    /// ゲーム画面UICanvasGroup
     /// </summary>
-    private readonly float _selectCameraSize = 2.5f;
+    private CanvasGroup _ingameCanvasGroup;
 
-        [SerializeField,Label("カメラ縮小速度 n秒")]
+    /// <summary>
+    /// ズームイン画面カメラサイズ
+    /// </summary>
+    private readonly float _inCameraSize = 2.5f;
+    /// <summary>
+    /// ズームアウト画面カメラサイズ
+    /// </summary>
+    private readonly float _outCameraSize = 5f;
+
+    [SerializeField, Label("カメラ縮小速度 n秒")]
     private float _camSizeSpeed = 0.3f;
-    */
+
+    /// <summary>
+    /// CanvasGroupのフェード速度
+    /// </summary>
     [SerializeField,Label("Canvasフェード速度 n秒")]
     private float _canvasFadeSpeed = 0.2f;
 
@@ -50,17 +82,23 @@ public class TitleSelectManager : MonoBehaviour
 
     void Start()
     {
+        //変数初期設定
         _mainCamera = Camera.main;
         _titleCanvasGroup = _titleCanvas.GetComponent<CanvasGroup>();
         _selectCanvasGroup = _selectCanvas.GetComponent<CanvasGroup>();
+        _ingameCanvasGroup = _ingameCanvas.GetComponent<CanvasGroup>();
         _canPushButton = true;
-        _isStart = true;
-        //タイトルからスタート
-        _isStart = true;
+        //タイトル表示からスタート
+        _gameScene = GameSceneEnum.Title;
+        _mainCamera.orthographicSize = _inCameraSize;
         _titleCanvasGroup.alpha = 1.0f;
         _selectCanvasGroup.alpha = 0f;
+        _ingameCanvasGroup.alpha = 0f;
     }
 
+    /// <summary>
+    /// 主に入力受付とその条件
+    /// </summary>
     void Update()
     {
         //ボタンを押せない状態なら返す
@@ -69,7 +107,7 @@ public class TitleSelectManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             //スタート状態なら返す
-            if (_isStart) return;
+            if (_gameScene==GameSceneEnum.Title) return;
             ToTitle();
         }
         //何かキーを押されたら遷移
@@ -84,16 +122,18 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     public async void ToSelect()
     {
+        if (_gameScene != GameSceneEnum.Title) return;
         //ボタンを押せなくする
         _canPushButton = false;
-        //タイトル状態では無くす
-        _isStart = false;
         //タイトル画面UIを非表示　フェード
         await Fade(_titleCanvasGroup,0, _canvasFadeSpeed);
+        //カメラ動作を入れるならここ
         //終わったら選択画面UIを表示　フェード
         await Fade(_selectCanvasGroup,1, _canvasFadeSpeed);
         //ボタンを押せるようにする
         _canPushButton = true;
+        //ゲームモードを変更
+        _gameScene = GameSceneEnum.Select;
         Debug.Log("Compreat:ToSelect");
     }
 
@@ -102,23 +142,48 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     public async void ToTitle()
     {
+        if(_gameScene!=GameSceneEnum.Select) return;
         //ボタンを押せなくする
         _canPushButton = false;
-        //タイトル状態にする
-        _isStart = true;
         //選択画面UIを非表示　フェード
         await Fade(_selectCanvasGroup,0, _canvasFadeSpeed);
+        //カメラ動作を入れるならここ
         //終わったらタイトルUIを表示　フェード
         await Fade(_titleCanvasGroup, 1, _canvasFadeSpeed);
         //ボタンを押せるようにする
         _canPushButton = true;
+        //ゲームモードを変更
+        _gameScene = GameSceneEnum.Title;
         Debug.Log("Compreat:ToTitle");
     }
 
+    //debug
     /// <summary>
-    /// カメラサイズ変更
+    /// ゲーム画面へ遷移
+    /// </summary>
+    public async void ToGame()
+    {
+        if (_gameScene!=GameSceneEnum.Select) return;
+        //ボタンを押せなくする
+        _canPushButton = false;
+        //選択画面UIを非表示　フェード
+        await Fade(_selectCanvasGroup, 0, _canvasFadeSpeed);
+        //カメラ動作を入れるならここ
+        await CamSize(_outCameraSize, _camSizeSpeed);
+        //終わったらタイトルUIを表示　フェード
+        await Fade(_ingameCanvasGroup, 1, _canvasFadeSpeed);
+        //ボタンを押せるようにする
+        _canPushButton = true;
+        //ゲームモードを変更
+        _gameScene = GameSceneEnum.Game;
+        Debug.Log("Compreat:ToGame");
+    }
+
+    /// <summary>
+    /// カメラサイズを変更する関数
     /// </summary>
     /// <param name="size">変化後のサイズ</param>
+    /// <param name="duration">フェード後にかかる時間、秒数</param>
     /// <returns></returns>
     async UniTask CamSize(float size,float duration)
     {
@@ -129,10 +194,11 @@ public class TitleSelectManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Canvasをまとめてフェードさせる関数
     /// </summary>
     /// <param name="canvasGroup">フェードさせるCanvasGroup</param>
     /// <param name="alpha">フェード後のalphaの値</param>
+    /// <param name="duration">フェード後にかかる時間、秒数</param>
     /// <returns></returns>
     async UniTask Fade(CanvasGroup canvasGroup, float alpha,float duration)
     {
