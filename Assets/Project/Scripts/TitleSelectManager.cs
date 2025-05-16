@@ -9,19 +9,8 @@ using UnityEditor.ShaderKeywordFilter;
 
 public class TitleSelectManager : MonoBehaviour
 {
-    #region 変数定義
-    /// <summary>
-    /// 現在の画面状況、モード
-    /// </summary>
-    public enum GameSceneEnum
-    {
-        Title,
-        Select,
-        Tutorial,
-        Game,
-        //Result 別シーン
-    }
-    private GameSceneEnum _gameScene = GameSceneEnum.Title;
+    #region
+    private GameStatus.GameSceneEnum _gameScene = GameStatus.GameSceneEnum.Title;
 
     /// <summary>
     /// ボタンを押せる状態かのBool
@@ -89,7 +78,7 @@ public class TitleSelectManager : MonoBehaviour
         _ingameCanvasGroup = _ingameCanvas.GetComponent<CanvasGroup>();
         _canPushButton = true;
         //タイトル表示からスタート
-        _gameScene = GameSceneEnum.Title;
+        _gameScene = GameStatus.GameSceneEnum.Title;
         _mainCamera.orthographicSize = _inCameraSize;
         _titleCanvasGroup.alpha = 1.0f;
         _selectCanvasGroup.alpha = 0f;
@@ -107,7 +96,7 @@ public class TitleSelectManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             //スタート状態なら返す
-            if (_gameScene==GameSceneEnum.Title) return;
+            if (_gameScene== GameStatus.GameSceneEnum.Title) return;
             ToTitle();
         }
         //何かキーを押されたら遷移
@@ -122,7 +111,7 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     public async void ToSelect()
     {
-        if (_gameScene != GameSceneEnum.Title) return;
+        if (_gameScene != GameStatus.GameSceneEnum.Title) return;
         //ボタンを押せなくする
         _canPushButton = false;
         //タイトル画面UIを非表示　フェード
@@ -133,7 +122,7 @@ public class TitleSelectManager : MonoBehaviour
         //ボタンを押せるようにする
         _canPushButton = true;
         //ゲームモードを変更
-        _gameScene = GameSceneEnum.Select;
+        _gameScene = GameStatus.GameSceneEnum.Select;
         Debug.Log("Compreat:ToSelect");
     }
 
@@ -142,7 +131,7 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     public async void ToTitle()
     {
-        if(_gameScene!=GameSceneEnum.Select) return;
+        if(_gameScene!= GameStatus.GameSceneEnum.Select) return;
         //ボタンを押せなくする
         _canPushButton = false;
         //選択画面UIを非表示　フェード
@@ -153,7 +142,7 @@ public class TitleSelectManager : MonoBehaviour
         //ボタンを押せるようにする
         _canPushButton = true;
         //ゲームモードを変更
-        _gameScene = GameSceneEnum.Title;
+        _gameScene = GameStatus.GameSceneEnum.Title;
         Debug.Log("Compreat:ToTitle");
     }
 
@@ -163,7 +152,7 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     public async void ToGame()
     {
-        if (_gameScene!=GameSceneEnum.Select) return;
+        if (_gameScene!= GameStatus.GameSceneEnum.Select) return;
         //ボタンを押せなくする
         _canPushButton = false;
         //選択画面UIを非表示　フェード
@@ -175,7 +164,7 @@ public class TitleSelectManager : MonoBehaviour
         //ボタンを押せるようにする
         _canPushButton = true;
         //ゲームモードを変更
-        _gameScene = GameSceneEnum.Game;
+        _gameScene = GameStatus.GameSceneEnum.Game;
         Debug.Log("Compreat:ToGame");
     }
 
