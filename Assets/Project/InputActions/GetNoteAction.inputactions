@@ -6,7 +6,16 @@
             "id": "9fc5929b-24b5-4dfe-9d40-f8dbcbeaa77a",
             "actions": [
                 {
-                    "name": "GetNote",
+                    "name": "Button0",
+                    "type": "Button",
+                    "id": "c4c55564-ee55-4c52-b704-bf1940fc6fca",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button1",
                     "type": "Button",
                     "id": "1d4b0a49-3784-45db-8e62-9820341ead76",
                     "expectedControlType": "",
@@ -15,9 +24,99 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangeVolume",
+                    "name": "Button2",
+                    "type": "Button",
+                    "id": "d4fd2926-322e-4a6d-abad-fce3946101ec",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button3",
+                    "type": "Button",
+                    "id": "ace5d408-a223-4822-b126-b2294e69ff45",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button4",
+                    "type": "Button",
+                    "id": "ab848209-51dc-4f93-8d17-5d9a94c07903",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button5",
+                    "type": "Button",
+                    "id": "179d4b0a-8c53-4360-9ce2-fb1c4cc1b2c0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button6",
+                    "type": "Button",
+                    "id": "e07834e9-c206-4a62-bce6-23cb1f694790",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button7",
+                    "type": "Button",
+                    "id": "dead82d8-22eb-4928-a222-f14c87fd2ef9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button8",
+                    "type": "Button",
+                    "id": "344b0e9d-9d98-463e-a356-d74efddb8faa",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button9",
+                    "type": "Button",
+                    "id": "26967c27-5404-471e-a6e8-a2faebeeaac6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "VolumePlus",
                     "type": "Button",
                     "id": "3abf880f-c25d-4d14-9af2-855803f490d8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "VolumeMinus",
+                    "type": "Button",
+                    "id": "2047b92b-b3ef-4957-8a6d-ffd2c6aca8c8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ButtonEnter",
+                    "type": "Button",
+                    "id": "635c9de9-3e17-4dc4-b12c-d2eae61f6ac7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -32,18 +131,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "3d43084a-291d-4d60-8395-b91ec167c7a5",
+                    "id": "c8a2940f-5c98-4067-bf99-b4bfdc285616",
+                    "path": "<Keyboard>/numpad0",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Button0",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1abd7b50-f70a-4dfd-b9f4-ec187d866ff8",
                     "path": "<Keyboard>/numpad2",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -54,84 +164,73 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "aa473c0d-3d13-4882-b289-d4da805ffe45",
+                    "id": "5ba0ee89-e115-44fa-94d0-76a77e8d4153",
                     "path": "<Keyboard>/numpad4",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button4",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "de8903fa-943c-446c-9a98-5a4e72e3ad96",
+                    "id": "c5f38f01-ad6a-4562-8688-ca7a9331c2a9",
                     "path": "<Keyboard>/numpad5",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button5",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "21f523e2-0059-48f6-9aa3-3a8cf98aec0e",
+                    "id": "09fcd3e9-2e45-466a-8873-2fc215efa253",
                     "path": "<Keyboard>/numpad6",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button6",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "0ebae7c3-1d56-48cb-9d01-deb7ac21df35",
+                    "id": "671c4c29-a77d-4a07-9d8f-1fa79eabc259",
                     "path": "<Keyboard>/numpad7",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button7",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "68d714f3-0548-4485-bfc6-4ea1a4b9fdd2",
+                    "id": "f6a77034-1837-4a3d-9f27-31181e7ef827",
                     "path": "<Keyboard>/numpad8",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
+                    "action": "Button8",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "14013874-712a-4b9f-b3f5-7e47d37f3879",
+                    "id": "a42031b5-0860-45d6-aa25-1331600ef433",
                     "path": "<Keyboard>/numpad9",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GetNote",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "57537f8d-2837-4bf2-bdde-bf2c9804766e",
-                    "path": "<Keyboard>/numpadMinus",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ChangeVolume",
+                    "action": "Button9",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -142,7 +241,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ChangeVolume",
+                    "action": "VolumePlus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb4426b3-43f3-4df8-b90c-ddb3b7b88c93",
+                    "path": "<Keyboard>/numpadMinus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "VolumeMinus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "49a6a20a-ea00-4657-a576-5f8d6ed74fab",
+                    "path": "<Keyboard>/numpadEnter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ButtonEnter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

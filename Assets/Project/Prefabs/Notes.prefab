@@ -53,7 +53,17 @@ MonoBehaviour:
   _outerFrame: {fileID: 3291753611606999690}
   _body: {fileID: 8284206557817687500}
   _judgmentText: {fileID: 6216732935059562927}
-  _buttonNumberText: {fileID: 4391443010529132225}
+  _buttonNumberDisplay: {fileID: 4391443010529132225}
+  _buttonNumImages:
+  - {fileID: 21300000, guid: 4bd3d0769ad34784fb7a4c663f80bd3b, type: 3}
+  - {fileID: 21300000, guid: 85186c3ed018a964abbabfcfb9d3924f, type: 3}
+  - {fileID: 21300000, guid: c9dfed51383557c4b88dee8b7974a6b1, type: 3}
+  - {fileID: 21300000, guid: 0a7953f6eb4679f479ddb691fc73ef72, type: 3}
+  - {fileID: 21300000, guid: e876437e71b506a43b713473a5fbe662, type: 3}
+  - {fileID: 21300000, guid: 4eb2d404d2b7823409781c3a334e4e73, type: 3}
+  - {fileID: 21300000, guid: 7edb699ca6579af48bb4c82096f45b05, type: 3}
+  - {fileID: 21300000, guid: a3208c2774955804d8d521ded517969d, type: 3}
+  - {fileID: 21300000, guid: eb8a4f32b3e78a547bde583dadd93f8a, type: 3}
 --- !u!1 &3291753611606999690
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,7 +136,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 8df5506a45efdd54ca7415dbf57ba080, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -147,10 +157,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7462365686553040616}
-  - component: {fileID: 7698008053115875282}
-  - component: {fileID: 1691479508834948425}
+  - component: {fileID: 21260017271825287}
   m_Layer: 0
-  m_Name: buttonNumText
+  m_Name: buttonNumDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,27 +180,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1253796773311900927}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &7698008053115875282
-MeshRenderer:
+--- !u!212 &21260017271825287
+SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4391443010529132225}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
+  m_RayTracingMode: 0
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -204,37 +213,25 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!102 &1691479508834948425
-TextMesh:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4391443010529132225}
-  m_Text: 1
-  m_OffsetZ: 0
-  m_CharacterSize: 0.15
-  m_LineSpacing: 1
-  m_Anchor: 4
-  m_Alignment: 1
-  m_TabSize: 4
-  m_FontSize: 32
-  m_FontStyle: 0
-  m_RichText: 1
-  m_Font: {fileID: 0}
-  m_Color:
-    serializedVersion: 2
-    rgba: 4278190080
+  m_SortingOrder: 102
+  m_Sprite: {fileID: 21300000, guid: 4bd3d0769ad34784fb7a4c663f80bd3b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 10.24, y: 10.24}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &6216732935059562927
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +328,7 @@ TextMesh:
   m_Font: {fileID: 0}
   m_Color:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4293256677
 --- !u!1 &8284206557817687500
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,7 +401,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 101
   m_Sprite: {fileID: 21300000, guid: 1add1a608e409e54f818e83e498dffdc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
