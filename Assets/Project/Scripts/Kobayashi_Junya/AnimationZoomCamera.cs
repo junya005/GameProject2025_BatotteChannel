@@ -38,7 +38,12 @@ namespace BatotteChannel.InGame.Animation
 
         private void Start()
         {
+            // キャッシュ
             _camera = GetComponent<Camera>();
+
+            // カメラ位置を初期化
+            _camera.gameObject.transform.localScale = new Vector3(0.0f, 0.75f, -10.0f);
+            _camera.orthographicSize = 2.7f;
         }
 
         #endregion
