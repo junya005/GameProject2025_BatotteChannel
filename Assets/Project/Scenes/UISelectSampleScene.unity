@@ -497,6 +497,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 459610770175114852, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_Name
+      value: PreImage
+      objectReference: {fileID: 0}
+    - target: {fileID: 459610770175114852, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2810463180360001500, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
       propertyPath: m_Camera
       value: 
@@ -505,6 +513,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2022628132}
+    - target: {fileID: 3570602683140528889, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4003517479674929733, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
       propertyPath: m_Camera
       value: 
@@ -553,6 +565,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2022628132}
+    - target: {fileID: 8630983637706475253, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9069189209788280350, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
       propertyPath: m_Name
       value: TitleSelectMenuPrefab

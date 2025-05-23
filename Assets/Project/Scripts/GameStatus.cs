@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStatus : MonoBehaviour
 {
     /// <summary>
-    /// 現在の画面状況、モード
+    /// 現在の画面状況、モード一覧
     /// </summary>
     public enum GameSceneEnum
     {

@@ -1,15 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using System.Drawing;
-using UnityEditor.ShaderKeywordFilter;
 
 public class TitleSelectManager : MonoBehaviour
 {
     #region
+    /// <summary>
+    /// åªç›ÇÃâÊñ èÛãµÅAÉÇÅ[Éh
+    /// </summary>
     private GameStatus.GameSceneEnum _gameScene = GameStatus.GameSceneEnum.Title;
 
     /// <summary>
@@ -176,10 +175,11 @@ public class TitleSelectManager : MonoBehaviour
     /// <returns></returns>
     async UniTask CamSize(float size,float duration)
     {
-        await DOVirtual.Float(from: _mainCamera.orthographicSize,
-                        to: size,
-                        duration: duration,
-                        onVirtualUpdate: (tweenValue) => { _mainCamera.orthographicSize = tweenValue; });
+        await DOVirtual.Float(
+                from: _mainCamera.orthographicSize,
+                to: size,
+                duration: duration,
+                onVirtualUpdate: (tweenValue) => { _mainCamera.orthographicSize = tweenValue; });
     }
 
     /// <summary>
@@ -191,7 +191,8 @@ public class TitleSelectManager : MonoBehaviour
     /// <returns></returns>
     async UniTask Fade(CanvasGroup canvasGroup, float alpha,float duration)
     {
-        await DOVirtual.Float(from: canvasGroup.alpha,
+        await DOVirtual.Float(
+                from: canvasGroup.alpha,
                 to: alpha,
                 duration: duration,
                 onVirtualUpdate: (tweenValue) => { canvasGroup.alpha = tweenValue; });
