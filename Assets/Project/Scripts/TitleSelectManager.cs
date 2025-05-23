@@ -12,6 +12,14 @@ public class TitleSelectManager : MonoBehaviour
     private GameStatus.GameSceneEnum _gameScene = GameStatus.GameSceneEnum.Title;
 
     /// <summary>
+    /// 現在の画面状況、モードのゲッタープロパティ
+    /// </summary>
+    public GameStatus.GameSceneEnum GameSceneState
+    {
+        get { return _gameScene; }
+    }
+
+    /// <summary>
     /// ボタンを押せる状態かのBool
     /// </summary>
     private bool _canPushButton = false;
@@ -51,11 +59,11 @@ public class TitleSelectManager : MonoBehaviour
     /// <summary>
     /// ズームイン画面カメラサイズ
     /// </summary>
-    private readonly float _inCameraSize = 2.5f;
+    private readonly float _inCameraSize = 2.7f;
     /// <summary>
     /// ズームアウト画面カメラサイズ
     /// </summary>
-    private readonly float _outCameraSize = 5f;
+    private readonly float _outCameraSize = 5.4f;
 
     [SerializeField, Label("カメラ縮小速度 n秒")]
     private float _camSizeSpeed = 0.3f;
@@ -63,7 +71,7 @@ public class TitleSelectManager : MonoBehaviour
     /// <summary>
     /// CanvasGroupのフェード速度
     /// </summary>
-    [SerializeField,Label("Canvasフェード速度 n秒")]
+    [SerializeField, Label("Canvasフェード速度 n秒")]
     private float _canvasFadeSpeed = 0.2f;
 
     #endregion
@@ -95,7 +103,7 @@ public class TitleSelectManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             //スタート状態なら返す
-            if (_gameScene== GameStatus.GameSceneEnum.Title) return;
+            if (_gameScene == GameStatus.GameSceneEnum.Title) return;
             ToTitle();
         }
         //何かキーを押されたら遷移
@@ -114,10 +122,12 @@ public class TitleSelectManager : MonoBehaviour
         //ボタンを押せなくする
         _canPushButton = false;
         //タイトル画面UIを非表示　フェード
-        await Fade(_titleCanvasGroup,0, _canvasFadeSpeed);
+        await Fade(_titleCanvasGroup, 0, _canvasFadeSpeed);
         //カメラ動作を入れるならここ
+        // 小林：セレクト画面に行く際にカメラ動作を追記
+        await CamSize(_outCameraSize, _camSizeSpeed);
         //終わったら選択画面UIを表示　フェード
-        await Fade(_selectCanvasGroup,1, _canvasFadeSpeed);
+        await Fade(_selectCanvasGroup, 1, _canvasFadeSpeed);
         //ボタンを押せるようにする
         _canPushButton = true;
         //ゲームモードを変更
@@ -130,11 +140,11 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     public async void ToTitle()
     {
-        if(_gameScene!= GameStatus.GameSceneEnum.Select) return;
+        if (_gameScene != GameStatus.GameSceneEnum.Select) return;
         //ボタンを押せなくする
         _canPushButton = false;
         //選択画面UIを非表示　フェード
-        await Fade(_selectCanvasGroup,0, _canvasFadeSpeed);
+        await Fade(_selectCanvasGroup, 0, _canvasFadeSpeed);
         //カメラ動作を入れるならここ
         //終わったらタイトルUIを表示　フェード
         await Fade(_titleCanvasGroup, 1, _canvasFadeSpeed);
@@ -151,17 +161,19 @@ public class TitleSelectManager : MonoBehaviour
     /// </summary>
     public async void ToGame()
     {
-        if (_gameScene!= GameStatus.GameSceneEnum.Select) return;
+        if (_gameScene != GameStatus.GameSceneEnum.Select) return;
         //ボタンを押せなくする
         _canPushButton = false;
         //選択画面UIを非表示　フェード
         await Fade(_selectCanvasGroup, 0, _canvasFadeSpeed);
         //カメラ動作を入れるならここ
-        await CamSize(_outCameraSize, _camSizeSpeed);
+        // 小林：カメラ動作をズームインに変更
+        await CamSize(_inCameraSize, _camSizeSpeed);
         //終わったらタイトルUIを表示　フェード
         await Fade(_ingameCanvasGroup, 1, _canvasFadeSpeed);
         //ボタンを押せるようにする
         _canPushButton = true;
+
         //ゲームモードを変更
         _gameScene = GameStatus.GameSceneEnum.Game;
         Debug.Log("Compreat:ToGame");
@@ -173,7 +185,7 @@ public class TitleSelectManager : MonoBehaviour
     /// <param name="size">変化後のサイズ</param>
     /// <param name="duration">フェード後にかかる時間、秒数</param>
     /// <returns></returns>
-    async UniTask CamSize(float size,float duration)
+    async UniTask CamSize(float size, float duration)
     {
         await DOVirtual.Float(
                 from: _mainCamera.orthographicSize,
@@ -189,7 +201,7 @@ public class TitleSelectManager : MonoBehaviour
     /// <param name="alpha">フェード後のalphaの値</param>
     /// <param name="duration">フェード後にかかる時間、秒数</param>
     /// <returns></returns>
-    async UniTask Fade(CanvasGroup canvasGroup, float alpha,float duration)
+    async UniTask Fade(CanvasGroup canvasGroup, float alpha, float duration)
     {
         await DOVirtual.Float(
                 from: canvasGroup.alpha,

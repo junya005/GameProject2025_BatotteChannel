@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 4867562247841379140}
   - component: {fileID: 8841783210841726185}
   m_Layer: 5
-  m_Name: RemainingTimeBG
+  m_Name: RemainingTimeBGPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

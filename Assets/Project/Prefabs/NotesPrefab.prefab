@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 1253796773311900927}
   - component: {fileID: 2756807159231496242}
   m_Layer: 0
-  m_Name: Notes
+  m_Name: NotesPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
