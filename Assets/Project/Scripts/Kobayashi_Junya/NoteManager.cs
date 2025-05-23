@@ -90,6 +90,9 @@ namespace BatotteChannel.InGame.Notes
             if (judgement == JudgementState.MISS)
             {
                 CountGotNote(judgement);
+
+                // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
+                RemoveNoteInList(0);
                 HideNoteFromList(3.0f);
             }
 
@@ -106,21 +109,24 @@ namespace BatotteChannel.InGame.Notes
             if (noteController.IsDeletingDistance == false) return;
             noteController.JudgementNote(out var judgement);
             CountGotNote(judgement);
+
+            // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
             RemoveNoteInList(0);
             HideNoteFromList(3.0f);
         }
 
         /// <summary>
-        /// リストに格納されたノートを削除する
+        /// リストに格納されたノートを番号指定し除外する
+        /// 除外されたノートはオブジェクトとして存在したままになり、NoteManagerからの操作が不可能になる
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="index">除外したいノートの番号</param>
         private void RemoveNoteInList(int index)
         {
             _generateNotes.RemoveAt(index);
         }
 
         /// <summary>
-        /// ノーツをリストから全て削除した後、t秒間非表示にする
+        /// リストのノートを全てDestroyした後、t秒間非表示にする
         /// </summary>
         /// <param name="t">非表示時間</param>
         public void HideNoteFromList(float hideTime)
@@ -134,11 +140,10 @@ namespace BatotteChannel.InGame.Notes
                     noteController.DeleteThisNote(0);
                     RemoveNoteInList(i);
                 }
-                StartCoroutine(StopGenerateNote(hideTime));
-                return;
+
             }
 
-            return;
+            StartCoroutine(StopGenerateNote(hideTime));
         }
 
         /// <summary>

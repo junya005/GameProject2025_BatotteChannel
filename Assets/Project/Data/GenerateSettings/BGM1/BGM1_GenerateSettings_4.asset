@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BGM1_GenerateSettings_4
   m_EditorClassIdentifier: 
   timing: 21
-  generatePos: {x: 0, y: 0, z: 0}
+  generatePos: {x: 4, y: -2, z: 0}

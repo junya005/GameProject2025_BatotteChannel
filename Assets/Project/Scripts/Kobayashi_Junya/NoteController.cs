@@ -1,17 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BatotteChannel.InGame.Notes
 {
     /// <summary>NoteControllerのプロパティと機能を使用する場合はこれを経由する</summary>
     public interface INoteController
     {
+        /// <summary>削除距離フラグのゲッター</summary>
         bool IsDeletingDistance { get; }
+        /// <summary>削除指示フラグのゲッター</summary>
         bool IsDeletingScheduled { get; }
+        /// <summary>判定種類のインスタンスのゲッター</summary>
         JudgementState NoteJudgement { get; }
 
-        void JudgementNote(out JudgementState judgement);
+        /// <summary>
+        /// このノートを判定する
+        /// その後、このノートを1秒後に削除する
+        /// </summary>
+        /// <param name="judgement">判定結果を返す</param>
         void JudgementNote(int buttonNumber, out JudgementState judgement);
+
+        /// <summary>
+        /// このノーツを判定する(入力期間を過ぎた場合はこちらを使用)
+        /// </summary>
+        /// <param name="buttonNumber">ボタン番号</param>
+        /// <param name="judgement">判定結果を返す</param>
+        void JudgementNote(out JudgementState judgement);
+
+        /// <summary>
+        /// このノートを削除する
+        /// </summary>
+        /// <param name="t">削除までの時間</param>
         void DeleteThisNote(float t, bool isTimeElapsed = false);
     }
 
@@ -78,21 +98,26 @@ namespace BatotteChannel.InGame.Notes
         [Tooltip("ボディのオブジェクトを設定してください"), SerializeField]
         private GameObject _body;
 
-        [Tooltip("判定を表示するためのオブジェクトを設定してください"), SerializeField]
-        private GameObject _judgmentText;
-
         [Tooltip("ボタン番号を表示するためのオブジェクトを設定してください"), SerializeField]
         private GameObject _buttonNumberDisplay;
 
-        /// <summary>判定表示のテキストを格納</summary>
-        private TextMesh _tJudgementText;
+        [Tooltip("判定表示のためのオブジェクトを格納"), SerializeField]
+        private GameObject _judgementDisplay;
+
+        private SpriteRenderer _judgementDisplaySpriteRenderer;
 
         /// <summary>判定表示のSpriteRendererを格納</summary>
         private SpriteRenderer _buttonNumberSpriteRenderer;
 
         [Header("アセット参照")]
         [Tooltip("ボタン番号の画像を設定"), SerializeField]
-        public List<Sprite> _buttonNumImages = new List<Sprite>();
+        private List<Sprite> _buttonNumImages = new List<Sprite>();
+
+        [Tooltip("Good判定を表示する画像を設定"), SerializeField]
+        private Sprite _goodJudgementImage;
+
+        [Tooltip("Miss判定を表示する画像を設定"), SerializeField]
+        private Sprite _missJudgementImage;
 
         #endregion
 
@@ -122,7 +147,8 @@ namespace BatotteChannel.InGame.Notes
         }
 
         /// <summary>
-        /// ノーツを判定する
+        /// このノートを判定する
+        /// その後、このノートを1秒後に削除する
         /// </summary>
         /// <param name="buttonNumber">ボタン番号</param>
         /// <param name="judgement">判定結果を返す</param>
@@ -132,7 +158,7 @@ namespace BatotteChannel.InGame.Notes
             {
                 HideNote();
                 judgement = JudgementState.MISS;
-                DisplayJudgementResult(TEXT_JUDGEMENT_MISS);
+                DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
                 Debug.Log("ノーツを判定しました(判定結果：ボタンの不一致)");
 #endif
@@ -144,7 +170,7 @@ namespace BatotteChannel.InGame.Notes
             float distance = Mathf.Abs(_distance);
             judgement = distance <= _goodJudgmentRange ? JudgementState.Good : JudgementState.MISS;
             string judgementText = distance <= _goodJudgmentRange ? TEXT_JUDGEMENT_GOOD : TEXT_JUDGEMENT_MISS;
-            DisplayJudgementResult(judgementText);
+            DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
             Debug.Log($"ノーツを判定しました(判定結果：{judgement}, 距離：{_distance}, GOODの距離：|{_goodJudgmentRange}|)");
 #endif
@@ -152,14 +178,14 @@ namespace BatotteChannel.InGame.Notes
         }
 
         /// <summary>
-        /// ノーツを判定する(入力期間を過ぎた場合はこちらを使用)
+        /// このノーツを判定する(入力期間を過ぎた場合はこちらを使用)
         /// </summary>
         /// <param name="judgement">判定結果を返す</param>
         public void JudgementNote(out JudgementState judgement)
         {
             HideNote();
             judgement = JudgementState.MISS;
-            DisplayJudgementResult(TEXT_JUDGEMENT_MISS);
+            DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
             Debug.Log("ノーツを判定しました(判定結果：入力期間を過ぎました)");
 #endif
@@ -170,13 +196,21 @@ namespace BatotteChannel.InGame.Notes
         /// 判定結果を表示する
         /// </summary>
         /// <param name="judgementText">判定結果</param>
-        private void DisplayJudgementResult(string judgementText)
+        private void DisplayJudgementResult(JudgementState judgementState)
         {
-            _judgmentText.SetActive(true);
-            _tJudgementText.text = judgementText;
+            _judgementDisplay.SetActive(true);
+
 #if UNITY_EDITOR
-            Debug.Log($"次の判定結果を表示しました：{judgementText}");
+            Debug.Log($"次の判定結果を表示します：{judgementState}");
 #endif
+
+            if (judgementState == JudgementState.Good)
+            {
+                _judgementDisplaySpriteRenderer.sprite = _goodJudgementImage;
+                return;
+            }
+
+            _judgementDisplaySpriteRenderer.sprite = _missJudgementImage;
         }
 
         /// <summary>
@@ -208,12 +242,12 @@ namespace BatotteChannel.InGame.Notes
         private void Start()
         {
             // キャッシュ
-            _tJudgementText = _judgmentText.GetComponent<TextMesh>();
             _buttonNumberSpriteRenderer = _buttonNumberDisplay.GetComponent<SpriteRenderer>();
+            _judgementDisplaySpriteRenderer = _judgementDisplay.GetComponent<SpriteRenderer>();
 
             // 初期設定
             _outerFrame.transform.localScale = _defaltFrameSize;
-            _tJudgementText.gameObject.GetComponent<MeshRenderer>().sortingOrder = 1000;
+            _judgementDisplaySpriteRenderer.sortingOrder = 200;
             GiveButtonNumber();
         }
 
