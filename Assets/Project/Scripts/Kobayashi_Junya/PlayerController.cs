@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using BatotteChannel.InGame.Notes;
 using System.Collections;
+using BatotteChannel.InGame.MusicSystem;
 
 namespace BatotteChannel.InGame.Players
 {
@@ -48,8 +49,10 @@ namespace BatotteChannel.InGame.Players
         /// <summary>スタン状態フラグ</summary>
         private bool _isStan;
 
-        private bool _isRemoconPush;
+        /// <summary>アニメーションが開始されたか</summary>
+        private bool _isAnimationStart;
 
+        /// <summary>プレイヤーのグラフィックを格納</summary>
         [SerializeField]
         private SpriteRenderer _playerGraphyic;
 
@@ -58,6 +61,9 @@ namespace BatotteChannel.InGame.Players
 
         [SerializeField]
         private Sprite _remoconSprite;
+
+        [SerializeField]
+        private MusicManager _musicManager;
 
         /// <summary>
         /// プレイヤー番号のプロパティ
@@ -161,6 +167,11 @@ namespace BatotteChannel.InGame.Players
             _playerGraphyic.sprite = _idleSprite;
         }
 
+        private void StartBeatAnimation()
+        {
+            _playerGraphyic.gameObject.GetComponent<CharactorBeatAnim>().AnimationStart();
+        }
+
         #endregion
 
         #region イベント関数
@@ -177,6 +188,13 @@ namespace BatotteChannel.InGame.Players
         void Update()
         {
             PlayerHandle();
+
+            bool isMusicPlaying = (bool)_musicManager?.GetComponent<AudioSource>().isPlaying;
+            if (isMusicPlaying && !_isAnimationStart)
+            {
+                StartBeatAnimation();
+                _isAnimationStart = true;
+            }
         }
 
         #endregion

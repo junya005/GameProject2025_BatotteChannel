@@ -1085,6 +1085,10 @@ PrefabInstance:
       propertyPath: m_DefaultActionMap
       value: Player1
       objectReference: {fileID: 0}
+    - target: {fileID: 4161253732240725231, guid: 50c81905ee9a6a44987ef48019d89d4c, type: 3}
+      propertyPath: _musicManager
+      value: 
+      objectReference: {fileID: 5724099222588845399}
     - target: {fileID: 5318185299497466819, guid: 50c81905ee9a6a44987ef48019d89d4c, type: 3}
       propertyPath: m_Name
       value: Player1
@@ -1214,6 +1218,10 @@ PrefabInstance:
       propertyPath: _televisionAnimation
       value: 
       objectReference: {fileID: 135518821754156511}
+    - target: {fileID: 8301633041814269042, guid: e578b5bb9474725469ede5037d3e5b8b, type: 3}
+      propertyPath: _musicManager
+      value: 
+      objectReference: {fileID: 5724099222588845399}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

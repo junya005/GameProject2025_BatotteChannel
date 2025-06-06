@@ -34,6 +34,9 @@ namespace BatotteChannel.InGame.MusicSystem
         /// <summary>AudioSourceのインスタンス</summary>
         private AudioSource _audioSource;
 
+        /// <summary>オーディオソースのゲッタープロパティ</summary>
+        public AudioSource AudioSource { get { return _audioSource; } }
+
         [Tooltip("リズムゲームBGMを設定"), SerializeField]
         private AudioClip _audioClip;
 

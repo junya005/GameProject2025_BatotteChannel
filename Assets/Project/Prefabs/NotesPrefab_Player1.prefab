@@ -39,7 +39,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 951539720640148458}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -73,15 +73,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1a95371bde96f694e8e8c926005eb24d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 6.6666665, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2278968784815387265
@@ -150,6 +150,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 53aa5899f0193754894417d781416f29, type: 3}
   _goodJudgementImage: {fileID: 21300000, guid: 1a95371bde96f694e8e8c926005eb24d, type: 3}
   _missJudgementImage: {fileID: 21300000, guid: 08a4477893c01b14e9dcd3e2ff59349b, type: 3}
+  _goodEffectPrefab: {fileID: 1394697561563053247, guid: 8c759752261ad5442bb349385cb2346a, type: 3}
+  _missEffectPrefab: {fileID: 6934200198551048148, guid: cf499b474bf5a7e46a290841a8ee2a67, type: 3}
 --- !u!1 &3291753611606999690
 GameObject:
   m_ObjectHideFlags: 0

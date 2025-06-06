@@ -127,6 +127,12 @@ namespace BatotteChannel.InGame.Notes
         [Tooltip("Miss判定を表示する画像を設定"), SerializeField]
         private Sprite _missJudgementImage;
 
+        [Tooltip("Good判定エフェクトのオブジェクトを格納"), SerializeField]
+        private GameObject _goodEffectPrefab;
+
+        [Tooltip("Miss判定エフェクトのオブジェクトを格納"), SerializeField]
+        private GameObject _missEffectPrefab;
+
         #endregion
 
         #region 関数
@@ -222,11 +228,11 @@ namespace BatotteChannel.InGame.Notes
 
             if (judgementState == JudgementState.Good)
             {
-                _judgementDisplaySpriteRenderer.sprite = _goodJudgementImage;
+                Instantiate(_goodEffectPrefab, transform.parent);
                 return;
             }
 
-            _judgementDisplaySpriteRenderer.sprite = _missJudgementImage;
+            Instantiate(_missEffectPrefab, transform.parent);
         }
 
         /// <summary>
