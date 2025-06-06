@@ -2,6 +2,7 @@ using UnityEngine;
 using NaughtyAttributes;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using BatotteChannel.AudioSystem;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -109,6 +110,8 @@ public class TitleSelectManager : MonoBehaviour
         //何かキーを押されたら遷移
         else if (Input.anyKeyDown)
         {
+            // 効果音を再生
+            SoundManager.Instance.PlaySE("push_determining_button_53");
             ToSelect();
         }
     }
@@ -162,6 +165,8 @@ public class TitleSelectManager : MonoBehaviour
     public async void ToGame()
     {
         if (_gameScene != GameStatus.GameSceneEnum.Select) return;
+        // 効果音を再生
+        SoundManager.Instance.PlaySE("push_determining_button_53");
         //ボタンを押せなくする
         _canPushButton = false;
         //選択画面UIを非表示　フェード

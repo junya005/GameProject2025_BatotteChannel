@@ -228,11 +228,11 @@ namespace BatotteChannel.InGame.Notes
 
             if (judgementState == JudgementState.Good)
             {
-                Instantiate(_goodEffectPrefab, transform.parent);
+                Instantiate(_goodEffectPrefab, transform.position, Quaternion.identity);
                 return;
             }
 
-            Instantiate(_missEffectPrefab, transform.parent);
+            Instantiate(_missEffectPrefab, transform.position, Quaternion.identity);
         }
 
         /// <summary>
