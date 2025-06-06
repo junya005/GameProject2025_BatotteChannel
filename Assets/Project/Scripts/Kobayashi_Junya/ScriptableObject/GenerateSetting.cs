@@ -1,3 +1,4 @@
+using BatotteChannel.InGame.Players;
 using UnityEngine;
 
 namespace BatotteChannel.DataAssets
@@ -8,6 +9,13 @@ namespace BatotteChannel.DataAssets
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/GenerateSettingScriptableObject")]
     public class GenerateSettingScriptableObject : ScriptableObject
     {
+        /*
+        注意：変数名の変更や初期化処理をt追記すると作成したデータが全てデフォルト値に戻ります。
+        */
+
+        /// <summary>生成対象のプレイヤー</summary>
+        public PlayerNumberState player;
+
         /// <summary>生成タイミング</summary>
         public float timing;
 

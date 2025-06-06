@@ -13,6 +13,8 @@ namespace BatotteChannel.InGame.Notes
         bool IsDeletingScheduled { get; }
         /// <summary>判定種類のインスタンスのゲッター</summary>
         JudgementState NoteJudgement { get; }
+        /// <summary>ダミーノーツか否か</summary>
+        bool IsDummyNotes { get; }
 
         /// <summary>
         /// このノートを判定する
@@ -91,6 +93,12 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>削除予定かどうかのプロパティ</summary>
         public bool IsDeletingScheduled { get { return _isDeletingScheduled; } }
 
+        /// <summary>ダミーノートかどうかのフラグ</summary>
+        private bool _isDummyNotes = false;
+
+        /// <summary>ダミーノートかどうかのゲッタープロパティ</summary>
+        public bool IsDummyNotes { get { return _isDummyNotes; } }
+
         [Header("オブジェクト参照")]
         [Tooltip("フレームのオブジェクトを設定してください"), SerializeField]
         private GameObject _outerFrame;
@@ -122,6 +130,14 @@ namespace BatotteChannel.InGame.Notes
         #endregion
 
         #region 関数
+
+        public void SetIsDummyNotes(bool boolean)
+        {
+#if UNITY_EDITOR
+            if (boolean) Debug.Log("このノートはダミーノートに設定されました。ダミーノートは入力を受け付けず、判定結果にも影響しません。");
+#endif
+            _isDummyNotes = boolean;
+        }
 
         /// <summary>
         /// ボタン番号を付与する
