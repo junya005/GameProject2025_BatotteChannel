@@ -267,7 +267,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _memeTime: 0.15
   _memeArea: 0.4
-  _memeDelay: 0.35
+  _memeDelay: 0.19
+  _rideTheBeat: 0
 --- !u!1 &2119119097
 GameObject:
   m_ObjectHideFlags: 0

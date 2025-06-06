@@ -1,8 +1,9 @@
 using NaughtyAttributes;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// テスト用Script
+/// </summary>
 public class Test_InsEffect : MonoBehaviour
 {
     [SerializeField]

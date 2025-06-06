@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using NaughtyAttributes;
 using Cysharp.Threading.Tasks;
-using Unity.VisualScripting;
 
 public class JudgeEffectControll : MonoBehaviour
 {
@@ -19,11 +16,11 @@ public class JudgeEffectControll : MonoBehaviour
 
 
     [SerializeField, Label("文字のアニメーション時間/秒")]
-    private float _animTime = 0.5f;
+    private float _animTime = 0.15f;
     [SerializeField, Label("Goodを表示する時間/秒")]
-    private float _waitTime = 0.5f;
+    private float _waitTime = 0.4f;
     [SerializeField, Label("文字が消えるのにかかる時間/秒")]
-    private float _fadeOutTime = 0.5f;
+    private float _fadeOutTime = 0.35f;
 
     void Start()
     {
