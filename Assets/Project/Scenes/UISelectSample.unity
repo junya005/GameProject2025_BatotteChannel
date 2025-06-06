@@ -321,7 +321,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -100
-  m_Sprite: {fileID: 21300000, guid: d20d81a32a28c1d4daba02a35a11a7b2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 55711333be28c38479bba2e9f9187057, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -341,7 +341,7 @@ Transform:
   m_GameObject: {fileID: 1166094795}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.23, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -414,7 +414,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2.5
+  orthographic size: 2.7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -439,7 +439,7 @@ Transform:
   m_GameObject: {fileID: 2022628130}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0.75, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -517,10 +517,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3951079408309879195, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4003517479674929733, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2022628132}
+    - target: {fileID: 4814250452478506015, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b184f2afa4bf1764fa3a48b11bd89eb7, type: 3}
     - target: {fileID: 6340685857819740821, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -565,6 +573,14 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2022628132}
+    - target: {fileID: 6995392852155270966, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 960
+      objectReference: {fileID: 0}
+    - target: {fileID: 6995392852155270966, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 540
+      objectReference: {fileID: 0}
     - target: {fileID: 8630983637706475253, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -573,7 +589,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: TitleSelectMenuPrefab
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 483862973311246759, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

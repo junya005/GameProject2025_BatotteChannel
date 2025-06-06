@@ -1,5 +1,5 @@
 {
-    "name": "GetNoteAction",
+    "name": "NumPadInput",
     "maps": [
         {
             "name": "Player",

@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 using BatotteChannel.DataAssets;
+
 
 namespace BatotteChannel.GameManager
 {
@@ -23,6 +25,15 @@ namespace BatotteChannel.GameManager
         {
             // テキスト表示
             _scoreTextP1.text = $"Player1\nGood:{_resultDataP1.goodCount}\nMiss:{_resultDataP1.missCount}";
+        }
+
+        /// <summary>
+        /// タイトル画面へ遷移する
+        /// </summary>
+        public void ToTitle(string sceneName)
+        {
+            Debug.Assert(sceneName == "Main");
+            SceneManager.LoadScene(sceneName);
         }
     }
 }
