@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 978cd553a03c19b4ca50425afaf6c8d0, type: 3}
   m_Name: BGM1_GenerateSettings_18
   m_EditorClassIdentifier: 
+  player: 0
   timing: 77
   generatePos: {x: 0.81, y: -1.47, z: 0}

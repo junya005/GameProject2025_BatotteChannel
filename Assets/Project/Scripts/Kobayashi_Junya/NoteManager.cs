@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using BatotteChannel.InGame.UI;
 using UnityEngine;
 
 namespace BatotteChannel.InGame.Notes
@@ -9,11 +11,16 @@ namespace BatotteChannel.InGame.Notes
     {
         #region 変数
 
+        [SerializeField] private TelevisionAnimation _televisionAnimation;
+
         /// <summary>生成されたノートを格納</summary>
         [SerializeField] private List<GameObject> _generateNotes;
 
         /// <summary>クローン元となるノートのプレファブ</summary>
         [SerializeField] private GameObject _notePrefab;
+
+        /// <summary>クローン元となるダミーノートのプレファブ</summary>
+        [SerializeField] private GameObject _dummyNotePrefab;
 
         /// <summary>ノーツ生成停止フラグ</summary>
         [SerializeField] private bool _isStopNoteGenerate = false;
@@ -62,7 +69,10 @@ namespace BatotteChannel.InGame.Notes
         {
             if (_isStopNoteGenerate == true)
             {
-                Debug.Log("スタン中のため、ノーツの生成を行いませんでした。");
+                GameObject dummyNote = Instantiate(_dummyNotePrefab, generatePos, Quaternion.identity);
+                dummyNote.GetComponent<NoteController>().SetIsDummyNotes(true);
+                _generateNotes.Add(dummyNote);
+                Debug.Log("スタン中のため、ダミーノーツを生成しました。");
                 return;
             }
             GameObject note = Instantiate(_notePrefab, generatePos, Quaternion.identity);
@@ -79,15 +89,24 @@ namespace BatotteChannel.InGame.Notes
         public void JudgeMentNoteFromList(int buttonNumber)
         {
             if (_generateNotes.Count == 0) return;
+
             INoteController noteController = _generateNotes[0].GetComponent<NoteController>();
+
+            if (noteController.IsDummyNotes) return;
+
             noteController.JudgementNote(buttonNumber, out var judgement);
             Debug.Log(judgement);
+
             if (judgement == JudgementState.Good)
             {
+                // チャンネルの切り替え(現在は次のチャンネルへ移動させる仕様)
+                _televisionAnimation?.NextChannnel();
+
+                // ノーツのカウントと、ノーツをリストから削除
                 CountGotNote(judgement);
                 RemoveNoteInList(0);
             }
-            if (judgement == JudgementState.MISS)
+            else if (judgement == JudgementState.MISS)
             {
                 CountGotNote(judgement);
 
@@ -104,9 +123,19 @@ namespace BatotteChannel.InGame.Notes
         private void CheckNoteIsDeletingDistance()
         {
             if (_generateNotes.Count == 0) return;
+
             INoteController noteController = _generateNotes[0].GetComponent<NoteController>();
             if (noteController.IsDeletingScheduled == true) return;
             if (noteController.IsDeletingDistance == false) return;
+
+            // ダミーノーツであればこのタイミングで即削除
+            if (noteController.IsDummyNotes)
+            {
+                noteController.DeleteThisNote(0);
+                RemoveNoteInList(0);
+                return;
+            }
+
             noteController.JudgementNote(out var judgement);
             CountGotNote(judgement);
 
@@ -126,9 +155,9 @@ namespace BatotteChannel.InGame.Notes
         }
 
         /// <summary>
-        /// リストのノートを全てDestroyした後、t秒間非表示にする
+        /// リストのノートを全てDestroyした後、hideTime秒間ダミーノーツ生成モードにする
         /// </summary>
-        /// <param name="t">非表示時間</param>
+        /// <param name="hideTime">非表示時間</param>
         public void HideNoteFromList(float hideTime)
         {
             if (_generateNotes.Count != 0)

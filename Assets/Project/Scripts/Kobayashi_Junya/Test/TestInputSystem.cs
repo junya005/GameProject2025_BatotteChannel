@@ -1,9 +1,12 @@
+using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerInput))]
 public class KeyboardExample : MonoBehaviour
 {
+
     //inputActionの格納
     private PlayerInput _playerInput;
     private InputAction _button0;
@@ -22,22 +25,20 @@ public class KeyboardExample : MonoBehaviour
 
     private void Start()
     {
-        if (_playerInput == null)
-        {
-            _playerInput = GetComponent<PlayerInput>();
-            _button0     = _playerInput.actions["Button0"];
-            _button1     = _playerInput.actions["Button1"];
-            _button2     = _playerInput.actions["Button2"];
-            _button3     = _playerInput.actions["Button3"];
-            _button4     = _playerInput.actions["Button4"];
-            _button5     = _playerInput.actions["Button5"];
-            _button6     = _playerInput.actions["Button6"];
-            _button7     = _playerInput.actions["Button7"];
-            _button8     = _playerInput.actions["Button8"];
-            _button9     = _playerInput.actions["Button9"];
-            _volumePlus  = _playerInput.actions["VolumePlus"];
-            _volumeMinus = _playerInput.actions["VolumeMinus"];
-        }
+        if (_playerInput == null) _playerInput = GetComponent<PlayerInput>();
+
+        _button0 = _playerInput.actions["Button0"];
+        _button1 = _playerInput.actions["Button1"];
+        _button2 = _playerInput.actions["Button2"];
+        _button3 = _playerInput.actions["Button3"];
+        _button4 = _playerInput.actions["Button4"];
+        _button5 = _playerInput.actions["Button5"];
+        _button6 = _playerInput.actions["Button6"];
+        _button7 = _playerInput.actions["Button7"];
+        _button8 = _playerInput.actions["Button8"];
+        _button9 = _playerInput.actions["Button9"];
+        _volumePlus = _playerInput.actions["VolumePlus"];
+        _volumeMinus = _playerInput.actions["VolumeMinus"];
     }
 
     private void Update()
@@ -56,7 +57,7 @@ public class KeyboardExample : MonoBehaviour
         {
             Debug.Log($"{Keyboard.current}:2キーが押された！");
         }
-        
+
         if (_button3.triggered)
         {
             Debug.Log($"{Keyboard.current}:3キーが押された！");

@@ -25,6 +25,8 @@ namespace BatotteChannel.GameManager
         {
             // テキスト表示
             _scoreTextP1.text = $"Player1\nGood:{_resultDataP1.goodCount}\nMiss:{_resultDataP1.missCount}";
+            // テキスト表示
+            _scoreTextP2.text = $"Player2\nGood:{_resultDataP2.goodCount}\nMiss:{_resultDataP2.missCount}";
         }
 
         /// <summary>

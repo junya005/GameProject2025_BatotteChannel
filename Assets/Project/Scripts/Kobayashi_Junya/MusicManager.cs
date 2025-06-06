@@ -37,11 +37,11 @@ namespace BatotteChannel.InGame.MusicSystem
         [Tooltip("リズムゲームBGMを設定"), SerializeField]
         private AudioClip _audioClip;
 
-        [Tooltip("スコアを表示するオブジェクトを設定"), SerializeField]
-        private GameObject _scoreDisplay;
+        [Tooltip("プレイヤー1のスコアを表示するオブジェクトを設定"), SerializeField]
+        private TextMeshProUGUI _p1ScoreTMPro;
 
-        /// <summary>スコアを表示するテキストコンポーネント</summary>
-        private TextMeshProUGUI _scoreText;
+        [Tooltip("プレイヤー2のスコアを表示するオブジェクトを設定"), SerializeField]
+        private TextMeshProUGUI _p2ScoreTMPro;
 
         [Tooltip("楽曲のノーツ生成データベースを設定"), SerializeField]
         private GenerateSettingDataBase _generateSettingDataBase;
@@ -126,7 +126,6 @@ namespace BatotteChannel.InGame.MusicSystem
             _beatCounter = GetComponent<BeatCounter>();
             _audioSource = GetComponent<AudioSource>();
             _remainingTimeManager = _remainingTimeManagerObj.GetComponent<RemainingTimeManager>();
-            _scoreText = _scoreDisplay.GetComponent<TextMeshProUGUI>();
 
             // 初期設定
             SetAudioClip(_audioClip);
@@ -136,9 +135,10 @@ namespace BatotteChannel.InGame.MusicSystem
 
         private void Update()
         {
-            // スコアの表示
             if (!_isPlaying) return;
-            _scoreText.text = $"Good:{_noteManagerP1.GotGoodCount}\nMiss:{_noteManagerP1.GotMissCount}";
+            // スコアの表示
+            _p1ScoreTMPro.text = $"Good:{_noteManagerP1.GotGoodCount}\nMiss:{_noteManagerP1.GotMissCount}";
+            _p2ScoreTMPro.text = $"Good:{_noteManagerP2.GotGoodCount}\nMiss:{_noteManagerP2.GotMissCount}";
 
             // リズムゲームパートの終了処理
             if (_remainingTimeManager.IsCompleteCount == true && _isEndProcessing == false)
@@ -146,6 +146,8 @@ namespace BatotteChannel.InGame.MusicSystem
                 _isEndProcessing = true;
                 _resultDataP1.SetGoodCount(_noteManagerP1.GotGoodCount);
                 _resultDataP1.SetMissCount(_noteManagerP1.GotMissCount);
+                _resultDataP2.SetGoodCount(_noteManagerP2.GotGoodCount);
+                _resultDataP2.SetMissCount(_noteManagerP2.GotMissCount);
                 InGameStateManager.Instance.SetCurrentInGameState(InGameState.End);
             }
 
@@ -153,7 +155,18 @@ namespace BatotteChannel.InGame.MusicSystem
             if (genSetIndex == _generateSettingDataBase.generateSettingList.Count) return;
             if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[genSetIndex].timing)
             {
-                Debug.Log("ノーツを生成を指示します");
+                // プレイヤー1か2かを判定し、それに対する生成を行う
+                // スタン状態処理はNoteManager側で行っているため、こちらで判定を行う必要はないです
+                if (_generateSettingDataBase.generateSettingList[genSetIndex].player == Players.PlayerNumberState.Two)
+                {
+                    Debug.Log("ノーツを生成をプレイヤー2に指示します");
+                    _noteManagerP2.GenerateNote(_generateSettingDataBase.generateSettingList[genSetIndex].generatePos);
+                    genSetIndex++;
+
+                    return;
+                }
+
+                Debug.Log("ノーツを生成をプレイヤー1に指示します");
                 _noteManagerP1.GenerateNote(_generateSettingDataBase.generateSettingList[genSetIndex].generatePos);
                 genSetIndex++;
             }

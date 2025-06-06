@@ -1,10 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 using BatotteChannel.InGame.Notes;
+using System.Collections;
 
 namespace BatotteChannel.InGame.Players
 {
+    /// <summary>
+    /// プレイヤー番号のステートマシン
+    /// PlayerController.csに記述されています
+    /// </summary>
+    public enum PlayerNumberState
+    {
+        One,
+        Two
+    }
+
     /// <summary>プレイヤー入力に関するクラス</summary>
     public class PlayerController : MonoBehaviour
     {
@@ -26,8 +36,8 @@ namespace BatotteChannel.InGame.Players
         private InputAction _volumeMinus;
         private InputAction _buttonEnter;
 
-        [Tooltip("プレイヤーの番号を入力(0から)"), SerializeField]
-        private int _playerNumber = 0;
+        [Tooltip("プレイヤーを選択"), SerializeField]
+        private PlayerNumberState _playerNumber = PlayerNumberState.One;
 
         [Tooltip("このプレイヤー用のNoteManagerオブジェクト"), SerializeField]
         private GameObject _noteManagerForThisPlayer;
@@ -38,10 +48,21 @@ namespace BatotteChannel.InGame.Players
         /// <summary>スタン状態フラグ</summary>
         private bool _isStan;
 
+        private bool _isRemoconPush;
+
+        [SerializeField]
+        private SpriteRenderer _playerGraphyic;
+
+        [SerializeField]
+        private Sprite _idleSprite;
+
+        [SerializeField]
+        private Sprite _remoconSprite;
+
         /// <summary>
         /// プレイヤー番号のプロパティ
         /// </summary>
-        public int PlayerNumber
+        public PlayerNumberState PlayerNumber
         {
             get { return _playerNumber; }
         }
@@ -55,29 +76,28 @@ namespace BatotteChannel.InGame.Players
         /// </summary>
         private void RegisterButton()
         {
-            if (_playerInput == null)
-            {
-                _playerInput = GetComponent<PlayerInput>();
-                _button0 = _playerInput.actions["Button0"];
-                _button1 = _playerInput.actions["Button1"];
-                _button2 = _playerInput.actions["Button2"];
-                _button3 = _playerInput.actions["Button3"];
-                _button4 = _playerInput.actions["Button4"];
-                _button5 = _playerInput.actions["Button5"];
-                _button6 = _playerInput.actions["Button6"];
-                _button7 = _playerInput.actions["Button7"];
-                _button8 = _playerInput.actions["Button8"];
-                _button9 = _playerInput.actions["Button9"];
-                _volumePlus = _playerInput.actions["VolumePlus"];
-                _volumeMinus = _playerInput.actions["VolumeMinus"];
-            }
+            if (_playerInput == null) _playerInput = GetComponent<PlayerInput>();
+
+            _button0 = _playerInput.actions["Button0"];
+            _button1 = _playerInput.actions["Button1"];
+            _button2 = _playerInput.actions["Button2"];
+            _button3 = _playerInput.actions["Button3"];
+            _button4 = _playerInput.actions["Button4"];
+            _button5 = _playerInput.actions["Button5"];
+            _button6 = _playerInput.actions["Button6"];
+            _button7 = _playerInput.actions["Button7"];
+            _button8 = _playerInput.actions["Button8"];
+            _button9 = _playerInput.actions["Button9"];
+            _volumePlus = _playerInput.actions["VolumePlus"];
+            _volumeMinus = _playerInput.actions["VolumeMinus"];
+
         }
 
         /// <summary>
         /// プレイヤー番号を設定する
         /// </summary>
         /// <param name="playerNumber"></param>
-        public void SetPlayerNumber(int playerNumber)
+        public void SetPlayerNumber(PlayerNumberState playerNumber)
         {
             _playerNumber = playerNumber;
             Debug.Log($"プレイヤー番号をセット：{_playerNumber} (引数：{playerNumber})");
@@ -89,6 +109,7 @@ namespace BatotteChannel.InGame.Players
         /// <param name="buttonNumber">ボタン番号</param>
         private void GetNote(int buttonNumber)
         {
+            StartCoroutine(RemoconPushAnimation());
             _noteManager.JudgeMentNoteFromList(buttonNumber);
         }
 
@@ -131,6 +152,13 @@ namespace BatotteChannel.InGame.Players
             {
                 GetNote(9);
             }
+        }
+
+        private IEnumerator RemoconPushAnimation()
+        {
+            _playerGraphyic.sprite = _remoconSprite;
+            yield return new WaitForSeconds(0.5f);
+            _playerGraphyic.sprite = _idleSprite;
         }
 
         #endregion

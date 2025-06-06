@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 51
   m_Sprite: {fileID: 21300000, guid: 20e1dd6e91e5b5045b4665a075875a5e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 3543451821738132111}
   - component: {fileID: 4161253732240725231}
   m_Layer: 0
-  m_Name: PlayerPrefab
+  m_Name: PlayerPrefab_Player1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: Player1
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &4161253732240725231
@@ -163,6 +163,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerNumber: 0
   _noteManagerForThisPlayer: {fileID: 6709578763777366442}
+  _playerGraphyic: {fileID: 2848414650530070888}
+  _idleSprite: {fileID: 21300000, guid: 20e1dd6e91e5b5045b4665a075875a5e, type: 3}
+  _remoconSprite: {fileID: 21300000, guid: 83a8145d3c2a4db4cbfb98cc413e8515, type: 3}
 --- !u!1 &6709578763777366442
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,8 +210,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5b97808cab1b4d4eb466d2040a76af7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _televisionAnimation: {fileID: 0}
   _generateNotes: []
   _notePrefab: {fileID: 2278968784815387265, guid: 04e933d21711edd4eaee0db2baefd543, type: 3}
+  _dummyNotePrefab: {fileID: 8178182458948841667, guid: 782ab9f45fe18fc48b768d9ba77f2786, type: 3}
   _isStopNoteGenerate: 0
   _gotNoteCount: 0
   _gotGoodCount: 0
