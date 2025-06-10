@@ -144,6 +144,9 @@ namespace BatotteChannel.InGame.Notes
             noteController.JudgementNote(out var judgement);
             CountGotNote(judgement);
 
+            // 効果音の再生
+            SoundManager.Instance?.PlaySE("cancel_6");
+
             // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
             RemoveNoteInList(0);
             HideNoteFromList(3.0f);
