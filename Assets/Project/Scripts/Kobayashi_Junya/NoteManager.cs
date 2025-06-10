@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.UI;
 using UnityEngine;
 
@@ -99,15 +100,19 @@ namespace BatotteChannel.InGame.Notes
 
             if (judgement == JudgementState.Good)
             {
+                // 効果音の再生
+                SoundManager.Instance?.PlaySE("button26");
                 // チャンネルの切り替え(現在は次のチャンネルへ移動させる仕様)
                 _televisionAnimation?.NextChannnel();
 
-                // ノーツのカウントと、ノーツをリストから削除
                 CountGotNote(judgement);
                 RemoveNoteInList(0);
             }
             else if (judgement == JudgementState.MISS)
             {
+                // 効果音の再生
+                SoundManager.Instance?.PlaySE("cancel_6");
+
                 CountGotNote(judgement);
 
                 // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)

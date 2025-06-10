@@ -75,6 +75,7 @@ namespace BatotteChannel.GameManager
         private void Start()
         {
             StartInGameAnimation();
+            GameSettingManager.Instance.SetAppFrameRateLimit(GameSettingManager.EnumFrameRateLimitState.Sixty);
         }
 
         void Update()

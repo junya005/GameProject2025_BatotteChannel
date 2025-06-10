@@ -110,8 +110,6 @@ public class TitleSelectManager : MonoBehaviour
         //何かキーを押されたら遷移
         else if (Input.anyKeyDown)
         {
-            // 効果音を再生
-            SoundManager.Instance.PlaySE("push_determining_button_53");
             ToSelect();
         }
     }
@@ -122,6 +120,8 @@ public class TitleSelectManager : MonoBehaviour
     public async void ToSelect()
     {
         if (_gameScene != GameStatus.GameSceneEnum.Title) return;
+        // 効果音を再生
+        SoundManager.Instance.PlaySE("push_determining_button_53");
         //ボタンを押せなくする
         _canPushButton = false;
         //タイトル画面UIを非表示　フェード

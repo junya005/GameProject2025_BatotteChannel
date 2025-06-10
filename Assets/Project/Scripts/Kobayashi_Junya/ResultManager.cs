@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 using BatotteChannel.DataAssets;
+using BatotteChannel.AudioSystem;
 
 
 namespace BatotteChannel.GameManager
@@ -23,6 +24,9 @@ namespace BatotteChannel.GameManager
 
         private void Start()
         {
+            // フレームレートの設定
+            GameSettingManager.Instance.SetAppFrameRateLimit(GameSettingManager.EnumFrameRateLimitState.Thirty);
+
             // テキスト表示
             _scoreTextP1.text = $"Player1\nGood:{_resultDataP1.goodCount}\nMiss:{_resultDataP1.missCount}";
             // テキスト表示
@@ -35,6 +39,9 @@ namespace BatotteChannel.GameManager
         public void ToTitle(string sceneName)
         {
             Debug.Assert(sceneName == "Main");
+
+            SoundManager.Instance?.PlaySE("push_determining_button_53");
+
             SceneManager.LoadScene(sceneName);
         }
     }
