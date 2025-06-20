@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class TitleStartImageAnim : MonoBehaviour
 {
+    //Tweenにかかる時間
     [SerializeField]
     private float _duration = 0.8f;
+    //フェードのインターバル
     [SerializeField]
     private float _interval = 1.2f;
 
@@ -14,13 +16,22 @@ public class TitleStartImageAnim : MonoBehaviour
 
     void Start()
     {
+        //Renderer設定とアニメーションスタート
         _spriteRenderer=GetComponent<SpriteRenderer>();
         TitleImageAnim();
     }
 
+    /// <summary>
+    /// タイトルの文のフェードアニメーション
+    /// </summary>
     private void TitleImageAnim()
     {
+        //シーケンスでもなんでも
+        //Enterを押す画像切替のアニメーション
+
+        //シーケンス作成
         var sequence = DOTween.Sequence();
+        //フェードインアウト
         sequence.Append(
             DOVirtual.Float(
                 from: 1.0f,
@@ -31,10 +42,11 @@ public class TitleStartImageAnim : MonoBehaviour
                 }
                 ).SetEase(Ease.InOutCubic).SetLoops(2, LoopType.Yoyo)
         );
+        //インターバル設定
         sequence.AppendInterval(_interval);
+        //無限ループ
         sequence.SetLoops(-1);
-        Debug.Log("Set DoTween");
-        //Playで実行
+        //シーケンス実行
         sequence.Play();
     }
 }
