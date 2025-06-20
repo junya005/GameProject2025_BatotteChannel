@@ -107,8 +107,8 @@ public class TitleSelectManager : MonoBehaviour
             if (_gameScene == GameStatus.GameSceneEnum.Title) return;
             ToTitle();
         }
-        //‰½‚©ƒL[‚ğ‰Ÿ‚³‚ê‚½‚ç‘JˆÚ
-        else if (Input.anyKeyDown)
+        //Enter‚ğ‰Ÿ‚³‚ê‚½‚ç‘JˆÚ
+        else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             ToSelect();
         }

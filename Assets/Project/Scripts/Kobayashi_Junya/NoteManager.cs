@@ -1,16 +1,27 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using BatotteChannel.AudioSystem;
+using BatotteChannel.InGame.Players;
 using BatotteChannel.InGame.UI;
 using UnityEngine;
 
 namespace BatotteChannel.InGame.Notes
 {
-    /// <summary>ノーツの管理に関するクラス</summary>
+    /// <summary>
+    /// ノーツが取得されたときのコールバック
+    /// </summary>
+    /// <param name="playerNumber">プレイヤー番号を取得できる</param>
+    /// <returns>判定結果</returns>
+    public delegate void GetGoodNoteCallBack(PlayerNumberState playerNumber);
+
+    /// <summary>
+    /// ノーツの管理に関するクラス
+    /// PlayerControllがついたオブジェクトを親にする必要がある
+    /// </summary>
     public class NoteManager : MonoBehaviour
     {
         #region 変数
+        public GetGoodNoteCallBack getNoteCallBack;
 
         [SerializeField] private TelevisionAnimation _televisionAnimation;
 
@@ -86,7 +97,7 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// ノーツを判定する
         /// </summary>
-        /// <param name="buttonNumber"></param>
+        /// <param name="buttonNumber">ボタン番号</param>
         public void JudgeMentNoteFromList(int buttonNumber)
         {
             if (_generateNotes.Count == 0) return;
@@ -107,6 +118,12 @@ namespace BatotteChannel.InGame.Notes
 
                 CountGotNote(judgement);
                 RemoveNoteInList(0);
+#if UNITY_EDITOR
+                Debug.Log("主導権者の変更を指示します。");
+                Debug.Log(getNoteCallBack);
+                Debug.Log(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+#endif
+                getNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
             }
             else if (judgement == JudgementState.MISS)
             {

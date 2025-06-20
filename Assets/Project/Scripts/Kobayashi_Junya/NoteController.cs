@@ -64,7 +64,7 @@ namespace BatotteChannel.InGame.Notes
         private Vector3 _defaltFrameSize = new Vector3(2, 2, 2);
 
         [Tooltip("GOOD判定の距離"), SerializeField]
-        private float _goodJudgmentRange = 0.1f;
+        private float _goodJudgmentRange = 0.2f;
 
         /// <summary>ボディとフレームのサイズ比較</summary>
         private float _distance;
@@ -132,6 +132,34 @@ namespace BatotteChannel.InGame.Notes
 
         [Tooltip("Miss判定エフェクトのオブジェクトを格納"), SerializeField]
         private GameObject _missEffectPrefab;
+
+        #endregion
+
+        #region イベント関数
+
+        private void Start()
+        {
+            // キャッシュ
+            _buttonNumberSpriteRenderer = _buttonNumberDisplay.GetComponent<SpriteRenderer>();
+            _judgementDisplaySpriteRenderer = _judgementDisplay.GetComponent<SpriteRenderer>();
+
+            // 初期設定
+            _outerFrame.transform.localScale = _defaltFrameSize;
+            _judgementDisplaySpriteRenderer.sortingOrder = 200;
+            GiveButtonNumber();
+        }
+
+        void Update()
+        {
+            _outerFrame.transform.localScale -= Vector3.one * Time.deltaTime;
+            CalculateJudgmentDistance();
+
+            if (_isDeletingDistance) return;
+            if (_outerFrame.transform.localScale.x < 0.0f)
+            {
+                _isDeletingDistance = true;
+            }
+        }
 
         #endregion
 
@@ -255,34 +283,6 @@ namespace BatotteChannel.InGame.Notes
         private void CalculateJudgmentDistance()
         {
             _distance = _body.transform.localScale.x - _outerFrame.transform.localScale.x;
-        }
-
-        #endregion
-
-        #region イベント関数
-
-        private void Start()
-        {
-            // キャッシュ
-            _buttonNumberSpriteRenderer = _buttonNumberDisplay.GetComponent<SpriteRenderer>();
-            _judgementDisplaySpriteRenderer = _judgementDisplay.GetComponent<SpriteRenderer>();
-
-            // 初期設定
-            _outerFrame.transform.localScale = _defaltFrameSize;
-            _judgementDisplaySpriteRenderer.sortingOrder = 200;
-            GiveButtonNumber();
-        }
-
-        void Update()
-        {
-            _outerFrame.transform.localScale -= Vector3.one * Time.deltaTime;
-            CalculateJudgmentDistance();
-
-            if (_isDeletingDistance) return;
-            if (_outerFrame.transform.localScale.x < 0.0f)
-            {
-                _isDeletingDistance = true;
-            }
         }
 
         #endregion

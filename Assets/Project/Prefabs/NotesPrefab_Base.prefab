@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defaltFrameSize: {x: 2, y: 2, z: 2}
-  _goodJudgmentRange: 0.1
+  _goodJudgmentRange: 0.2
   _outerFrame: {fileID: 3291753611606999690}
   _body: {fileID: 8284206557817687500}
   _buttonNumberDisplay: {fileID: 4391443010529132225}
