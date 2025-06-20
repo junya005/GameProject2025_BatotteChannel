@@ -19,6 +19,16 @@ namespace BatotteChannel.DataAssets
         /// <summary>生成タイミング</summary>
         public float timing;
 
+        /// <summary>
+        /// SubBeatを使用するか
+        /// </summary>
+        public bool isUseSubBeat = false;
+
+        /// <summary>
+        /// もっと細かい生成タイミング、IsUseSubBeatがtrueになっていなければ無効
+        /// </summary>
+        public int subTiming;
+
         /// <summary>生成座標</summary>
         public Vector3 generatePos;
     }

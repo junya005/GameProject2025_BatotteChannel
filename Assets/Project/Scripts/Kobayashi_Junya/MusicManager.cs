@@ -119,6 +119,24 @@ namespace BatotteChannel.InGame.MusicSystem
             }
 
             if (genSetIndex == _generateSettingDataBase.generateSettingList.Count) return;
+            if (_generateSettingDataBase.generateSettingList[genSetIndex].isUseSubBeat)
+            {
+                if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[genSetIndex].timing &&
+                _beatCounter.SubBeat >= _generateSettingDataBase.generateSettingList[genSetIndex].subTiming)
+                {
+#if UNITY_EDITOR
+                    Debug.Log("サブタイミングに生成します。");
+#endif
+                    GenerateNotesByTimming();
+                }
+
+                bool subTimigValueCheck = _generateSettingDataBase.generateSettingList[genSetIndex].subTiming >= 4
+                || _generateSettingDataBase.generateSettingList[genSetIndex].subTiming <= 0;
+                if (!subTimigValueCheck)
+                {
+                    return;
+                }
+            }
             if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[genSetIndex].timing)
             {
                 GenerateNotesByTimming();
@@ -198,14 +216,14 @@ namespace BatotteChannel.InGame.MusicSystem
         /// </summary>
         private void ViewScore()
         {
-            int roundedInitiativeTimeP1 = Mathf.RoundToInt(_initiativeTimeP1);
-            int roundedInitiativeTimeMinuteP1 = Mathf.RoundToInt(roundedInitiativeTimeP1 / 60);
-            int roundedInitiativeTimeSecondsP1 = Mathf.RoundToInt(roundedInitiativeTimeP1 % 60);
+            int roundedInitiativeTimeP1 = Mathf.FloorToInt(_initiativeTimeP1);
+            int roundedInitiativeTimeMinuteP1 = Mathf.FloorToInt(roundedInitiativeTimeP1 / 60);
+            int roundedInitiativeTimeSecondsP1 = Mathf.FloorToInt(roundedInitiativeTimeP1 % 60);
             _p1ScoreTMPro.text = $"{roundedInitiativeTimeMinuteP1}:{roundedInitiativeTimeSecondsP1.ToString("F0").PadLeft(2, '0')}";
 
-            int roundedInitiativeTimeP2 = Mathf.RoundToInt(_initiativeTimeP2);
-            int roundedInitiativeTimeMinuteP2 = Mathf.RoundToInt(roundedInitiativeTimeP2 / 60);
-            int roundedInitiativeTimeSecondsP2 = Mathf.RoundToInt(roundedInitiativeTimeP2 % 60);
+            int roundedInitiativeTimeP2 = Mathf.FloorToInt(_initiativeTimeP2);
+            int roundedInitiativeTimeMinuteP2 = Mathf.FloorToInt(roundedInitiativeTimeP2 / 60);
+            int roundedInitiativeTimeSecondsP2 = Mathf.FloorToInt(roundedInitiativeTimeP2 % 60);
             _p2ScoreTMPro.text = $"{roundedInitiativeTimeMinuteP2}:{roundedInitiativeTimeSecondsP2.ToString("F0").PadLeft(2, '0')}";
 
             // ノーツ数で表示

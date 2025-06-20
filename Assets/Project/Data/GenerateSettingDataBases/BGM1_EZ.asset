@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c06d1274aff74a74fa192c911cadc37a, type: 3}
-  m_Name: BGM1
+  m_Name: BGM1_EZ
   m_EditorClassIdentifier: 
   generateSettingList:
   - {fileID: 11400000, guid: 4fe54d1eab952154c9c9b6b054e3cc2a, type: 2}
@@ -34,3 +34,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e28cc7317e4961b47a60daeebd04ac7f, type: 2}
   - {fileID: 11400000, guid: f648678e0ed11484aa4b9bfbeca9a368, type: 2}
   - {fileID: 11400000, guid: d801d28cf53e7b34184cdcc38af6c85e, type: 2}
+  - {fileID: 11400000, guid: fa71abb1d29ec504ebab1122ae80155e, type: 2}

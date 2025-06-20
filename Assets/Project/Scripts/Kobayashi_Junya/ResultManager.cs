@@ -83,9 +83,9 @@ namespace BatotteChannel.GameManager
 
         private int RoundInitiativeTime(float initiativeTime, out int minute, out int second)
         {
-            int roundedInitiativeTime = Mathf.RoundToInt(initiativeTime);
-            minute = Mathf.RoundToInt(roundedInitiativeTime / 60.0f);
-            second = Mathf.RoundToInt(roundedInitiativeTime % 60.0f);
+            int roundedInitiativeTime = Mathf.FloorToInt(initiativeTime);
+            minute = Mathf.FloorToInt(roundedInitiativeTime / 60.0f);
+            second = Mathf.FloorToInt(roundedInitiativeTime % 60.0f);
             return roundedInitiativeTime;
         }
     }

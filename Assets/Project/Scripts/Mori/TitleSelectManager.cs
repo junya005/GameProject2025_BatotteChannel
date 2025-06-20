@@ -3,6 +3,7 @@ using NaughtyAttributes;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using BatotteChannel.AudioSystem;
+using BatotteChannel.InGame.MusicSystem;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -214,4 +215,46 @@ public class TitleSelectManager : MonoBehaviour
                 duration: duration,
                 onVirtualUpdate: (tweenValue) => { canvasGroup.alpha = tweenValue; });
     }
+
+    #region Kobayashi
+    [SerializeField]
+    private string _musicName;
+
+    [SerializeField]
+    private MusicManager _musicManager;
+
+    /// <summary>
+    /// 難易度をEasyにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// </summary>
+    public void ToGameEasy()
+    {
+        string musicDataIndex = _musicName + "_EZ";
+        MusicScoreDataManager.MusicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        ToGame();
+    }
+
+    /// <summary>
+    /// 難易度をNomalにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// </summary>
+    public void ToGameNomal()
+    {
+        string musicDataIndex = _musicName + "_NL";
+        MusicScoreDataManager.MusicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        ToGame();
+    }
+
+    /// <summary>
+    /// 難易度をHardにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// </summary>
+    public void ToGameHard()
+    {
+        string musicDataIndex = _musicName + "_HD";
+        MusicScoreDataManager.MusicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        ToGame();
+    }
+
+    #endregion
 }

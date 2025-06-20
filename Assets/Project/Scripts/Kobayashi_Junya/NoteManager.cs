@@ -70,9 +70,27 @@ namespace BatotteChannel.InGame.Notes
             get { return _gotMissCount; }
         }
 
+        /// <summary>スタン秒数</summary>
+        private float _stanTimeSecond;
+
+        /// <summary>スタン秒数のプロパティ</summary>
+        public float StanTimeSecond { get { return _stanTimeSecond; } }
+
         #endregion
 
         #region 関数
+
+        /// <summary>
+        /// スタン秒数のセッター
+        /// </summary>
+        /// <param name="value">セットしたい値</param>
+        public void SetStanTimeSecon(float value)
+        {
+            _stanTimeSecond = value;
+#if UNITY_EDITOR
+            Debug.Log($"スタン時間を{_stanTimeSecond}にセットしました。入力値:{value}");
+#endif
+        }
 
         /// <summary>
         /// ノーツを生成する
@@ -120,8 +138,6 @@ namespace BatotteChannel.InGame.Notes
                 RemoveNoteInList(0);
 #if UNITY_EDITOR
                 Debug.Log("主導権者の変更を指示します。");
-                Debug.Log(getNoteCallBack);
-                Debug.Log(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
 #endif
                 getNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
             }
