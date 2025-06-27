@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace BatotteChannel.InGame.Notes
 {
@@ -26,7 +25,6 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// このノーツを判定する(入力期間を過ぎた場合はこちらを使用)
         /// </summary>
-        /// <param name="buttonNumber">ボタン番号</param>
         /// <param name="judgement">判定結果を返す</param>
         void JudgementNote(out JudgementState judgement);
 
@@ -35,6 +33,12 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         /// <param name="t">削除までの時間</param>
         void DeleteThisNote(float t, bool isTimeElapsed = false);
+
+        /// <summary>
+        /// ボタン入力が有効な範囲かチェックする
+        /// </summary>
+        /// <returns>ボタン入力が有効化</returns>
+        bool CheckButtonEnable();
     }
 
     /// <summary>判定の種類</summary>
@@ -72,6 +76,9 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>ボタン番号</summary>
         private int _buttonNumber;
 
+        /// <summary>ボタン番号のゲッタープロパティ</summary>
+        public int ButtonNumber { get { return _buttonNumber; } }
+
         /// <summary>判定のステートのインスタンス</summary>
         private JudgementState _noteJudgement;
 
@@ -99,6 +106,12 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>ダミーノートかどうかのゲッタープロパティ</summary>
         public bool IsDummyNotes { get { return _isDummyNotes; } }
 
+        /// <summary>
+        /// 前回のボタン番号
+        /// staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
+        /// </summary>
+        private static int _lastButtonNum;
+
         [Header("オブジェクト参照")]
         [Tooltip("フレームのオブジェクトを設定してください"), SerializeField]
         private GameObject _outerFrame;
@@ -116,6 +129,10 @@ namespace BatotteChannel.InGame.Notes
 
         /// <summary>判定表示のSpriteRendererを格納</summary>
         private SpriteRenderer _buttonNumberSpriteRenderer;
+
+        /// <summary>ボタンが有効になる距離</summary>
+        [Tooltip("ボタン入力が有効になる距離"), SerializeField]
+        private float _buttonEnableDistance = 0.4f;
 
         [Header("アセット参照")]
         [Tooltip("ボタン番号の画像を設定"), SerializeField]
@@ -145,7 +162,7 @@ namespace BatotteChannel.InGame.Notes
 
             // 初期設定
             _outerFrame.transform.localScale = _defaltFrameSize;
-            _judgementDisplaySpriteRenderer.sortingOrder = 200;
+            _judgementDisplaySpriteRenderer.sortingOrder = 51;
             GiveButtonNumber();
         }
 
@@ -165,6 +182,19 @@ namespace BatotteChannel.InGame.Notes
 
         #region 関数
 
+        /// <summary>
+        /// 前回のボタン番号を設定
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetLastButtonNum(int value)
+        {
+            _lastButtonNum = value;
+        }
+
+        /// <summary>
+        /// ダミーノーツに設定する
+        /// </summary>
+        /// <param name="boolean">ダミーノーツにするかどうか</param>
         public void SetIsDummyNotes(bool boolean)
         {
 #if UNITY_EDITOR
@@ -178,9 +208,15 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         private void GiveButtonNumber()
         {
-            _buttonNumber = Random.Range(1, 9);
+            _buttonNumber = Random.Range(1, 10);
+            // ボタン番号が前回生成したノーツと被っていれば再帰する。
+            if (_buttonNumber == _lastButtonNum)
+            {
+                GiveButtonNumber();
+            }
             int buttonNumImageIndex = _buttonNumber - 1;
             _buttonNumberSpriteRenderer.sprite = _buttonNumImages[buttonNumImageIndex];
+            _lastButtonNum = _buttonNumber;
 #if UNITY_EDITOR
             Debug.Log($"ノーツ番号を付与：{_buttonNumber}");
 #endif
@@ -283,6 +319,25 @@ namespace BatotteChannel.InGame.Notes
         private void CalculateJudgmentDistance()
         {
             _distance = _body.transform.localScale.x - _outerFrame.transform.localScale.x;
+        }
+
+        /// <summary>
+        /// ボタン入力が有効かチェックする、NoteManagerから判定する際は事前にこちらを使用してボタン入力範囲内かチェックを行う。
+        /// </summary>
+        /// <returns>ボタン入力が有効かどうか</returns>
+        public bool CheckButtonEnable()
+        {
+            if (Mathf.Abs(_distance) >= Mathf.Abs(_buttonEnableDistance))
+            {
+#if UNITY_EDITOR
+                Debug.Log($"ボタン入力が無効な範囲です。距離:{_distance}");
+#endif
+                return false;
+            }
+#if UNITY_EDITOR
+            Debug.Log($"ボタン入力が有効な範囲です距離:{_distance}");
+#endif
+            return true;
         }
 
         #endregion

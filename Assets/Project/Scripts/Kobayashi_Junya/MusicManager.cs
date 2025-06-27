@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-
 using BatotteChannel.InGame.Notes;
 using BatotteChannel.GameState;
 using BatotteChannel.DataAssets;
@@ -15,12 +14,28 @@ namespace BatotteChannel.InGame.MusicSystem
         Two
     }
 
-    #region 変数
+    public enum EDifficultyState
+    {
+        None,
+        Easy,
+        Normal,
+        Hard
+    }
 
     /// <summary>リズムゲームパートを管理するクラス AudioSourceとBeatCounterとの併用を想定</summary>
     [RequireComponent(typeof(AudioSource)), RequireComponent(typeof(BeatCounter))]
     public class MusicManager : MonoBehaviour
     {
+        #region 定数
+
+        private const float STAN_TIME_EASY = 3.0f;
+        private const float STAN_TIME_NORMAL = 1.5f;
+        private const float STAN_TIME_HARD = 0.75f;
+
+        #endregion
+
+        #region 変数
+
         /// <summary>
         /// 主導権を握っているプレイヤーのステートマシン
         /// </summary>
@@ -63,6 +78,9 @@ namespace BatotteChannel.InGame.MusicSystem
         [Tooltip("プレイヤー2のスコアを表示するオブジェクトを設定"), SerializeField]
         private TextMeshProUGUI _p2ScoreTMPro;
 
+        [Tooltip("ENDテキストを表示させるオブジェクト"), SerializeField]
+        private GameObject _endTextObj;
+
         [Tooltip("楽曲のノーツ生成データベースを設定"), SerializeField]
         private GenerateSettingDataBase _generateSettingDataBase;
 
@@ -97,6 +115,10 @@ namespace BatotteChannel.InGame.MusicSystem
 
         /// <summary>ノーツ生成インデックス番号を格納</summary>
         int genSetIndex = 0;
+
+        private EDifficultyState _currentDifficultyState;
+
+        public EDifficultyState CurrentDifficultyState { get { return _currentDifficultyState; } }
 
         #endregion
 
@@ -161,6 +183,8 @@ namespace BatotteChannel.InGame.MusicSystem
             SetAudioClip(_audioClip);
             // 一旦仮で実数値で設定してます
             _remainingTimeManager.SetMusicTime(0, 48);
+            SetStanSecondsToNoteManagers();
+            _endTextObj.SetActive(false);
 
             // ノーツが取得されたときのコールバックにOnGetNoteを登録
             // 秒数換算に使用します
@@ -175,6 +199,7 @@ namespace BatotteChannel.InGame.MusicSystem
         {
             _isPlaying = false;
             _isEndProcessing = true;
+            _endTextObj.SetActive(true);
 
             // 最終スコアにデータをセット
             // Player1
@@ -188,6 +213,59 @@ namespace BatotteChannel.InGame.MusicSystem
             _resultDataP2.SetInitiativeTime(_initiativeTimeP2);
 
             InGameStateManager.Instance.SetCurrentInGameState(InGameState.End);
+        }
+
+        /// <summary>
+        /// 難易度に応じてStanTimeをセットする
+        /// </summary>
+        private void SetStanSecondsToNoteManagers()
+        {
+            switch (_currentDifficultyState)
+            {
+                case EDifficultyState.Easy:
+                    _noteManagerP1.SetStanTimeSecond(STAN_TIME_EASY);
+                    _noteManagerP2.SetStanTimeSecond(STAN_TIME_EASY);
+                    return;
+                case EDifficultyState.Normal:
+                    _noteManagerP1.SetStanTimeSecond(STAN_TIME_NORMAL);
+                    _noteManagerP2.SetStanTimeSecond(STAN_TIME_NORMAL);
+                    return;
+                case EDifficultyState.Hard:
+                    _noteManagerP1.SetStanTimeSecond(STAN_TIME_HARD);
+                    _noteManagerP2.SetStanTimeSecond(STAN_TIME_HARD);
+                    return;
+                default:
+                    Debug.LogError("難易度が想定外の値になっています。");
+                    return;
+            }
+        }
+
+        /// <summary>
+        /// 楽曲名の背景2文字から難易度を取得する
+        /// </summary>
+        /// <param name="musicData">楽曲データ</param>
+        /// <returns>識別不可な場合はNoneを返します</returns>
+        public EDifficultyState GetDifficulty(MusicDataScriptableObject musicData)
+        {
+            string musicName = musicData.musicName;
+            string difficultyStr = musicName.Substring(musicName.Length - 2, 2);
+            EDifficultyState difficultyState;
+            switch (difficultyStr)
+            {
+                case "EZ":
+                    difficultyState = EDifficultyState.Easy;
+                    break;
+                case "NL":
+                    difficultyState = EDifficultyState.Normal;
+                    break;
+                case "HD":
+                    difficultyState = EDifficultyState.Hard;
+                    break;
+                default:
+                    difficultyState = EDifficultyState.None;
+                    break;
+            }
+            return difficultyState;
         }
 
         /// <summary>
@@ -259,6 +337,18 @@ namespace BatotteChannel.InGame.MusicSystem
         public void SetGenerateSettingsDB(GenerateSettingDataBase generateSettingDataBase)
         {
             _generateSettingDataBase = generateSettingDataBase;
+        }
+
+        /// <summary>
+        /// 現在の難易度をセットする
+        /// </summary>
+        /// <param name="difficulty">難易度</param>
+        public void SetCurrentDifficultyState(EDifficultyState difficulty)
+        {
+            _currentDifficultyState = difficulty;
+#if UNITY_EDITOR
+            Debug.Log($"難易度を{_currentDifficultyState}にセットしました。");
+#endif
         }
 
         /// <summary>

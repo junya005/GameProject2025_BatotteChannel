@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: BGM1_NL
   m_EditorClassIdentifier: 
   generateSettingList:
-  - {fileID: 11400000, guid: af881d2a087907743a77a64de85e8a46, type: 2}
-  - {fileID: 11400000, guid: 1b2acfc20e38bb749bb986ba404a9344, type: 2}
   - {fileID: 11400000, guid: 4d97b0359cfdb8e45b0d4cfe13cf7402, type: 2}
   - {fileID: 11400000, guid: 1817b99adffa6ab409a238b313cfed93, type: 2}
   - {fileID: 11400000, guid: f6b2b696dd026e443ae1757673cb61c2, type: 2}
@@ -45,3 +43,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0f9af2ce376e1af40a8dc7ab20532025, type: 2}
   - {fileID: 11400000, guid: c2fb1f03e6a1c2f418b30ca8a645d116, type: 2}
   - {fileID: 11400000, guid: 8ead79d6767f2484c954ca4d2614755a, type: 2}
+  - {fileID: 11400000, guid: 3208e1a31aa00344f9355dad78ba179b, type: 2}
+  - {fileID: 11400000, guid: 50970248d780aaf40a53e2703d1ef528, type: 2}
+  - {fileID: 11400000, guid: 80032a0efbe277e4da47bc0a3c1c480a, type: 2}
+  - {fileID: 11400000, guid: 69b0b72eff064d54bbfe98beca5082de, type: 2}
+  - {fileID: 11400000, guid: f17bc46210bc7f14bb22b13c36ff34ab, type: 2}
+  - {fileID: 11400000, guid: 509660ba171bb594e966e09c63b7e713, type: 2}
+  - {fileID: 11400000, guid: c4f336bfee94b564cb17563324633a30, type: 2}
+  - {fileID: 11400000, guid: 388ac09d3fb51004f9cea65ac1eb0c0c, type: 2}
+  - {fileID: 11400000, guid: 6b5e72861fbe580449a1e454dcce2bdb, type: 2}
+  - {fileID: 11400000, guid: 6038d9b2abdb7cf44a39004aeed1b30b, type: 2}

@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5449392366359370700, guid: cf499b474bf5a7e46a290841a8ee2a67, type: 3}
       propertyPath: m_SortingOrder
-      value: 102
+      value: 51
       objectReference: {fileID: 0}
     - target: {fileID: 6934200198551048148, guid: cf499b474bf5a7e46a290841a8ee2a67, type: 3}
       propertyPath: m_Name

@@ -59,12 +59,14 @@ namespace BatotteChannel.GameManager
 
             // テキスト表示
             _scoreTextP1.text = "Player1\n" +
-                            $"{_roundedInitiativeTimeMinutesSecondsP1.initiativeMinutes}:{_roundedInitiativeTimeMinutesSecondsP1.initiativeSeconds}\n" +
+                            $"{_roundedInitiativeTimeMinutesSecondsP1.initiativeMinutes}:" +
+                            $"{_roundedInitiativeTimeMinutesSecondsP1.initiativeSeconds.ToString("F0").PadLeft(2, '0')}\n" +
                             $"Good: {_resultDataP1.goodCount}\n" +
                             $"Miss:{_resultDataP1.missCount}";
             // テキスト表示
             _scoreTextP2.text = "Player2\n" +
-                            $"{_roundedInitiativeTimeMinutesSecondsP2.initiativeMinutes}:{_roundedInitiativeTimeMinutesSecondsP2.initiativeSeconds}\n" +
+                            $"{_roundedInitiativeTimeMinutesSecondsP2.initiativeMinutes}:" +
+                            $"{_roundedInitiativeTimeMinutesSecondsP2.initiativeSeconds.ToString("F0").PadLeft(2, '0')}\n" +
                             $"Good:{_resultDataP2.goodCount}\n" +
                             $"Miss: {_resultDataP2.missCount} ";
         }

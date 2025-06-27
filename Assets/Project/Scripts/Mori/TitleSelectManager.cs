@@ -229,8 +229,9 @@ public class TitleSelectManager : MonoBehaviour
     public void ToGameEasy()
     {
         string musicDataIndex = _musicName + "_EZ";
-        MusicScoreDataManager.MusicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
         _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
         ToGame();
     }
 
@@ -240,8 +241,9 @@ public class TitleSelectManager : MonoBehaviour
     public void ToGameNomal()
     {
         string musicDataIndex = _musicName + "_NL";
-        MusicScoreDataManager.MusicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
         _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
         ToGame();
     }
 
@@ -251,8 +253,9 @@ public class TitleSelectManager : MonoBehaviour
     public void ToGameHard()
     {
         string musicDataIndex = _musicName + "_HD";
-        MusicScoreDataManager.MusicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
         _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
         ToGame();
     }
 

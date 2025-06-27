@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.Players;
 using BatotteChannel.InGame.UI;
-using UnityEngine;
 
 namespace BatotteChannel.InGame.Notes
 {
@@ -27,6 +27,9 @@ namespace BatotteChannel.InGame.Notes
 
         /// <summary>生成されたノートを格納</summary>
         [SerializeField] private List<GameObject> _generateNotes;
+
+        /// <summary>生成されたダミーノーツを格納</summary>
+        [SerializeField] private List<GameObject> _generatedDummyNotes;
 
         /// <summary>クローン元となるノートのプレファブ</summary>
         [SerializeField] private GameObject _notePrefab;
@@ -78,13 +81,30 @@ namespace BatotteChannel.InGame.Notes
 
         #endregion
 
+        #region イベント関数
+
+        void Start()
+        {
+            // 初期化
+            _generateNotes = new List<GameObject>();
+            _generatedDummyNotes = new List<GameObject>();
+        }
+
+        void Update()
+        {
+            CheckNoteIsDeletingDistance();
+            CheckDummyNoteIsDeletingDistance();
+        }
+
+        #endregion
+
         #region 関数
 
         /// <summary>
         /// スタン秒数のセッター
         /// </summary>
         /// <param name="value">セットしたい値</param>
-        public void SetStanTimeSecon(float value)
+        public void SetStanTimeSecond(float value)
         {
             _stanTimeSecond = value;
 #if UNITY_EDITOR
@@ -101,7 +121,7 @@ namespace BatotteChannel.InGame.Notes
             {
                 GameObject dummyNote = Instantiate(_dummyNotePrefab, generatePos, Quaternion.identity);
                 dummyNote.GetComponent<NoteController>().SetIsDummyNotes(true);
-                _generateNotes.Add(dummyNote);
+                _generatedDummyNotes.Add(dummyNote);
                 Debug.Log("スタン中のため、ダミーノーツを生成しました。");
                 return;
             }
@@ -122,7 +142,10 @@ namespace BatotteChannel.InGame.Notes
 
             INoteController noteController = _generateNotes[0].GetComponent<NoteController>();
 
-            if (noteController.IsDummyNotes) return;
+            // ダミーノーツ用のリストを作成したので必要ない
+            // if (noteController.IsDummyNotes) return;
+
+            if (!noteController.CheckButtonEnable()) return;
 
             noteController.JudgementNote(buttonNumber, out var judgement);
             Debug.Log(judgement);
@@ -150,7 +173,7 @@ namespace BatotteChannel.InGame.Notes
 
                 // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
                 RemoveNoteInList(0);
-                HideNoteFromList(3.0f);
+                HideNoteFromList(_stanTimeSecond);
             }
 
         }
@@ -163,16 +186,9 @@ namespace BatotteChannel.InGame.Notes
             if (_generateNotes.Count == 0) return;
 
             INoteController noteController = _generateNotes[0].GetComponent<NoteController>();
+
             if (noteController.IsDeletingScheduled == true) return;
             if (noteController.IsDeletingDistance == false) return;
-
-            // ダミーノーツであればこのタイミングで即削除
-            if (noteController.IsDummyNotes)
-            {
-                noteController.DeleteThisNote(0);
-                RemoveNoteInList(0);
-                return;
-            }
 
             noteController.JudgementNote(out var judgement);
             CountGotNote(judgement);
@@ -182,7 +198,22 @@ namespace BatotteChannel.InGame.Notes
 
             // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
             RemoveNoteInList(0);
-            HideNoteFromList(3.0f);
+            HideNoteFromList(_stanTimeSecond);
+        }
+
+        /// <summary>
+        /// ダミーノーツを削除する距離になっていたら削除する
+        /// </summary>
+        private void CheckDummyNoteIsDeletingDistance()
+        {
+            if (_generatedDummyNotes.Count == 0) return;
+            INoteController dummyNoteController = _generatedDummyNotes[0].GetComponent<NoteController>();
+
+            if (dummyNoteController.IsDeletingScheduled == true) return;
+            if (dummyNoteController.IsDeletingDistance == false) return;
+
+            dummyNoteController.DeleteThisNote(0);
+            RemoveNoteInList(0, true);
         }
 
         /// <summary>
@@ -190,8 +221,14 @@ namespace BatotteChannel.InGame.Notes
         /// 除外されたノートはオブジェクトとして存在したままになり、NoteManagerからの操作が不可能になる
         /// </summary>
         /// <param name="index">除外したいノートの番号</param>
-        private void RemoveNoteInList(int index)
+        /// <param name="isDummyNotes">ダミーノーツかどうか</param>
+        private void RemoveNoteInList(int index, bool isDummyNotes = false)
         {
+            if (isDummyNotes)
+            {
+                _generatedDummyNotes.RemoveAt(index);
+                return;
+            }
             _generateNotes.RemoveAt(index);
         }
 
@@ -254,21 +291,6 @@ namespace BatotteChannel.InGame.Notes
             }
 
             _isStopNoteGenerate = false;
-        }
-
-        #endregion
-
-        #region イベント関数
-
-        void Start()
-        {
-            // キャッシュ
-            _generateNotes = new List<GameObject>();
-        }
-
-        void Update()
-        {
-            CheckNoteIsDeletingDistance();
         }
 
         #endregion
