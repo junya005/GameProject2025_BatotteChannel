@@ -5,6 +5,7 @@ using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.Players;
 using BatotteChannel.InGame.UI;
 using UnityEngine.Rendering.Universal;
+using Unity.VisualScripting;
 
 namespace BatotteChannel.InGame.Notes
 {
@@ -22,7 +23,11 @@ namespace BatotteChannel.InGame.Notes
     public class NoteManager : MonoBehaviour
     {
         #region 変数
+
         public GetGoodNoteCallBack getNoteCallBack;
+
+        [SerializeField]
+        private bool isAutoPlayMode = false;
 
         [SerializeField] private TelevisionAnimation _televisionAnimation;
 
@@ -93,6 +98,10 @@ namespace BatotteChannel.InGame.Notes
 
         void Update()
         {
+            if (isAutoPlayMode)
+            {
+                AutoPlay();
+            }
             CheckNoteIsDeletingDistance();
             CheckDummyNoteIsDeletingDistance();
         }
@@ -299,6 +308,21 @@ namespace BatotteChannel.InGame.Notes
             else
             {
                 _gotMissCount++;
+            }
+        }
+
+        /// <summary>
+        /// オートプレイモード時にUpdate内で実行する関数
+        /// </summary>
+        private void AutoPlay()
+        {
+            if (_generateNotes.Count == 0) return;
+
+            NoteController noteController = _generateNotes[0].GetComponent<NoteController>();
+
+            if (noteController.Distance >= 0.0f)
+            {
+                JudgeMentNoteFromList(noteController.ButtonNumber);
             }
         }
 

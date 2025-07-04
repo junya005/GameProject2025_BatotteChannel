@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 978cd553a03c19b4ca50425afaf6c8d0, type: 3}
   m_Name: BGM1_HD_GenerateSettings_77
   m_EditorClassIdentifier: 
-  player: 1
+  player: 0
   timing: 82
   isUseSubBeat: 0
   subTiming: 0

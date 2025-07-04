@@ -4,6 +4,7 @@ using BatotteChannel.InGame.Notes;
 using BatotteChannel.GameState;
 using BatotteChannel.DataAssets;
 using BatotteChannel.InGame.Players;
+using System.Collections;
 
 namespace BatotteChannel.InGame.MusicSystem
 {
@@ -138,7 +139,7 @@ namespace BatotteChannel.InGame.MusicSystem
         private void Update()
         {
             if (!_isPlaying) return;
-            AdditionInitiativeTime();
+            //AdditionInitiativeTime();
             ViewScore();
 
             if (_remainingTimeManager.IsCompleteCount == true && _isEndProcessing == false)
@@ -281,7 +282,7 @@ namespace BatotteChannel.InGame.MusicSystem
         {
             // プレイヤー1か2かを判定し、それに対する生成を行う
             // スタン状態処理はNoteManager側で行っているため、こちらで判定を行う必要はないです
-            if (_generateSettingDataBase.generateSettingList[genSetIndex].player == Players.PlayerNumberState.Two)
+            if (_generateSettingDataBase.generateSettingList[genSetIndex].player == PlayerNumberState.Two)
             {
                 Debug.Log("ノーツを生成をプレイヤー2に指示します");
                 _noteManagerP2.GenerateNote(_generateSettingDataBase.generateSettingList[genSetIndex].generatePos);
@@ -358,6 +359,18 @@ namespace BatotteChannel.InGame.MusicSystem
         }
 
         /// <summary>
+        /// InitiativePlayerStateのセッター
+        /// </summary>
+        /// <param name="initiativePlayerState">プレイヤーを指定</param>
+        private void SetInitiativePlayerState(EInitiativePlayerState initiativePlayerState)
+        {
+            _initiativePlayerState = initiativePlayerState;
+#if UNITY_EDITOR
+            Debug.Log($"主導権を握っているプレイヤーを変更:{_initiativePlayerState}");
+#endif
+        }
+
+        /// <summary>
         /// 楽曲の再生と残り時間のカウントを開始する
         /// </summary>
         public void StartMusic()
@@ -371,10 +384,10 @@ namespace BatotteChannel.InGame.MusicSystem
         /// <summary>
         /// 主導権を取得した時間(スコア)を加算する
         /// </summary>
-        private void AdditionInitiativeTime()
+        private void AdditionInitiativeTime(EInitiativePlayerState initiativePlayerState)
         {
-            if (_initiativePlayerState == EInitiativePlayerState.None) return;
-            if (_initiativePlayerState == EInitiativePlayerState.One)
+            if (initiativePlayerState == EInitiativePlayerState.None) return;
+            if (initiativePlayerState == EInitiativePlayerState.One)
             {
                 _initiativeTimeP1 += Time.deltaTime;
                 return;
@@ -392,20 +405,36 @@ namespace BatotteChannel.InGame.MusicSystem
         {
             if (playerNumber == PlayerNumberState.One)
             {
-                if (_initiativePlayerState == EInitiativePlayerState.One) return;
-                _initiativePlayerState = EInitiativePlayerState.One;
-#if UNITY_EDITOR
-                Debug.Log($"主導権を握っているプレイヤーを変更:{_initiativePlayerState}");
-#endif
+                //if (_initiativePlayerState == EInitiativePlayerState.One) return;
+                StartCoroutine(GiveInitiative(3.0f, EInitiativePlayerState.One));
                 return;
-
             }
 
-            if (_initiativePlayerState == EInitiativePlayerState.Two) return;
-            _initiativePlayerState = EInitiativePlayerState.Two;
-#if UNITY_EDITOR
-            Debug.Log($"主導権を握っているプレイヤーを変更:{_initiativePlayerState}");
-#endif
+            //if (_initiativePlayerState == EInitiativePlayerState.Two) return;
+            StartCoroutine(GiveInitiative(3.0f, EInitiativePlayerState.Two));
+        }
+
+        private IEnumerator GiveInitiative(float earningTime, EInitiativePlayerState initiativePlayer)
+        {
+            float time = 0.0f;
+            SetInitiativePlayerState(initiativePlayer);
+            while (time < earningTime)
+            {
+                time += Time.deltaTime;
+
+                AdditionInitiativeTime(initiativePlayer);
+                // 他のプレイヤーが主導権を握ったらコルーチンを終了する
+                // if (initiativePlayer != _initiativePlayerState)
+                // {
+                //     yield break;
+                // }
+                // else
+                // {
+                yield return null;
+                // }
+            }
+
+            SetInitiativePlayerState(EInitiativePlayerState.None);
         }
 
         #endregion

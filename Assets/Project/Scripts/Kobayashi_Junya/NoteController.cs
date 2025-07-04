@@ -77,7 +77,10 @@ namespace BatotteChannel.InGame.Notes
         private float _goodJudgmentRange = 0.2f;
 
         /// <summary>ボディとフレームのサイズ比較</summary>
-        private float _distance;
+        private float _distance = 1.0f;
+
+        /// <summary>現在のフレーム比較のゲッタープロパティ</summary>
+        public float Distance { get { return _distance; } }
 
         /// <summary>ボタン番号</summary>
         private int _buttonNumber;

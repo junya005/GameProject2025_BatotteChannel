@@ -75,10 +75,35 @@ namespace BatotteChannel.InGame.Players
 
         #endregion
 
+        #region イベント関数
+
+        void Start()
+        {
+            // キャッシュ
+            _noteManager = _noteManagerForThisPlayer.GetComponent<NoteManager>();
+
+            // 初期設定
+            RegisterButton();
+        }
+
+        void Update()
+        {
+            PlayerHandle();
+
+            bool isMusicPlaying = (bool)_musicManager?.GetComponent<AudioSource>().isPlaying;
+            if (isMusicPlaying && !_isAnimationStart)
+            {
+                StartBeatAnimation();
+                _isAnimationStart = true;
+            }
+        }
+
+        #endregion
+
         #region 関数
 
         /// <summary>
-        /// InputActionのボタンを認識できるようにする
+        /// InputActionのボタンを登録する
         /// </summary>
         private void RegisterButton()
         {
@@ -160,6 +185,10 @@ namespace BatotteChannel.InGame.Players
             }
         }
 
+        /// <summary>
+        /// リモコンを押すアニメーションを実行
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator RemoconPushAnimation()
         {
             _playerGraphyic.sprite = _remoconSprite;
@@ -167,34 +196,15 @@ namespace BatotteChannel.InGame.Players
             _playerGraphyic.sprite = _idleSprite;
         }
 
-        private void StartBeatAnimation()
+        /// <summary>
+        /// ビートアニメーションを開始
+        /// </summary>
+        public void StartBeatAnimation()
         {
-            _playerGraphyic.gameObject.GetComponent<CharactorBeatAnim>().AnimationStart();
-        }
+            CharactorBeatAnim playerCharactorBeatAnim = _playerGraphyic.gameObject.GetComponent<CharactorBeatAnim>();
 
-        #endregion
-
-        #region イベント関数
-
-        void Start()
-        {
-            // キャッシュ
-            _noteManager = _noteManagerForThisPlayer.GetComponent<NoteManager>();
-
-            // 初期設定
-            RegisterButton();
-        }
-
-        void Update()
-        {
-            PlayerHandle();
-
-            bool isMusicPlaying = (bool)_musicManager?.GetComponent<AudioSource>().isPlaying;
-            if (isMusicPlaying && !_isAnimationStart)
-            {
-                StartBeatAnimation();
-                _isAnimationStart = true;
-            }
+            if (playerCharactorBeatAnim != null)
+                playerCharactorBeatAnim.AnimationStart();
         }
 
         #endregion

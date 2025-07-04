@@ -130,10 +130,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1264733346081245694, guid: aad55937fdd0e784f9975ed4db58044b, type: 3}
-      propertyPath: orthographic size
-      value: 3.955154
-      objectReference: {fileID: 0}
     - target: {fileID: 1275141274982529218, guid: aad55937fdd0e784f9975ed4db58044b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -282,7 +278,7 @@ GameObject:
   - component: {fileID: 368247338}
   - component: {fileID: 368247340}
   - component: {fileID: 368247339}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -861,7 +857,7 @@ GameObject:
   - component: {fileID: 1326502905}
   - component: {fileID: 1326502904}
   - component: {fileID: 1326502908}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: DebugCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -964,6 +960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debugInfoText: {fileID: 368247339}
+  isAutoPlay: 0
 --- !u!1 &1437823260 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9069189209788280350, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
