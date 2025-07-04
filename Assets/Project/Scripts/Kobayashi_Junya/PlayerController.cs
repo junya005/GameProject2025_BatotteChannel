@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using BatotteChannel.InGame.Notes;
 using System.Collections;
+using BatotteChannel.InGame.MusicSystem;
 
 namespace BatotteChannel.InGame.Players
 {
@@ -48,8 +49,10 @@ namespace BatotteChannel.InGame.Players
         /// <summary>スタン状態フラグ</summary>
         private bool _isStan;
 
-        private bool _isRemoconPush;
+        /// <summary>アニメーションが開始されたか</summary>
+        private bool _isAnimationStart;
 
+        /// <summary>プレイヤーのグラフィックを格納</summary>
         [SerializeField]
         private SpriteRenderer _playerGraphyic;
 
@@ -58,6 +61,9 @@ namespace BatotteChannel.InGame.Players
 
         [SerializeField]
         private Sprite _remoconSprite;
+
+        [SerializeField]
+        private MusicManager _musicManager;
 
         /// <summary>
         /// プレイヤー番号のプロパティ
@@ -69,10 +75,35 @@ namespace BatotteChannel.InGame.Players
 
         #endregion
 
+        #region イベント関数
+
+        void Start()
+        {
+            // キャッシュ
+            _noteManager = _noteManagerForThisPlayer.GetComponent<NoteManager>();
+
+            // 初期設定
+            RegisterButton();
+        }
+
+        void Update()
+        {
+            PlayerHandle();
+
+            bool isMusicPlaying = (bool)_musicManager?.GetComponent<AudioSource>().isPlaying;
+            if (isMusicPlaying && !_isAnimationStart)
+            {
+                StartBeatAnimation();
+                _isAnimationStart = true;
+            }
+        }
+
+        #endregion
+
         #region 関数
 
         /// <summary>
-        /// InputActionのボタンを認識できるようにする
+        /// InputActionのボタンを登録する
         /// </summary>
         private void RegisterButton()
         {
@@ -154,6 +185,10 @@ namespace BatotteChannel.InGame.Players
             }
         }
 
+        /// <summary>
+        /// リモコンを押すアニメーションを実行
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator RemoconPushAnimation()
         {
             _playerGraphyic.sprite = _remoconSprite;
@@ -161,22 +196,15 @@ namespace BatotteChannel.InGame.Players
             _playerGraphyic.sprite = _idleSprite;
         }
 
-        #endregion
-
-        #region イベント関数
-
-        void Start()
+        /// <summary>
+        /// ビートアニメーションを開始
+        /// </summary>
+        public void StartBeatAnimation()
         {
-            // キャッシュ
-            _noteManager = _noteManagerForThisPlayer.GetComponent<NoteManager>();
+            CharactorBeatAnim playerCharactorBeatAnim = _playerGraphyic.gameObject.GetComponent<CharactorBeatAnim>();
 
-            // 初期設定
-            RegisterButton();
-        }
-
-        void Update()
-        {
-            PlayerHandle();
+            if (playerCharactorBeatAnim != null)
+                playerCharactorBeatAnim.AnimationStart();
         }
 
         #endregion

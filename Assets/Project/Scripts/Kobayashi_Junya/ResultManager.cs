@@ -1,12 +1,33 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
-
 using BatotteChannel.DataAssets;
+using BatotteChannel.AudioSystem;
 
 
 namespace BatotteChannel.GameManager
 {
+    /// <summary>
+    /// 丸めたプレイヤーの主導権時間を格納する構造体
+    /// </summary>
+    public struct SRoundedInitiativeTime
+    {
+        public float initiativeTime;
+        public float initiativeMinutes;
+        public float initiativeSeconds;
+    }
+
+    public enum EWinnerState
+    {
+        Draw,
+        P1,
+        P2
+    }
+
+    /// <summary>
+    /// リザルトシーンを管理するクラス
+    /// </summary>
     public class ResultManager : MonoBehaviour
     {
         [Tooltip("Player1のスコアが格納されているデータを設定"), SerializeField]
@@ -21,12 +42,52 @@ namespace BatotteChannel.GameManager
         [Tooltip("Player2のスコアを表示するテキストを設定"), SerializeField]
         private TextMeshProUGUI _scoreTextP2;
 
+        [SerializeField]
+        private Image _winOrLoseBackGround;
+        [SerializeField]
+        private Image _winOrLoseDisplayP1;
+        [SerializeField]
+        private Image _winOrLoseDisplayP2;
+
+        [SerializeField] private Sprite _backGroundP1Win;
+        [SerializeField] private Sprite _backGroundP2Win;
+        [SerializeField] private Sprite _backGroundDraw;
+        [SerializeField] private Sprite _winSpriteP1;
+        [SerializeField] private Sprite _winSpriteP2;
+        [SerializeField] private Sprite _loseSpriteP1;
+        [SerializeField] private Sprite _loseSpriteP2;
+
+        private EWinnerState _winnerState = EWinnerState.Draw;
+
         private void Start()
         {
+            // フレームレートの設定
+            GameSettingManager.Instance.SetAppFrameRateLimit(GameSettingManager.EnumFrameRateLimitState.Thirty);
+
+            // Player1のスコアデータを整える
+            SRoundedInitiativeTime _roundedInitiativeTimeP1 = new SRoundedInitiativeTime();
+            _roundedInitiativeTimeP1 = FormatTime(_resultDataP1);
+
+            // Player2のスコアデータを整える
+            SRoundedInitiativeTime _roundedInitiativeTimeP2 = new SRoundedInitiativeTime();
+            _roundedInitiativeTimeP2 = FormatTime(_resultDataP2);
+
+            _winnerState = JudgeWinOrLose(_resultDataP1, _resultDataP2);
+
             // テキスト表示
-            _scoreTextP1.text = $"Player1\nGood:{_resultDataP1.goodCount}\nMiss:{_resultDataP1.missCount}";
+            _scoreTextP1.text = "Player1\n" +
+                            $"{_roundedInitiativeTimeP1.initiativeMinutes}:" +
+                            $"{_roundedInitiativeTimeP1.initiativeSeconds.ToString("F0").PadLeft(2, '0')}\n" +
+                            $"Good: {_resultDataP1.goodCount}\n" +
+                            $"Miss:{_resultDataP1.missCount}";
             // テキスト表示
-            _scoreTextP2.text = $"Player2\nGood:{_resultDataP2.goodCount}\nMiss:{_resultDataP2.missCount}";
+            _scoreTextP2.text = "Player2\n" +
+                            $"{_roundedInitiativeTimeP2.initiativeMinutes}:" +
+                            $"{_roundedInitiativeTimeP2.initiativeSeconds.ToString("F0").PadLeft(2, '0')}\n" +
+                            $"Good:{_resultDataP2.goodCount}\n" +
+                            $"Miss: {_resultDataP2.missCount} ";
+
+            DisplayWinOrLose(_winnerState);
         }
 
         /// <summary>
@@ -35,7 +96,78 @@ namespace BatotteChannel.GameManager
         public void ToTitle(string sceneName)
         {
             Debug.Assert(sceneName == "Main");
+
+            SoundManager.Instance?.PlaySE("push_determining_button_53");
+
             SceneManager.LoadScene(sceneName);
+        }
+
+        /// <summary>
+        /// 整えたスコアを丸める
+        /// </summary>
+        /// <param name="initiativeTime">主導権を握った時間</param>
+        /// <param name="minute">分を出力</param>
+        /// <param name="second">秒を出力</param>
+        /// <returns>丸めた後の主導権を握った時間</returns>
+        private int RoundInitiativeTime(float initiativeTime, out int minute, out int second)
+        {
+            int roundedInitiativeTime = Mathf.FloorToInt(initiativeTime);
+            minute = Mathf.FloorToInt(roundedInitiativeTime / 60.0f);
+            second = Mathf.FloorToInt(roundedInitiativeTime % 60.0f);
+            return roundedInitiativeTime;
+        }
+
+        /// <summary>
+        /// 勝敗を判定し、EWinnerState形で返却
+        /// </summary>
+        /// <param name="resultP1"></param>
+        /// <param name="resultP2"></param>
+        /// <returns>勝者</returns>
+        private EWinnerState JudgeWinOrLose(ResultData resultP1, ResultData resultP2)
+        {
+            if (resultP1.initiativeTime >= resultP2.initiativeTime)
+            {
+                return EWinnerState.P1;
+            }
+
+            return EWinnerState.P2;
+        }
+
+        /// <summary>
+        /// 勝敗を表示する
+        /// </summary>
+        /// <param name="winnerState"></param>
+        private void DisplayWinOrLose(EWinnerState winnerState)
+        {
+            if (winnerState == EWinnerState.P1)
+            {
+                _winOrLoseBackGround.sprite = _backGroundP1Win;
+                _winOrLoseDisplayP1.sprite = _winSpriteP1;
+                _winOrLoseDisplayP2.sprite = _loseSpriteP2;
+                return;
+            }
+
+            _winOrLoseBackGround.sprite = _backGroundP2Win;
+            _winOrLoseDisplayP2.sprite = _winSpriteP2;
+            _winOrLoseDisplayP1.sprite = _loseSpriteP1;
+        }
+
+        /// <summary>
+        /// リザルトデータをスコア(時間)を整え、丸めた後に構造体を戻す
+        /// </summary>
+        /// <param name="resultData"></param>
+        /// <returns></returns>
+        private SRoundedInitiativeTime FormatTime(ResultData resultData)
+        {
+            SRoundedInitiativeTime roundedInitiativeTime = new SRoundedInitiativeTime();
+            roundedInitiativeTime.initiativeTime = RoundInitiativeTime(
+                resultData.initiativeTime,
+                out var initiativeMinutes,
+                out var initiativeSeconds
+                );
+            roundedInitiativeTime.initiativeMinutes = initiativeMinutes;
+            roundedInitiativeTime.initiativeSeconds = initiativeSeconds;
+            return roundedInitiativeTime;
         }
     }
 }

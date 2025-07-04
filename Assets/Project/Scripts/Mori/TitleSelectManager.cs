@@ -2,6 +2,8 @@ using UnityEngine;
 using NaughtyAttributes;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using BatotteChannel.AudioSystem;
+using BatotteChannel.InGame.MusicSystem;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -106,8 +108,8 @@ public class TitleSelectManager : MonoBehaviour
             if (_gameScene == GameStatus.GameSceneEnum.Title) return;
             ToTitle();
         }
-        //何かキーを押されたら遷移
-        else if (Input.anyKeyDown)
+        //Enterを押されたら遷移
+        else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             ToSelect();
         }
@@ -119,6 +121,8 @@ public class TitleSelectManager : MonoBehaviour
     public async void ToSelect()
     {
         if (_gameScene != GameStatus.GameSceneEnum.Title) return;
+        // 効果音を再生
+        SoundManager.Instance.PlaySE("push_determining_button_53");
         //ボタンを押せなくする
         _canPushButton = false;
         //タイトル画面UIを非表示　フェード
@@ -162,6 +166,8 @@ public class TitleSelectManager : MonoBehaviour
     public async void ToGame()
     {
         if (_gameScene != GameStatus.GameSceneEnum.Select) return;
+        // 効果音を再生
+        SoundManager.Instance.PlaySE("push_determining_button_53");
         //ボタンを押せなくする
         _canPushButton = false;
         //選択画面UIを非表示　フェード
@@ -209,4 +215,49 @@ public class TitleSelectManager : MonoBehaviour
                 duration: duration,
                 onVirtualUpdate: (tweenValue) => { canvasGroup.alpha = tweenValue; });
     }
+
+    #region Kobayashi
+    [SerializeField]
+    private string _musicName;
+
+    [SerializeField]
+    private MusicManager _musicManager;
+
+    /// <summary>
+    /// 難易度をEasyにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// </summary>
+    public void ToGameEasy()
+    {
+        string musicDataIndex = _musicName + "_EZ";
+        MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+        ToGame();
+    }
+
+    /// <summary>
+    /// 難易度をNomalにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// </summary>
+    public void ToGameNomal()
+    {
+        string musicDataIndex = _musicName + "_NL";
+        MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+        ToGame();
+    }
+
+    /// <summary>
+    /// 難易度をHardにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// </summary>
+    public void ToGameHard()
+    {
+        string musicDataIndex = _musicName + "_HD";
+        MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+        ToGame();
+    }
+
+    #endregion
 }

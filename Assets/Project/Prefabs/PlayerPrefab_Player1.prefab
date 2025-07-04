@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3881832581680720551}
   - component: {fileID: 2848414650530070888}
+  - component: {fileID: 958223193235106091}
   m_Layer: 0
   m_Name: PlayerGraphyic
   m_TagString: Untagged
@@ -84,6 +85,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &958223193235106091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2177122000627876619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddd8a24042918204f81e90957327c37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _memeTime: 0.2
+  _memeArea: 0.4
+  _memeDelay: 0.17
+  _rideTheBeat: 1
 --- !u!1 &5318185299497466819
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,6 +183,7 @@ MonoBehaviour:
   _playerGraphyic: {fileID: 2848414650530070888}
   _idleSprite: {fileID: 21300000, guid: 20e1dd6e91e5b5045b4665a075875a5e, type: 3}
   _remoconSprite: {fileID: 21300000, guid: 83a8145d3c2a4db4cbfb98cc413e8515, type: 3}
+  _musicManager: {fileID: 0}
 --- !u!1 &6709578763777366442
 GameObject:
   m_ObjectHideFlags: 0

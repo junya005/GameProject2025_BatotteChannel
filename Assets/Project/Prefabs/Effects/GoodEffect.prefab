@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isDebugMode: 0
   _uiJudgeSprite: {fileID: 6652220449929534152}
-  _effect: {fileID: 754909174458812787, guid: c99d8b0ceb66ab8409544246da220233, type: 3}
+  _effect: {fileID: 754909174458812787, guid: 0f27bdab3a4f95a438dd5f0e6eaed85e, type: 3}
   _animTime: 0.3
   _waitTime: 0.5
   _fadeOutTime: 0.3
@@ -78,7 +78,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8415716230510507334}

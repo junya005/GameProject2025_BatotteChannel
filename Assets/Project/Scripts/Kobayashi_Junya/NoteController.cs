@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace BatotteChannel.InGame.Notes
 {
@@ -26,7 +25,6 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// このノーツを判定する(入力期間を過ぎた場合はこちらを使用)
         /// </summary>
-        /// <param name="buttonNumber">ボタン番号</param>
         /// <param name="judgement">判定結果を返す</param>
         void JudgementNote(out JudgementState judgement);
 
@@ -35,6 +33,18 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         /// <param name="t">削除までの時間</param>
         void DeleteThisNote(float t, bool isTimeElapsed = false);
+
+        /// <summary>
+        /// ボタン入力が有効な範囲かチェックする
+        /// </summary>
+        /// <returns>ボタン入力が有効化</returns>
+        bool CheckButtonEnable();
+
+        /// <summary>
+        /// ダミーノーツにセットする
+        /// </summary>
+        /// <param name="boolean"></param>
+        void SetIsDummyNotes(bool boolean);
     }
 
     /// <summary>判定の種類</summary>
@@ -64,13 +74,19 @@ namespace BatotteChannel.InGame.Notes
         private Vector3 _defaltFrameSize = new Vector3(2, 2, 2);
 
         [Tooltip("GOOD判定の距離"), SerializeField]
-        private float _goodJudgmentRange = 0.1f;
+        private float _goodJudgmentRange = 0.2f;
 
         /// <summary>ボディとフレームのサイズ比較</summary>
-        private float _distance;
+        private float _distance = 1.0f;
+
+        /// <summary>現在のフレーム比較のゲッタープロパティ</summary>
+        public float Distance { get { return _distance; } }
 
         /// <summary>ボタン番号</summary>
         private int _buttonNumber;
+
+        /// <summary>ボタン番号のゲッタープロパティ</summary>
+        public int ButtonNumber { get { return _buttonNumber; } }
 
         /// <summary>判定のステートのインスタンス</summary>
         private JudgementState _noteJudgement;
@@ -99,6 +115,12 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>ダミーノートかどうかのゲッタープロパティ</summary>
         public bool IsDummyNotes { get { return _isDummyNotes; } }
 
+        /// <summary>
+        /// 前回のボタン番号
+        /// staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
+        /// </summary>
+        private static int _lastButtonNum;
+
         [Header("オブジェクト参照")]
         [Tooltip("フレームのオブジェクトを設定してください"), SerializeField]
         private GameObject _outerFrame;
@@ -117,6 +139,10 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>判定表示のSpriteRendererを格納</summary>
         private SpriteRenderer _buttonNumberSpriteRenderer;
 
+        /// <summary>ボタンが有効になる距離</summary>
+        [Tooltip("ボタン入力が有効になる距離"), SerializeField]
+        private float _buttonEnableDistance = 0.4f;
+
         [Header("アセット参照")]
         [Tooltip("ボタン番号の画像を設定"), SerializeField]
         private List<Sprite> _buttonNumImages = new List<Sprite>();
@@ -127,16 +153,78 @@ namespace BatotteChannel.InGame.Notes
         [Tooltip("Miss判定を表示する画像を設定"), SerializeField]
         private Sprite _missJudgementImage;
 
+        [Tooltip("Good判定エフェクトのオブジェクトを格納"), SerializeField]
+        private GameObject _goodEffectPrefab;
+
+        [Tooltip("Miss判定エフェクトのオブジェクトを格納"), SerializeField]
+        private GameObject _missEffectPrefab;
+
+        #endregion
+
+        #region イベント関数
+
+        private void Start()
+        {
+            // キャッシュ
+            _buttonNumberSpriteRenderer = _buttonNumberDisplay.GetComponent<SpriteRenderer>();
+            _judgementDisplaySpriteRenderer = _judgementDisplay.GetComponent<SpriteRenderer>();
+
+            // 初期設定
+            _outerFrame.transform.localScale = _defaltFrameSize;
+            _judgementDisplaySpriteRenderer.sortingOrder = 51;
+            GiveButtonNumber();
+        }
+
+        void Update()
+        {
+            _outerFrame.transform.localScale -= Vector3.one * Time.deltaTime;
+            CalculateJudgmentDistance();
+
+            if (_isDeletingDistance) return;
+            if (_outerFrame.transform.localScale.x < 0.0f)
+            {
+                _isDeletingDistance = true;
+            }
+        }
+
         #endregion
 
         #region 関数
 
+        /// <summary>
+        /// 前回のボタン番号を設定
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetLastButtonNum(int value)
+        {
+            _lastButtonNum = value;
+        }
+
+        /// <summary>
+        /// ダミーノーツに設定する
+        /// </summary>
+        /// <param name="boolean">ダミーノーツにするかどうか</param>
         public void SetIsDummyNotes(bool boolean)
         {
 #if UNITY_EDITOR
             if (boolean) Debug.Log("このノートはダミーノートに設定されました。ダミーノートは入力を受け付けず、判定結果にも影響しません。");
 #endif
             _isDummyNotes = boolean;
+            if (_isDummyNotes)
+            {
+                SettingDummyNote();
+            }
+        }
+
+        /// <summary>
+        /// ダミーノーツの設定
+        /// </summary>
+        private void SettingDummyNote()
+        {
+            Color halfAlpha = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+            _body.GetComponent<SpriteRenderer>().color = halfAlpha;
+            _outerFrame.GetComponent<SpriteRenderer>().color = halfAlpha;
+            _buttonNumberDisplay.GetComponent<SpriteRenderer>().color = halfAlpha;
         }
 
         /// <summary>
@@ -144,9 +232,15 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         private void GiveButtonNumber()
         {
-            _buttonNumber = Random.Range(1, 9);
+            _buttonNumber = Random.Range(1, 10);
+            // ボタン番号が前回生成したノーツと被っていれば再帰する。
+            if (_buttonNumber == _lastButtonNum)
+            {
+                GiveButtonNumber();
+            }
             int buttonNumImageIndex = _buttonNumber - 1;
             _buttonNumberSpriteRenderer.sprite = _buttonNumImages[buttonNumImageIndex];
+            _lastButtonNum = _buttonNumber;
 #if UNITY_EDITOR
             Debug.Log($"ノーツ番号を付与：{_buttonNumber}");
 #endif
@@ -222,11 +316,11 @@ namespace BatotteChannel.InGame.Notes
 
             if (judgementState == JudgementState.Good)
             {
-                _judgementDisplaySpriteRenderer.sprite = _goodJudgementImage;
+                Instantiate(_goodEffectPrefab, transform.position, Quaternion.identity);
                 return;
             }
 
-            _judgementDisplaySpriteRenderer.sprite = _missJudgementImage;
+            Instantiate(_missEffectPrefab, transform.position, Quaternion.identity);
         }
 
         /// <summary>
@@ -251,32 +345,23 @@ namespace BatotteChannel.InGame.Notes
             _distance = _body.transform.localScale.x - _outerFrame.transform.localScale.x;
         }
 
-        #endregion
-
-        #region イベント関数
-
-        private void Start()
+        /// <summary>
+        /// ボタン入力が有効かチェックする、NoteManagerから判定する際は事前にこちらを使用してボタン入力範囲内かチェックを行う。
+        /// </summary>
+        /// <returns>ボタン入力が有効かどうか</returns>
+        public bool CheckButtonEnable()
         {
-            // キャッシュ
-            _buttonNumberSpriteRenderer = _buttonNumberDisplay.GetComponent<SpriteRenderer>();
-            _judgementDisplaySpriteRenderer = _judgementDisplay.GetComponent<SpriteRenderer>();
-
-            // 初期設定
-            _outerFrame.transform.localScale = _defaltFrameSize;
-            _judgementDisplaySpriteRenderer.sortingOrder = 200;
-            GiveButtonNumber();
-        }
-
-        void Update()
-        {
-            _outerFrame.transform.localScale -= Vector3.one * Time.deltaTime;
-            CalculateJudgmentDistance();
-
-            if (_isDeletingDistance) return;
-            if (_outerFrame.transform.localScale.x < 0.0f)
+            if (Mathf.Abs(_distance) >= Mathf.Abs(_buttonEnableDistance))
             {
-                _isDeletingDistance = true;
+#if UNITY_EDITOR
+                Debug.Log($"ボタン入力が無効な範囲です。距離:{_distance}");
+#endif
+                return false;
             }
+#if UNITY_EDITOR
+            Debug.Log($"ボタン入力が有効な範囲です距離:{_distance}");
+#endif
+            return true;
         }
 
         #endregion
