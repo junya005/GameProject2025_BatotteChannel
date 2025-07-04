@@ -8,9 +8,9 @@ using UnityEngine;
 public class CharactorBeatAnim : MonoBehaviour
 {
     [SerializeField, Label("•Ğ“¹‚ÌŠÔ")]
-    private float _memeTime = 0.2f;
+    private float _memeTime = 0.1f;
     [SerializeField, Label("ˆÚ“®•")]
-    private float _memeArea = 0.4f;
+    private float _memeArea = 0.2f;
     [SerializeField, Label("ƒeƒ“ƒ|•")]
     private float _memeDelay = 0.19f;
 

@@ -27,8 +27,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4826967008803841685}
   m_Father: {fileID: 0}
@@ -48,9 +48,9 @@ MonoBehaviour:
   _isDebugMode: 0
   _uiJudgeSprite: {fileID: 8662572022397218273}
   _effect: {fileID: 0}
-  _animTime: 0.3
-  _waitTime: 0.5
-  _fadeOutTime: 0.5
+  _animTime: 0.2
+  _waitTime: 0.2
+  _fadeOutTime: 0.2
 --- !u!1 &8662572022397218273
 GameObject:
   m_ObjectHideFlags: 0
