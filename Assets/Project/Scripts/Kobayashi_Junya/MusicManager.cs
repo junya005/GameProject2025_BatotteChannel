@@ -127,6 +127,9 @@ namespace BatotteChannel.InGame.MusicSystem
 
         public EDifficultyState CurrentDifficultyState { get { return _currentDifficultyState; } }
 
+        [SerializeField]
+        private ChannelChangeAnim _channelChangeAnim;
+
         #endregion
 
         #region イベント関数
@@ -397,11 +400,20 @@ namespace BatotteChannel.InGame.MusicSystem
         }
 
         /// <summary>
-        /// グッド判定を取得したプレイヤーに主導権を付与
         /// コールバック関数として実装する
         /// </summary>
         /// <param name="playerNumber">プレイヤーの番号</param>
         public void OnGetNote(PlayerNumberState playerNumber)
+        {
+            GivePlayerInitiative(playerNumber);
+            PlayChannelChangeEffect(playerNumber);
+        }
+
+        /// <summary>
+        /// グッド判定を取得したプレイヤーに主導権を付与
+        /// </summary>
+        /// <param name="playerNumber"></param>
+        private void GivePlayerInitiative(PlayerNumberState playerNumber)
         {
             if (playerNumber == PlayerNumberState.One)
             {
@@ -412,6 +424,12 @@ namespace BatotteChannel.InGame.MusicSystem
 
             //if (_initiativePlayerState == EInitiativePlayerState.Two) return;
             StartCoroutine(GiveInitiative(3.0f, EInitiativePlayerState.Two));
+        }
+
+        private void PlayChannelChangeEffect(PlayerNumberState playerNumber)
+        {
+            bool isPlayer1 = playerNumber == PlayerNumberState.One ? true : false;
+            _channelChangeAnim.ChangeAnim(isPlayer1);
         }
 
         private IEnumerator GiveInitiative(float earningTime, EInitiativePlayerState initiativePlayer)

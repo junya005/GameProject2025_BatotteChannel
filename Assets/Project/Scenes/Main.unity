@@ -174,10 +174,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGameLogic
       objectReference: {fileID: 0}
-    - target: {fileID: 5990941495909038311, guid: aad55937fdd0e784f9975ed4db58044b, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
