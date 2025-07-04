@@ -4,6 +4,7 @@ using UnityEngine;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.Players;
 using BatotteChannel.InGame.UI;
+using UnityEngine.Rendering.Universal;
 
 namespace BatotteChannel.InGame.Notes
 {
@@ -158,7 +159,7 @@ namespace BatotteChannel.InGame.Notes
                 _televisionAnimation?.NextChannnel();
 
                 CountGotNote(judgement);
-                RemoveNoteInList(0);
+                RemoveNoteInGenerateList(0);
 #if UNITY_EDITOR
                 Debug.Log("主導権者の変更を指示します。");
 #endif
@@ -172,8 +173,8 @@ namespace BatotteChannel.InGame.Notes
                 CountGotNote(judgement);
 
                 // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
-                RemoveNoteInList(0);
-                HideNoteFromList(_stanTimeSecond);
+                RemoveNoteInGenerateList(0);
+                SetDummyNoteFromList(_stanTimeSecond);
             }
 
         }
@@ -197,8 +198,8 @@ namespace BatotteChannel.InGame.Notes
             SoundManager.Instance?.PlaySE("cancel_6");
 
             // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
-            RemoveNoteInList(0);
-            HideNoteFromList(_stanTimeSecond);
+            RemoveNoteInGenerateList(0);
+            SetDummyNoteFromList(_stanTimeSecond);
         }
 
         /// <summary>
@@ -213,16 +214,16 @@ namespace BatotteChannel.InGame.Notes
             if (dummyNoteController.IsDeletingDistance == false) return;
 
             dummyNoteController.DeleteThisNote(0);
-            RemoveNoteInList(0, true);
+            RemoveNoteInGenerateList(0, true);
         }
 
         /// <summary>
-        /// リストに格納されたノートを番号指定し除外する
+        /// 生成リストに格納されたノートを番号指定し除外する
         /// 除外されたノートはオブジェクトとして存在したままになり、NoteManagerからの操作が不可能になる
         /// </summary>
         /// <param name="index">除外したいノートの番号</param>
         /// <param name="isDummyNotes">ダミーノーツかどうか</param>
-        private void RemoveNoteInList(int index, bool isDummyNotes = false)
+        private void RemoveNoteInGenerateList(int index, bool isDummyNotes = false)
         {
             if (isDummyNotes)
             {
@@ -230,6 +231,15 @@ namespace BatotteChannel.InGame.Notes
                 return;
             }
             _generateNotes.RemoveAt(index);
+        }
+
+        /// <summary>
+        /// 生成リストに格納されたノーツをダミーノーツのリストに追加する
+        /// </summary>
+        /// <param name="index"></param>
+        private void AddToDummyNoteListFromGenerateList(int index)
+        {
+            _generatedDummyNotes.Add(_generateNotes[index]);
         }
 
         /// <summary>
@@ -245,7 +255,29 @@ namespace BatotteChannel.InGame.Notes
                     Debug.Log($"リストから{i}番目のノートを削除します。");
                     INoteController noteController = _generateNotes[i].GetComponent<NoteController>();
                     noteController.DeleteThisNote(0);
-                    RemoveNoteInList(i);
+                    RemoveNoteInGenerateList(i);
+                }
+
+            }
+
+            StartCoroutine(StopGenerateNote(hideTime));
+        }
+
+        /// <summary>
+        /// リストのノートを全てダミーノーツに設定後、指定秒間ダミーノーツ生成モードにする
+        /// </summary>
+        /// <param name="hideTime"></param>
+        private void SetDummyNoteFromList(float hideTime)
+        {
+            if (_generateNotes.Count != 0)
+            {
+                for (int i = 0; i < _generateNotes.Count; i++)
+                {
+                    Debug.Log($"リストから{i}番目のノートをダミーノーツにします。");
+                    INoteController noteController = _generateNotes[i].GetComponent<NoteController>();
+                    noteController.SetIsDummyNotes(true);
+                    AddToDummyNoteListFromGenerateList(i);
+                    RemoveNoteInGenerateList(i);
                 }
 
             }

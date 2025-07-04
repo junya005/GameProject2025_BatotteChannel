@@ -39,6 +39,12 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         /// <returns>ボタン入力が有効化</returns>
         bool CheckButtonEnable();
+
+        /// <summary>
+        /// ダミーノーツにセットする
+        /// </summary>
+        /// <param name="boolean"></param>
+        void SetIsDummyNotes(bool boolean);
     }
 
     /// <summary>判定の種類</summary>
@@ -201,6 +207,21 @@ namespace BatotteChannel.InGame.Notes
             if (boolean) Debug.Log("このノートはダミーノートに設定されました。ダミーノートは入力を受け付けず、判定結果にも影響しません。");
 #endif
             _isDummyNotes = boolean;
+            if (_isDummyNotes)
+            {
+                SettingDummyNote();
+            }
+        }
+
+        /// <summary>
+        /// ダミーノーツの設定
+        /// </summary>
+        private void SettingDummyNote()
+        {
+            Color halfAlpha = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+            _body.GetComponent<SpriteRenderer>().color = halfAlpha;
+            _outerFrame.GetComponent<SpriteRenderer>().color = halfAlpha;
+            _buttonNumberDisplay.GetComponent<SpriteRenderer>().color = halfAlpha;
         }
 
         /// <summary>

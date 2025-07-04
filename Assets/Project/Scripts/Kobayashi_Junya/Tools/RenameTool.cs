@@ -8,7 +8,7 @@ public class RenameTool : EditorWindow
     private string renameText;
     private string prefixText;
 
-    [MenuItem("Tool/BatotteChannel/RenameTool")]
+    [MenuItem("Tools/BatotteChannel/RenameTool")]
     private static void ShowWindow()
     {
         RenameTool window = GetWindow<RenameTool>();

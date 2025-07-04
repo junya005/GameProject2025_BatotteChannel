@@ -9,15 +9,18 @@ using BatotteChannel.AudioSystem;
 namespace BatotteChannel.GameManager
 {
     /// <summary>
-    /// 丸めたプレイヤーの主導権時間と、その分と秒を格納する構造体
+    /// 丸めたプレイヤーの主導権時間を格納する構造体
     /// </summary>
-    public struct SRoundedInitiativeTimeMinutesSeconds
+    public struct SRoundedInitiativeTime
     {
         public float initiativeTime;
         public float initiativeMinutes;
         public float initiativeSeconds;
     }
 
+    /// <summary>
+    /// リザルトシーンを管理するクラス
+    /// </summary>
     public class ResultManager : MonoBehaviour
     {
         [Tooltip("Player1のスコアが格納されているデータを設定"), SerializeField]
@@ -38,8 +41,8 @@ namespace BatotteChannel.GameManager
             GameSettingManager.Instance.SetAppFrameRateLimit(GameSettingManager.EnumFrameRateLimitState.Thirty);
 
             // Player1のスコアデータを整える
-            SRoundedInitiativeTimeMinutesSeconds _roundedInitiativeTimeMinutesSecondsP1 = new SRoundedInitiativeTimeMinutesSeconds();
-            _roundedInitiativeTimeMinutesSecondsP1.initiativeTime = RoundInitiativeTime(
+            SRoundedInitiativeTime _roundedInitiativeTimeMinutesSecondsP1 = new SRoundedInitiativeTime();
+            _roundedInitiativeTimeMinutesSecondsP1.initiativeTime = RoundInitiativedTime(
                 _resultDataP1.initiativeTime,
                 out var initiativeMinutesP1,
                 out var initiativeSecondsP1
@@ -48,8 +51,8 @@ namespace BatotteChannel.GameManager
             _roundedInitiativeTimeMinutesSecondsP1.initiativeSeconds = initiativeSecondsP1;
 
             // Player2のスコアデータを整える
-            SRoundedInitiativeTimeMinutesSeconds _roundedInitiativeTimeMinutesSecondsP2 = new SRoundedInitiativeTimeMinutesSeconds();
-            _roundedInitiativeTimeMinutesSecondsP2.initiativeTime = RoundInitiativeTime(
+            SRoundedInitiativeTime _roundedInitiativeTimeMinutesSecondsP2 = new SRoundedInitiativeTime();
+            _roundedInitiativeTimeMinutesSecondsP2.initiativeTime = RoundInitiativedTime(
                 _resultDataP2.initiativeTime,
                 out var initiativeMinutesP2,
                 out var initiativeSecondsP2
@@ -83,11 +86,29 @@ namespace BatotteChannel.GameManager
             SceneManager.LoadScene(sceneName);
         }
 
-        private int RoundInitiativeTime(float initiativeTime, out int minute, out int second)
+        private int RoundInitiativedTime(float initiativeTime, out int minute, out int second)
         {
             int roundedInitiativeTime = Mathf.FloorToInt(initiativeTime);
             minute = Mathf.FloorToInt(roundedInitiativeTime / 60.0f);
             second = Mathf.FloorToInt(roundedInitiativeTime % 60.0f);
+            return roundedInitiativeTime;
+        }
+
+        /// <summary>
+        /// スコア(時間)を整え、分と秒に分けた数値で返却する
+        /// </summary>
+        /// <param name="resultData"></param>
+        /// <returns></returns>
+        private SRoundedInitiativeTime InitiativeTime(ResultData resultData)
+        {
+            SRoundedInitiativeTime roundedInitiativeTime = new SRoundedInitiativeTime();
+            roundedInitiativeTime.initiativeTime = RoundInitiativedTime(
+                resultData.initiativeTime,
+                out var initiativeMinutes,
+                out var initiativeSeconds
+                );
+            roundedInitiativeTime.initiativeMinutes = initiativeMinutes;
+            roundedInitiativeTime.initiativeSeconds = initiativeSeconds;
             return roundedInitiativeTime;
         }
     }

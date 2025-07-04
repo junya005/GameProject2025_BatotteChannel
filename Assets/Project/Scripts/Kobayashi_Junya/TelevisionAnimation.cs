@@ -4,14 +4,20 @@ using UnityEngine;
 
 namespace BatotteChannel.InGame.UI
 {
+    /// <summary>
+    /// インゲームのテレビのアニメーションを行うクラス
+    /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public class TelevisionAnimation : MonoBehaviour
     {
+        /// <summary>チャンネルを指定する際に使用する変数</summary>
         private int _channelIndex;
 
+        /// <summary>チャンネル画像のリスト</summary>
         [SerializeField]
         private List<Sprite> _televisionChannnels = new List<Sprite>();
 
+        /// <summary>画像を表示するオブジェクト</summary>
         [SerializeField] private GameObject _televisionObject;
 
         void Start()
@@ -19,6 +25,9 @@ namespace BatotteChannel.InGame.UI
             _channelIndex = 0;
         }
 
+        /// <summary>
+        /// 次のチャンネルに切り替え、チャンネルを表示する
+        /// </summary>
         public void NextChannnel()
         {
             if (_channelIndex < _televisionChannnels.Count - 1)

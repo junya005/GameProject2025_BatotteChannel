@@ -7,6 +7,9 @@ using BatotteChannel.InGame.Players;
 
 namespace BatotteChannel.InGame.MusicSystem
 {
+    /// <summary>
+    /// 主導権を握っているプレイヤーの列挙型
+    /// </summary>
     public enum EInitiativePlayerState
     {
         None,
@@ -14,6 +17,9 @@ namespace BatotteChannel.InGame.MusicSystem
         Two
     }
 
+    /// <summary>
+    /// 難易度の列挙型
+    /// </summary>
     public enum EDifficultyState
     {
         None,
@@ -29,8 +35,8 @@ namespace BatotteChannel.InGame.MusicSystem
         #region 定数
 
         private const float STAN_TIME_EASY = 3.0f;
-        private const float STAN_TIME_NORMAL = 1.5f;
-        private const float STAN_TIME_HARD = 0.75f;
+        private const float STAN_TIME_NORMAL = 2.0f;
+        private const float STAN_TIME_HARD = 1.0f;
 
         #endregion
 
