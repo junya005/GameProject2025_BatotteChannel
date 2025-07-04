@@ -10,6 +10,8 @@ namespace BatotteChannel.DataAssets
         public int goodCount;
         /// <summary>miss判定の数</summary>
         public int missCount;
+        /// <summary>主導権を握った秒数</summary>
+        public float initiativeTime;
 
         /// <summary>
         /// GoodCountを設定する
@@ -27,6 +29,15 @@ namespace BatotteChannel.DataAssets
         public void SetMissCount(int value)
         {
             missCount = value;
+        }
+
+        /// <summary>
+        /// missCountを設定する
+        /// </summary>
+        /// <param name="value">設定したい値</param>
+        public void SetInitiativeTime(float value)
+        {
+            initiativeTime = value;
         }
     }
 }

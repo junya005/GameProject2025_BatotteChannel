@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace BatotteChannel.InGame.MusicSystem
 {
@@ -18,6 +19,9 @@ namespace BatotteChannel.InGame.MusicSystem
         #region 変数
 
         [Header("パラメーター")]
+        [Tooltip("残り時間を画面に表示するか"), SerializeField]
+        private bool _isDisplayRemainingTime;
+
         [Tooltip("楽曲の分数を入れてください"), SerializeField]
         private int _musicTimeMinute;
 
@@ -66,7 +70,46 @@ namespace BatotteChannel.InGame.MusicSystem
 
         #endregion
 
+        #region イベント関数
+
+        void Start()
+        {
+            InisializeDisplayRemainingTime();
+            ChangeMusicTimeToSeconds(_musicTimeMinute, _musicTimeSecond);
+            ResetRemainingTime();
+        }
+
+        void Update()
+        {
+            if (_isDisplayRemainingTime)
+            {
+                DisplayRemainingTime();
+            }
+
+            if (!_isCount) return;
+            _currentRemainingTime -= Time.deltaTime;
+
+            if (_currentRemainingTime <= 0.0f && _isCompleteCount != true)
+            {
+                _isCompleteCount = true;
+#if UNITY_EDITOR
+                Debug.Log(_isCompleteCount);
+#endif
+            }
+        }
+
+        #endregion
+
         #region 関数
+
+        private void InisializeDisplayRemainingTime()
+        {
+            if (!_isDisplayRemainingTime)
+            {
+                this.GetComponent<Image>().enabled = false;
+                this._remainingTimeText.enabled = false;
+            }
+        }
 
         /// <summary>
         /// 楽曲時間をセットする
@@ -143,32 +186,6 @@ namespace BatotteChannel.InGame.MusicSystem
             {
                 // 残り楽曲時間の表示
                 _remainingTimeText.text = $"{minutes}:{seconds.ToString("F0").PadLeft(2, '0')}";
-            }
-        }
-
-        #endregion
-
-        #region イベント関数
-
-        void Start()
-        {
-            ChangeMusicTimeToSeconds(_musicTimeMinute, _musicTimeSecond);
-            ResetRemainingTime();
-        }
-
-        void Update()
-        {
-            DisplayRemainingTime();
-
-            if (!_isCount) return;
-            _currentRemainingTime -= Time.deltaTime;
-
-            if (_currentRemainingTime <= 0.0f && _isCompleteCount != true)
-            {
-                _isCompleteCount = true;
-#if UNITY_EDITOR
-                Debug.Log(_isCompleteCount);
-#endif
             }
         }
 

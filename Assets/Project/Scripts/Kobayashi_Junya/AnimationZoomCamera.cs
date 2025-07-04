@@ -36,7 +36,7 @@ namespace BatotteChannel.InGame.Animation
 
         #region イベント関数
 
-        private void Start()
+        private void Awake()
         {
             // キャッシュ
             _camera = GetComponent<Camera>();
