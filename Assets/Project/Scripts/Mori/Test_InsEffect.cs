@@ -9,6 +9,8 @@ public class Test_InsEffect : MonoBehaviour
     [SerializeField]
     private GameObject _goodEff;
     [SerializeField]
+    private GameObject _goodFireEff;
+    [SerializeField]
     private GameObject _missEff;
     [Button]
     public void GoodEffButton()
