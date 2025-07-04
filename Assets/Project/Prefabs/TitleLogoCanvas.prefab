@@ -393,7 +393,7 @@ MonoBehaviour:
   _interval: 1.7
   _switchImageTime: 1
   _enterTextImage: {fileID: 21300000, guid: 2539cd63655c0b348b6c6caebbe5cce2, type: 3}
-  _enterPushTextImage: {fileID: 21300000, guid: 2539cd63655c0b348b6c6caebbe5cce2, type: 3}
+  _enterPushTextImage: {fileID: 21300000, guid: 4222081b221b5dc478f91ad9b8b8f608, type: 3}
 --- !u!225 &6093683540474260466
 CanvasGroup:
   m_ObjectHideFlags: 0
