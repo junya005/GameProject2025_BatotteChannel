@@ -5,6 +5,7 @@ using BatotteChannel.GameState;
 using BatotteChannel.DataAssets;
 using BatotteChannel.InGame.Players;
 using System.Collections;
+using Unity.VisualScripting;
 
 namespace BatotteChannel.InGame.MusicSystem
 {
@@ -121,7 +122,10 @@ namespace BatotteChannel.InGame.MusicSystem
         private bool _isEndProcessing = false;
 
         /// <summary>ノーツ生成インデックス番号を格納</summary>
-        int genSetIndex = 0;
+        private int _genSetIndex = 0;
+
+        /// <summary>主導権を握ったプレイヤーが変更されたか</summary>
+        private bool _isSetInitiativePlayerState = false;
 
         private EDifficultyState _currentDifficultyState;
 
@@ -142,7 +146,7 @@ namespace BatotteChannel.InGame.MusicSystem
         private void Update()
         {
             if (!_isPlaying) return;
-            //AdditionInitiativeTime();
+            AdditionInitiativeTime(_initiativePlayerState);
             ViewScore();
 
             if (_remainingTimeManager.IsCompleteCount == true && _isEndProcessing == false)
@@ -150,11 +154,11 @@ namespace BatotteChannel.InGame.MusicSystem
                 EndRhythmGamePart();
             }
 
-            if (genSetIndex == _generateSettingDataBase.generateSettingList.Count) return;
-            if (_generateSettingDataBase.generateSettingList[genSetIndex].isUseSubBeat)
+            if (_genSetIndex == _generateSettingDataBase.generateSettingList.Count) return;
+            if (_generateSettingDataBase.generateSettingList[_genSetIndex].isUseSubBeat)
             {
-                if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[genSetIndex].timing &&
-                _beatCounter.SubBeat >= _generateSettingDataBase.generateSettingList[genSetIndex].subTiming)
+                if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[_genSetIndex].timing &&
+                _beatCounter.SubBeat >= _generateSettingDataBase.generateSettingList[_genSetIndex].subTiming)
                 {
 #if UNITY_EDITOR
                     Debug.Log("サブタイミングに生成します。");
@@ -162,14 +166,14 @@ namespace BatotteChannel.InGame.MusicSystem
                     GenerateNotesByTimming();
                 }
 
-                bool subTimigValueCheck = _generateSettingDataBase.generateSettingList[genSetIndex].subTiming >= 4
-                || _generateSettingDataBase.generateSettingList[genSetIndex].subTiming <= 0;
+                bool subTimigValueCheck = _generateSettingDataBase.generateSettingList[_genSetIndex].subTiming >= 4
+                || _generateSettingDataBase.generateSettingList[_genSetIndex].subTiming <= 0;
                 if (!subTimigValueCheck)
                 {
                     return;
                 }
             }
-            if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[genSetIndex].timing)
+            if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[_genSetIndex].timing)
             {
                 GenerateNotesByTimming();
             }
@@ -285,18 +289,18 @@ namespace BatotteChannel.InGame.MusicSystem
         {
             // プレイヤー1か2かを判定し、それに対する生成を行う
             // スタン状態処理はNoteManager側で行っているため、こちらで判定を行う必要はないです
-            if (_generateSettingDataBase.generateSettingList[genSetIndex].player == PlayerNumberState.Two)
+            if (_generateSettingDataBase.generateSettingList[_genSetIndex].player == PlayerNumberState.Two)
             {
                 Debug.Log("ノーツを生成をプレイヤー2に指示します");
-                _noteManagerP2.GenerateNote(_generateSettingDataBase.generateSettingList[genSetIndex].generatePos);
-                genSetIndex++;
+                _noteManagerP2.GenerateNote(_generateSettingDataBase.generateSettingList[_genSetIndex].generatePos);
+                _genSetIndex++;
 
                 return;
             }
 
             Debug.Log("ノーツを生成をプレイヤー1に指示します");
-            _noteManagerP1.GenerateNote(_generateSettingDataBase.generateSettingList[genSetIndex].generatePos);
-            genSetIndex++;
+            _noteManagerP1.GenerateNote(_generateSettingDataBase.generateSettingList[_genSetIndex].generatePos);
+            _genSetIndex++;
         }
 
         /// <summary>
@@ -368,6 +372,7 @@ namespace BatotteChannel.InGame.MusicSystem
         private void SetInitiativePlayerState(EInitiativePlayerState initiativePlayerState)
         {
             _initiativePlayerState = initiativePlayerState;
+            _isSetInitiativePlayerState = true;
 #if UNITY_EDITOR
             Debug.Log($"主導権を握っているプレイヤーを変更:{_initiativePlayerState}");
 #endif
@@ -415,15 +420,25 @@ namespace BatotteChannel.InGame.MusicSystem
         /// <param name="playerNumber"></param>
         private void GivePlayerInitiative(PlayerNumberState playerNumber)
         {
-            if (playerNumber == PlayerNumberState.One)
+            if (_generateSettingDataBase.generateSettingList.Count <= _genSetIndex)
             {
-                //if (_initiativePlayerState == EInitiativePlayerState.One) return;
-                StartCoroutine(GiveInitiative(3.0f, EInitiativePlayerState.One));
+                SetInitiativePlayerState(EInitiativePlayerState.None);
                 return;
             }
 
-            //if (_initiativePlayerState == EInitiativePlayerState.Two) return;
-            StartCoroutine(GiveInitiative(3.0f, EInitiativePlayerState.Two));
+            if (playerNumber == PlayerNumberState.One)
+            {
+                if (_initiativePlayerState == EInitiativePlayerState.One) return;
+                // _initiativePlayerState = EInitiativePlayerState.One;
+                SetInitiativePlayerState(EInitiativePlayerState.One);
+                //StartCoroutine(GiveInitiative(3.0f));
+                return;
+            }
+
+            if (_initiativePlayerState == EInitiativePlayerState.Two) return;
+            // _initiativePlayerState = EInitiativePlayerState.Two;
+            SetInitiativePlayerState(EInitiativePlayerState.Two);
+            //StartCoroutine(GiveInitiative(3.0f));
         }
 
         private void PlayChannelChangeEffect(PlayerNumberState playerNumber)
@@ -432,24 +447,24 @@ namespace BatotteChannel.InGame.MusicSystem
             _channelChangeAnim.ChangeAnim(isPlayer1);
         }
 
-        private IEnumerator GiveInitiative(float earningTime, EInitiativePlayerState initiativePlayer)
+        private IEnumerator GiveInitiative(float earningTime)
         {
             float time = 0.0f;
-            SetInitiativePlayerState(initiativePlayer);
             while (time < earningTime)
             {
                 time += Time.deltaTime;
 
-                AdditionInitiativeTime(initiativePlayer);
-                // 他のプレイヤーが主導権を握ったらコルーチンを終了する
-                // if (initiativePlayer != _initiativePlayerState)
-                // {
-                //     yield break;
-                // }
-                // else
-                // {
-                yield return null;
-                // }
+                // AdditionInitiativeTime(initiativePlayer);
+                // initiativePlayerStateが変更されたらコルーチンを終了する
+                if (_isSetInitiativePlayerState)
+                {
+                    _isSetInitiativePlayerState = false;
+                    yield break;
+                }
+                else
+                {
+                    yield return null;
+                }
             }
 
             SetInitiativePlayerState(EInitiativePlayerState.None);

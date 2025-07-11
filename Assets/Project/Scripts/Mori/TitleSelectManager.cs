@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.MusicSystem;
+using System;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -92,6 +93,10 @@ public class TitleSelectManager : MonoBehaviour
         _titleCanvasGroup.alpha = 1.0f;
         _selectCanvasGroup.alpha = 0f;
         _ingameCanvasGroup.alpha = 0f;
+        // BGM再生
+        SoundManager.Instance.SetBgmVolume(0.5f);
+        SoundManager.Instance.StopBGM();
+        SoundManager.Instance.PlayBGM("be_efficient");
     }
 
     /// <summary>
@@ -129,7 +134,7 @@ public class TitleSelectManager : MonoBehaviour
         await Fade(_titleCanvasGroup, 0, _canvasFadeSpeed);
         //カメラ動作を入れるならここ
         // 小林：セレクト画面に行く際にカメラ動作を追記
-        await CamSize(_outCameraSize, _camSizeSpeed);
+        // await CamSize(_outCameraSize, _camSizeSpeed);
         //終わったら選択画面UIを表示　フェード
         await Fade(_selectCanvasGroup, 1, _canvasFadeSpeed);
         //ボタンを押せるようにする
@@ -174,7 +179,7 @@ public class TitleSelectManager : MonoBehaviour
         await Fade(_selectCanvasGroup, 0, _canvasFadeSpeed);
         //カメラ動作を入れるならここ
         // 小林：カメラ動作をズームインに変更
-        await CamSize(_inCameraSize, _camSizeSpeed);
+        // await CamSize(_inCameraSize, _camSizeSpeed);
         //終わったらタイトルUIを表示　フェード
         await Fade(_ingameCanvasGroup, 1, _canvasFadeSpeed);
         //ボタンを押せるようにする

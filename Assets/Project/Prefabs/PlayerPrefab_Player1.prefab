@@ -228,8 +228,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5b97808cab1b4d4eb466d2040a76af7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAutoPlayMode: 0
   _televisionAnimation: {fileID: 0}
   _generateNotes: []
+  _generatedDummyNotes: []
   _notePrefab: {fileID: 2278968784815387265, guid: 04e933d21711edd4eaee0db2baefd543, type: 3}
   _dummyNotePrefab: {fileID: 8178182458948841667, guid: 782ab9f45fe18fc48b768d9ba77f2786, type: 3}
   _isStopNoteGenerate: 0

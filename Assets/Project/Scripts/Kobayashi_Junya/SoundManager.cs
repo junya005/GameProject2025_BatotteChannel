@@ -22,7 +22,7 @@ namespace BatotteChannel.AudioSystem
         private bool _isInitialized = false;
 
         // Start is called before the first frame update
-        void Start()
+        new void Awake()
         {
             var audioSourceMax = _audioList.BGMList.Count + _audioList.SEList.Count;
 
@@ -34,7 +34,7 @@ namespace BatotteChannel.AudioSystem
                 audioSource.clip = clip;
                 audioSource.playOnAwake = false;
                 audioSource.loop = true;
-                _bgmAudioSources.Add("a", audioSource);
+                _bgmAudioSources.Add(audioSource.clip.name, audioSource);
             }
 
             foreach (var clip in _audioList.SEList)
@@ -80,6 +80,14 @@ namespace BatotteChannel.AudioSystem
             foreach (var audioSource in _bgmAudioSources)
             {
                 _bgmAudioSources[audioSource.Key].Stop();
+            }
+        }
+
+        public void SetBgmVolume(float volume)
+        {
+            foreach (var audioSource in _bgmAudioSources)
+            {
+                audioSource.Value.volume = volume;
             }
         }
     }

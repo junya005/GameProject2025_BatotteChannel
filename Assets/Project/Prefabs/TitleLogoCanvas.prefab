@@ -337,7 +337,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 207}
-  m_SizeDelta: {x: 800, y: 400}
+  m_SizeDelta: {x: 1024, y: 426.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8843152201351288787
 CanvasRenderer:
@@ -367,7 +367,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2539cd63655c0b348b6c6caebbe5cce2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8fa72d5aa1609bf4d8ce405ea792e688, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -392,8 +392,8 @@ MonoBehaviour:
   _duration: 1
   _interval: 1.7
   _switchImageTime: 1
-  _enterTextImage: {fileID: 21300000, guid: 2539cd63655c0b348b6c6caebbe5cce2, type: 3}
-  _enterPushTextImage: {fileID: 21300000, guid: 4222081b221b5dc478f91ad9b8b8f608, type: 3}
+  _enterTextImage: {fileID: 21300000, guid: 8fa72d5aa1609bf4d8ce405ea792e688, type: 3}
+  _enterPushTextImage: {fileID: 21300000, guid: bf9c4a145bd32d647a5eab5e32b01845, type: 3}
 --- !u!225 &6093683540474260466
 CanvasGroup:
   m_ObjectHideFlags: 0

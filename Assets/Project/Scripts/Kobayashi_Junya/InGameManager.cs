@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
-
 using BatotteChannel.InGame.MusicSystem;
 using BatotteChannel.InGame.Animation;
 using BatotteChannel.GameState;
+using BatotteChannel.AudioSystem;
 
 namespace BatotteChannel.GameManager
 {
@@ -81,6 +81,7 @@ namespace BatotteChannel.GameManager
         private void Start()
         {
             GameSettingManager.Instance.SetAppFrameRateLimit(GameSettingManager.EnumFrameRateLimitState.Sixty);
+            SoundManager.Instance.StopBGM();
             StartInGameAnimation();
         }
 
