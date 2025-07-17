@@ -1,21 +1,61 @@
 using UnityEngine;
 using TMPro;
-
 using BatotteChannel.InGame.Notes;
 using BatotteChannel.GameState;
 using BatotteChannel.DataAssets;
+using BatotteChannel.InGame.Players;
+using System.Collections;
+using Unity.VisualScripting;
 
 namespace BatotteChannel.InGame.MusicSystem
 {
-    #region 変数
+    /// <summary>
+    /// 主導権を握っているプレイヤーの列挙型
+    /// </summary>
+    public enum EInitiativePlayerState
+    {
+        None,
+        One,
+        Two
+    }
+
+    /// <summary>
+    /// 難易度の列挙型
+    /// </summary>
+    public enum EDifficultyState
+    {
+        None,
+        Easy,
+        Normal,
+        Hard
+    }
 
     /// <summary>リズムゲームパートを管理するクラス AudioSourceとBeatCounterとの併用を想定</summary>
     [RequireComponent(typeof(AudioSource)), RequireComponent(typeof(BeatCounter))]
     public class MusicManager : MonoBehaviour
     {
+        #region 定数
+
+        private const float STAN_TIME_EASY = 3.0f;
+        private const float STAN_TIME_NORMAL = 2.0f;
+        private const float STAN_TIME_HARD = 1.0f;
+
+        #endregion
+
+        #region 変数
+
         /// <summary>
-        /// ビート計上クラスを格納
-        /// Startで取得するので設定の必要なし
+        /// 主導権を握っているプレイヤーのステートマシン
+        /// </summary>
+        private EInitiativePlayerState _initiativePlayerState;
+
+        /// <summary>
+        /// 主導権ステートマシンのゲッタープロパティ
+        /// </summary>
+        public EInitiativePlayerState InitiativePlayerState { get { return _initiativePlayerState; } }
+
+        /// <summary>
+        /// ビート計上クラスのインスタンス
         /// </summary>
         private BeatCounter _beatCounter;
 
@@ -34,14 +74,20 @@ namespace BatotteChannel.InGame.MusicSystem
         /// <summary>AudioSourceのインスタンス</summary>
         private AudioSource _audioSource;
 
+        /// <summary>オーディオソースのゲッタープロパティ</summary>
+        public AudioSource AudioSource { get { return _audioSource; } }
+
         [Tooltip("リズムゲームBGMを設定"), SerializeField]
         private AudioClip _audioClip;
 
-        [Tooltip("スコアを表示するオブジェクトを設定"), SerializeField]
-        private GameObject _scoreDisplay;
+        [Tooltip("プレイヤー1のスコアを表示するオブジェクトを設定"), SerializeField]
+        private TextMeshProUGUI _p1ScoreTMPro;
 
-        /// <summary>スコアを表示するテキストコンポーネント</summary>
-        private TextMeshProUGUI _scoreText;
+        [Tooltip("プレイヤー2のスコアを表示するオブジェクトを設定"), SerializeField]
+        private TextMeshProUGUI _p2ScoreTMPro;
+
+        [Tooltip("ENDテキストを表示させるオブジェクト"), SerializeField]
+        private GameObject _endTextObj;
 
         [Tooltip("楽曲のノーツ生成データベースを設定"), SerializeField]
         private GenerateSettingDataBase _generateSettingDataBase;
@@ -58,10 +104,15 @@ namespace BatotteChannel.InGame.MusicSystem
         [Tooltip("Player1のスコアを格納するためのデータを設定"), SerializeField]
         private ResultData _resultDataP2;
 
-        /// <summary>ノーツ生成がされる状態か</summary>
+        /// <summary>P1のスコア(主導権を取得した時間)</summary>
+        private float _initiativeTimeP1;
+        /// <summary>P2のスコア(主導権を取得した時間)</summary>
+        private float _initiativeTimeP2;
+
+        /// <summary>リズムゲームパートが実行中か</summary>
         private bool _isPlaying;
 
-        /// <summary>ノーツ生成がされる状態かのゲッタープロパティ</summary>
+        /// <summary>リズムゲームパートが実行中かのゲッタープロパティ</summary>
         public bool IsPlaying
         {
             get { return _isPlaying; }
@@ -71,11 +122,206 @@ namespace BatotteChannel.InGame.MusicSystem
         private bool _isEndProcessing = false;
 
         /// <summary>ノーツ生成インデックス番号を格納</summary>
-        int genSetIndex = 0;
+        private int _genSetIndex = 0;
+
+        /// <summary>主導権を握ったプレイヤーが変更されたか</summary>
+        private bool _isSetInitiativePlayerState = false;
+
+        private EDifficultyState _currentDifficultyState;
+
+        public EDifficultyState CurrentDifficultyState { get { return _currentDifficultyState; } }
+
+        [SerializeField]
+        private ChannelChangeAnim _channelChangeAnim;
+
+        #endregion
+
+        #region イベント関数
+
+        private void Start()
+        {
+            InisializeMusicManager();
+        }
+
+        private void Update()
+        {
+            if (!_isPlaying) return;
+            AdditionInitiativeTime(_initiativePlayerState);
+            ViewScore();
+
+            if (_remainingTimeManager.IsCompleteCount == true && _isEndProcessing == false)
+            {
+                EndRhythmGamePart();
+            }
+
+            if (_genSetIndex == _generateSettingDataBase.generateSettingList.Count) return;
+            if (_generateSettingDataBase.generateSettingList[_genSetIndex].isUseSubBeat)
+            {
+                if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[_genSetIndex].timing &&
+                _beatCounter.SubBeat >= _generateSettingDataBase.generateSettingList[_genSetIndex].subTiming)
+                {
+#if UNITY_EDITOR
+                    Debug.Log("サブタイミングに生成します。");
+#endif
+                    GenerateNotesByTimming();
+                }
+
+                bool subTimigValueCheck = _generateSettingDataBase.generateSettingList[_genSetIndex].subTiming >= 4
+                || _generateSettingDataBase.generateSettingList[_genSetIndex].subTiming <= 0;
+                if (!subTimigValueCheck)
+                {
+                    return;
+                }
+            }
+            if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[_genSetIndex].timing)
+            {
+                GenerateNotesByTimming();
+            }
+        }
 
         #endregion
 
         #region 関数
+
+        /// <summary>
+        /// Start関数で実行される初期化処理
+        /// </summary>
+        private void InisializeMusicManager()
+        {
+            // キャッシュ
+            _beatCounter = GetComponent<BeatCounter>();
+            _audioSource = GetComponent<AudioSource>();
+            _remainingTimeManager = _remainingTimeManagerObj.GetComponent<RemainingTimeManager>();
+
+            // 初期設定
+            SetAudioClip(_audioClip);
+            // 一旦仮で実数値で設定してます
+            _remainingTimeManager.SetMusicTime(0, 48);
+            SetStanSecondsToNoteManagers();
+            _endTextObj.SetActive(false);
+
+            // ノーツが取得されたときのコールバックにOnGetNoteを登録
+            // 秒数換算に使用します
+            _noteManagerP1.getNoteCallBack += OnGetNote;
+            _noteManagerP2.getNoteCallBack += OnGetNote;
+        }
+
+        /// <summary>
+        /// リズムゲームパートの終了処理
+        /// </summary>
+        private void EndRhythmGamePart()
+        {
+            _isPlaying = false;
+            _isEndProcessing = true;
+            _endTextObj.SetActive(true);
+
+            // 最終スコアにデータをセット
+            // Player1
+            _resultDataP1.SetGoodCount(_noteManagerP1.GotGoodCount);
+            _resultDataP1.SetMissCount(_noteManagerP1.GotMissCount);
+            _resultDataP1.SetInitiativeTime(_initiativeTimeP1);
+
+            // Player2
+            _resultDataP2.SetGoodCount(_noteManagerP2.GotGoodCount);
+            _resultDataP2.SetMissCount(_noteManagerP2.GotMissCount);
+            _resultDataP2.SetInitiativeTime(_initiativeTimeP2);
+
+            InGameStateManager.Instance.SetCurrentInGameState(InGameState.End);
+        }
+
+        /// <summary>
+        /// 難易度に応じてStanTimeをセットする
+        /// </summary>
+        private void SetStanSecondsToNoteManagers()
+        {
+            switch (_currentDifficultyState)
+            {
+                case EDifficultyState.Easy:
+                    _noteManagerP1.SetStanTimeSecond(STAN_TIME_EASY);
+                    _noteManagerP2.SetStanTimeSecond(STAN_TIME_EASY);
+                    return;
+                case EDifficultyState.Normal:
+                    _noteManagerP1.SetStanTimeSecond(STAN_TIME_NORMAL);
+                    _noteManagerP2.SetStanTimeSecond(STAN_TIME_NORMAL);
+                    return;
+                case EDifficultyState.Hard:
+                    _noteManagerP1.SetStanTimeSecond(STAN_TIME_HARD);
+                    _noteManagerP2.SetStanTimeSecond(STAN_TIME_HARD);
+                    return;
+                default:
+                    Debug.LogError("難易度が想定外の値になっています。");
+                    return;
+            }
+        }
+
+        /// <summary>
+        /// 楽曲名の背景2文字から難易度を取得する
+        /// </summary>
+        /// <param name="musicData">楽曲データ</param>
+        /// <returns>識別不可な場合はNoneを返します</returns>
+        public EDifficultyState GetDifficulty(MusicDataScriptableObject musicData)
+        {
+            string musicName = musicData.musicName;
+            string difficultyStr = musicName.Substring(musicName.Length - 2, 2);
+            EDifficultyState difficultyState;
+            switch (difficultyStr)
+            {
+                case "EZ":
+                    difficultyState = EDifficultyState.Easy;
+                    break;
+                case "NL":
+                    difficultyState = EDifficultyState.Normal;
+                    break;
+                case "HD":
+                    difficultyState = EDifficultyState.Hard;
+                    break;
+                default:
+                    difficultyState = EDifficultyState.None;
+                    break;
+            }
+            return difficultyState;
+        }
+
+        /// <summary>
+        /// ノーツ生成をNoteManagerに指示
+        /// </summary>
+        private void GenerateNotesByTimming()
+        {
+            // プレイヤー1か2かを判定し、それに対する生成を行う
+            // スタン状態処理はNoteManager側で行っているため、こちらで判定を行う必要はないです
+            if (_generateSettingDataBase.generateSettingList[_genSetIndex].player == PlayerNumberState.Two)
+            {
+                Debug.Log("ノーツを生成をプレイヤー2に指示します");
+                _noteManagerP2.GenerateNote(_generateSettingDataBase.generateSettingList[_genSetIndex].generatePos);
+                _genSetIndex++;
+
+                return;
+            }
+
+            Debug.Log("ノーツを生成をプレイヤー1に指示します");
+            _noteManagerP1.GenerateNote(_generateSettingDataBase.generateSettingList[_genSetIndex].generatePos);
+            _genSetIndex++;
+        }
+
+        /// <summary>
+        /// スコアを表示する
+        /// </summary>
+        private void ViewScore()
+        {
+            int roundedInitiativeTimeP1 = Mathf.FloorToInt(_initiativeTimeP1);
+            int roundedInitiativeTimeMinuteP1 = Mathf.FloorToInt(roundedInitiativeTimeP1 / 60);
+            int roundedInitiativeTimeSecondsP1 = Mathf.FloorToInt(roundedInitiativeTimeP1 % 60);
+            _p1ScoreTMPro.text = $"{roundedInitiativeTimeMinuteP1}:{roundedInitiativeTimeSecondsP1.ToString("F0").PadLeft(2, '0')}";
+
+            int roundedInitiativeTimeP2 = Mathf.FloorToInt(_initiativeTimeP2);
+            int roundedInitiativeTimeMinuteP2 = Mathf.FloorToInt(roundedInitiativeTimeP2 / 60);
+            int roundedInitiativeTimeSecondsP2 = Mathf.FloorToInt(roundedInitiativeTimeP2 % 60);
+            _p2ScoreTMPro.text = $"{roundedInitiativeTimeMinuteP2}:{roundedInitiativeTimeSecondsP2.ToString("F0").PadLeft(2, '0')}";
+
+            // ノーツ数で表示
+            // _p1ScoreTMPro.text = $"Good:{_noteManagerP1.GotGoodCount}\nMiss:{_noteManagerP1.GotMissCount}";
+            // _p2ScoreTMPro.text = $"Good:{_noteManagerP2.GotGoodCount}\nMiss:{_noteManagerP2.GotMissCount}";
+        }
 
         /// <summary>
         /// ノーツ生成がされる状態かのセッター関数
@@ -108,6 +354,31 @@ namespace BatotteChannel.InGame.MusicSystem
         }
 
         /// <summary>
+        /// 現在の難易度をセットする
+        /// </summary>
+        /// <param name="difficulty">難易度</param>
+        public void SetCurrentDifficultyState(EDifficultyState difficulty)
+        {
+            _currentDifficultyState = difficulty;
+#if UNITY_EDITOR
+            Debug.Log($"難易度を{_currentDifficultyState}にセットしました。");
+#endif
+        }
+
+        /// <summary>
+        /// InitiativePlayerStateのセッター
+        /// </summary>
+        /// <param name="initiativePlayerState">プレイヤーを指定</param>
+        private void SetInitiativePlayerState(EInitiativePlayerState initiativePlayerState)
+        {
+            _initiativePlayerState = initiativePlayerState;
+            _isSetInitiativePlayerState = true;
+#if UNITY_EDITOR
+            Debug.Log($"主導権を握っているプレイヤーを変更:{_initiativePlayerState}");
+#endif
+        }
+
+        /// <summary>
         /// 楽曲の再生と残り時間のカウントを開始する
         /// </summary>
         public void StartMusic()
@@ -118,45 +389,87 @@ namespace BatotteChannel.InGame.MusicSystem
             _remainingTimeManager.SetIsCount(true);
         }
 
+        /// <summary>
+        /// 主導権を取得した時間(スコア)を加算する
+        /// </summary>
+        private void AdditionInitiativeTime(EInitiativePlayerState initiativePlayerState)
+        {
+            if (initiativePlayerState == EInitiativePlayerState.None) return;
+            if (initiativePlayerState == EInitiativePlayerState.One)
+            {
+                _initiativeTimeP1 += Time.deltaTime;
+                return;
+            }
+
+            _initiativeTimeP2 += Time.deltaTime;
+        }
+
+        /// <summary>
+        /// コールバック関数として実装する
+        /// </summary>
+        /// <param name="playerNumber">プレイヤーの番号</param>
+        public void OnGetNote(PlayerNumberState playerNumber)
+        {
+            GivePlayerInitiative(playerNumber);
+            PlayChannelChangeEffect(playerNumber);
+        }
+
+        /// <summary>
+        /// グッド判定を取得したプレイヤーに主導権を付与
+        /// </summary>
+        /// <param name="playerNumber"></param>
+        private void GivePlayerInitiative(PlayerNumberState playerNumber)
+        {
+            if (_generateSettingDataBase.generateSettingList.Count <= _genSetIndex)
+            {
+                SetInitiativePlayerState(EInitiativePlayerState.None);
+                return;
+            }
+
+            if (playerNumber == PlayerNumberState.One)
+            {
+                if (_initiativePlayerState == EInitiativePlayerState.One) return;
+                // _initiativePlayerState = EInitiativePlayerState.One;
+                SetInitiativePlayerState(EInitiativePlayerState.One);
+                //StartCoroutine(GiveInitiative(3.0f));
+                return;
+            }
+
+            if (_initiativePlayerState == EInitiativePlayerState.Two) return;
+            // _initiativePlayerState = EInitiativePlayerState.Two;
+            SetInitiativePlayerState(EInitiativePlayerState.Two);
+            //StartCoroutine(GiveInitiative(3.0f));
+        }
+
+        private void PlayChannelChangeEffect(PlayerNumberState playerNumber)
+        {
+            bool isPlayer1 = playerNumber == PlayerNumberState.One ? true : false;
+            _channelChangeAnim.ChangeAnim(isPlayer1);
+        }
+
+        private IEnumerator GiveInitiative(float earningTime)
+        {
+            float time = 0.0f;
+            while (time < earningTime)
+            {
+                time += Time.deltaTime;
+
+                // AdditionInitiativeTime(initiativePlayer);
+                // initiativePlayerStateが変更されたらコルーチンを終了する
+                if (_isSetInitiativePlayerState)
+                {
+                    _isSetInitiativePlayerState = false;
+                    yield break;
+                }
+                else
+                {
+                    yield return null;
+                }
+            }
+
+            SetInitiativePlayerState(EInitiativePlayerState.None);
+        }
+
         #endregion
-
-        private void Start()
-        {
-            // キャッシュ
-            _beatCounter = GetComponent<BeatCounter>();
-            _audioSource = GetComponent<AudioSource>();
-            _remainingTimeManager = _remainingTimeManagerObj.GetComponent<RemainingTimeManager>();
-            _scoreText = _scoreDisplay.GetComponent<TextMeshProUGUI>();
-
-            // 初期設定
-            SetAudioClip(_audioClip);
-            // 一旦仮で実数値で設定してます
-            _remainingTimeManager.SetMusicTime(0, 48);
-        }
-
-        private void Update()
-        {
-            // スコアの表示
-            if (!_isPlaying) return;
-            _scoreText.text = $"Good:{_noteManagerP1.GotGoodCount}\nMiss:{_noteManagerP1.GotMissCount}";
-
-            // リズムゲームパートの終了処理
-            if (_remainingTimeManager.IsCompleteCount == true && _isEndProcessing == false)
-            {
-                _isEndProcessing = true;
-                _resultDataP1.SetGoodCount(_noteManagerP1.GotGoodCount);
-                _resultDataP1.SetMissCount(_noteManagerP1.GotMissCount);
-                InGameStateManager.Instance.SetCurrentInGameState(InGameState.End);
-            }
-
-            // ノーツの生成処理
-            if (genSetIndex == _generateSettingDataBase.generateSettingList.Count) return;
-            if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[genSetIndex].timing)
-            {
-                Debug.Log("ノーツを生成を指示します");
-                _noteManagerP1.GenerateNote(_generateSettingDataBase.generateSettingList[genSetIndex].generatePos);
-                genSetIndex++;
-            }
-        }
     }
 }

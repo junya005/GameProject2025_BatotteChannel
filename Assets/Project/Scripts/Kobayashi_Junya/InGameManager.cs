@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
-
 using BatotteChannel.InGame.MusicSystem;
 using BatotteChannel.InGame.Animation;
 using BatotteChannel.GameState;
+using BatotteChannel.AudioSystem;
 
 namespace BatotteChannel.GameManager
 {
@@ -30,7 +30,12 @@ namespace BatotteChannel.GameManager
         /// <summary>
         /// ゲーム開始時のアニメーション処理
         /// </summary>
-        async void StartInGameAnimation()
+        private async void StartInGameAnimation()
+        {
+            await InGameAnimation();
+        }
+
+        private async UniTask InGameAnimation()
         {
             // カメラ演出
             await UniTask.Delay(500);
@@ -47,10 +52,11 @@ namespace BatotteChannel.GameManager
             _musicManager.BeatCounterInstance.SetBeat(0);
 
             // 遅れて音楽を再生することで、ノーツのタイミングを合わせる
-            await UniTask.Delay(1350);
+            await UniTask.Delay(1300);
 
             // 音楽再生
             _musicManager.StartMusic();
+
         }
 
         /// <summary>
@@ -74,6 +80,8 @@ namespace BatotteChannel.GameManager
 
         private void Start()
         {
+            GameSettingManager.Instance.SetAppFrameRateLimit(GameSettingManager.EnumFrameRateLimitState.Sixty);
+            SoundManager.Instance.StopBGM();
             StartInGameAnimation();
         }
 
