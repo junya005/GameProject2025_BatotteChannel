@@ -156,6 +156,7 @@ namespace BatotteChannel.InGame.Notes
             // if (noteController.IsDummyNotes) return;
 
             if (!noteController.CheckButtonEnable()) return;
+            int channelIndex = buttonNumber - 1;
 
             noteController.JudgementNote(buttonNumber, out var judgement);
             Debug.Log(judgement);
@@ -164,8 +165,8 @@ namespace BatotteChannel.InGame.Notes
             {
                 // 効果音の再生
                 SoundManager.Instance?.PlaySE("button26");
-                // チャンネルの切り替え(現在は次のチャンネルへ移動させる仕様)
-                _televisionAnimation?.NextChannnel();
+                // チャンネルの切り替え
+                _televisionAnimation?.ChangeChannel(channelIndex);
 
                 CountGotNote(judgement);
                 RemoveNoteInGenerateList(0);
