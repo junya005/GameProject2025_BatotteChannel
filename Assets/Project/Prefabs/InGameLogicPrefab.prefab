@@ -204,15 +204,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _televisionChannnels:
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 2ecc2bc726e22ed498f3652e22c1323e, type: 3}
   - {fileID: 21300000, guid: fc90fc6b562175f488e4c1b6cf2735a6, type: 3}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: d3613c4121798324babbffac03c77ebf, type: 3}
   - {fileID: 21300000, guid: b8e3d4bcca005814e95f58b57c6523be, type: 3}
   - {fileID: 21300000, guid: b12d703a3bf6b924a8e7dbd4685571d9, type: 3}
   - {fileID: 21300000, guid: a2288c9a440e93641b91ae9d6757a8d5, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 739151b53ffb50b4ba9194c2024845b3, type: 3}
+  - {fileID: 21300000, guid: 2b56017981f5ac2489add80ebbf41736, type: 3}
+  - {fileID: 21300000, guid: 993c583bc804a6a42939df860df9166f, type: 3}
   _televisionObject: {fileID: 1453499492477462657}
 --- !u!1 &2804752373111628544
 GameObject:
