@@ -73,6 +73,10 @@ PrefabInstance:
       value: NotesPrefab_Player2
       objectReference: {fileID: 0}
     - target: {fileID: 2756807159231496242, guid: 04e933d21711edd4eaee0db2baefd543, type: 3}
+      propertyPath: _notePlayerState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2756807159231496242, guid: 04e933d21711edd4eaee0db2baefd543, type: 3}
       propertyPath: _buttonNumImages.Array.data[0]
       value: 
       objectReference: {fileID: 21300000, guid: cabd6ca59dd939a419e52c3d66c969c9, type: 3}

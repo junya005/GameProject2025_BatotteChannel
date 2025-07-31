@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using BatotteChannel.InGame.Notes;
 using System.Collections;
 using BatotteChannel.InGame.MusicSystem;
+using BatotteChannel.Player;
 
 namespace BatotteChannel.InGame.Players
 {
@@ -66,6 +67,12 @@ namespace BatotteChannel.InGame.Players
         private MusicManager _musicManager;
 
         /// <summary>
+        /// アニメーションクラスを設定する
+        /// </summary>
+        [SerializeField]
+        private AnimatorParamSetter _playerAnimatorParamSetter;
+
+        /// <summary>
         /// プレイヤー番号のプロパティ
         /// </summary>
         public PlayerNumberState PlayerNumber
@@ -84,6 +91,8 @@ namespace BatotteChannel.InGame.Players
 
             // 初期設定
             RegisterButton();
+
+            _noteManager.getMissNoteCallBack += PlayMissAnimation;
         }
 
         void Update()
@@ -93,8 +102,11 @@ namespace BatotteChannel.InGame.Players
             bool isMusicPlaying = (bool)_musicManager?.GetComponent<AudioSource>().isPlaying;
             if (isMusicPlaying && !_isAnimationStart)
             {
-                StartBeatAnimation();
+                // StartBeatAnimation();
                 _isAnimationStart = true;
+                // リズムに合わせて揺れるアニメーションの開始
+                if (_playerAnimatorParamSetter != null)
+                    _playerAnimatorParamSetter.SetAnimationBool("isPlaying", true);
             }
         }
 
@@ -140,8 +152,19 @@ namespace BatotteChannel.InGame.Players
         /// <param name="buttonNumber">ボタン番号</param>
         private void GetNote(int buttonNumber)
         {
-            StartCoroutine(RemoconPushAnimation());
+            // StartCoroutine(RemoconPushAnimation());
+            if (_playerAnimatorParamSetter != null)
+                _playerAnimatorParamSetter.SetAnimationTrigger("Click");
             _noteManager.JudgeMentNoteFromList(buttonNumber);
+        }
+
+        /// <summary>
+        /// miss時のアニメーションの再生
+        /// </summary>
+        private void PlayMissAnimation(PlayerNumberState playerNumber)
+        {
+            if (_playerAnimatorParamSetter != null)
+                _playerAnimatorParamSetter.SetAnimationTrigger("Missed");
         }
 
         /// <summary>プレイヤー操作の取得</summary>

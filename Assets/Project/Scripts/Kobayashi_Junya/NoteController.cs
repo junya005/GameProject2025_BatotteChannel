@@ -50,8 +50,15 @@ namespace BatotteChannel.InGame.Notes
     /// <summary>判定の種類</summary>
     public enum JudgementState
     {
+        None,
         Good,
         MISS
+    }
+
+    public enum ENotePlayerState
+    {
+        Player1,
+        Player2
     }
 
     /// <summary>ノーツを動きに関するクラス</summary>
@@ -119,7 +126,8 @@ namespace BatotteChannel.InGame.Notes
         /// 前回のボタン番号
         /// staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
         /// </summary>
-        private static int _lastButtonNum;
+        private static int _lastButtonNumForPlayerOne;
+        private static int _lastButtonNumForPlayerTwo;
 
         [Header("オブジェクト参照")]
         [Tooltip("フレームのオブジェクトを設定してください"), SerializeField]
@@ -159,6 +167,9 @@ namespace BatotteChannel.InGame.Notes
         [Tooltip("Miss判定エフェクトのオブジェクトを格納"), SerializeField]
         private GameObject _missEffectPrefab;
 
+        [SerializeField]
+        private ENotePlayerState _notePlayerState = ENotePlayerState.Player1;
+
         #endregion
 
         #region イベント関数
@@ -195,9 +206,12 @@ namespace BatotteChannel.InGame.Notes
         /// 前回のボタン番号を設定
         /// </summary>
         /// <param name="value"></param>
-        public void SetLastButtonNum(int value)
+        public void SetLastButtonNum(int value, ENotePlayerState playerState)
         {
-            _lastButtonNum = value;
+            if (playerState == ENotePlayerState.Player1)
+                _lastButtonNumForPlayerOne = value;
+            else
+                _lastButtonNumForPlayerTwo = value;
         }
 
         /// <summary>
@@ -221,10 +235,10 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         private void SettingDummyNote()
         {
-            Color halfAlpha = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-            _body.GetComponent<SpriteRenderer>().color = halfAlpha;
-            _outerFrame.GetComponent<SpriteRenderer>().color = halfAlpha;
-            _buttonNumberDisplay.GetComponent<SpriteRenderer>().color = halfAlpha;
+            Color halfColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+            _body.GetComponent<SpriteRenderer>().color = halfColor;
+            _outerFrame.GetComponent<SpriteRenderer>().color = halfColor;
+            _buttonNumberDisplay.GetComponent<SpriteRenderer>().color = halfColor;
         }
 
         /// <summary>
@@ -233,14 +247,16 @@ namespace BatotteChannel.InGame.Notes
         private void GiveButtonNumber()
         {
             _buttonNumber = Random.Range(1, 10);
+            int lastButtonNum = _notePlayerState == ENotePlayerState.Player1 ? _lastButtonNumForPlayerOne : _lastButtonNumForPlayerTwo;
             // ボタン番号が前回生成したノーツと被っていれば再帰する。
-            if (_buttonNumber == _lastButtonNum)
+            if (_buttonNumber == lastButtonNum)
             {
                 GiveButtonNumber();
+                return;
             }
             int buttonNumImageIndex = _buttonNumber - 1;
             _buttonNumberSpriteRenderer.sprite = _buttonNumImages[buttonNumImageIndex];
-            _lastButtonNum = _buttonNumber;
+            SetLastButtonNum(_buttonNumber, _notePlayerState);
 #if UNITY_EDITOR
             Debug.Log($"ノーツ番号を付与：{_buttonNumber}");
 #endif
