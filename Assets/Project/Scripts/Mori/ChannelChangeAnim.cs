@@ -18,7 +18,10 @@ public class ChannelChangeAnim : MonoBehaviour
     private Sprite _broChannelSprite;
     //エフェクトが消えるまでの時間
     [SerializeField]
-    private float _duration = 0.5f;
+    private float _duration = 0.2f;
+    //フェードが始まるまでの時間
+    [SerializeField]
+    private float _delay = 0.4f;
 
     /// <summary>
     /// debug　プレイヤー1用を発生するどうか、true=Player1 false=Player2
@@ -61,7 +64,7 @@ public class ChannelChangeAnim : MonoBehaviour
             _image.sprite= _broChannelSprite;
         }
         _imageCG.alpha = 1;
-        _tween = _imageCG.DOFade(0, _duration).SetEase(Ease.InOutCubic);
+        _tween = _imageCG.DOFade(0, _duration).SetEase(Ease.InOutCubic).SetDelay(_delay);
         _tween.Play();
     }
 }

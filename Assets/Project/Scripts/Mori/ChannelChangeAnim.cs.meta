@@ -4,8 +4,8 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - _sisChannelSprite: {fileID: 21300000, guid: e1747ccd4c780a64f960ad7aabf45f3d, type: 3}
-  - _broChannelSprite: {fileID: 21300000, guid: 5514519fd34c08f4c8e86da0bf7fe412, type: 3}
+  - _sisChannelSprite: {fileID: 21300000, guid: 8d92bc8235ed32246ab3b7785435c78c, type: 3}
+  - _broChannelSprite: {fileID: 21300000, guid: 04954857f3533db498bd599f4cc76950, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

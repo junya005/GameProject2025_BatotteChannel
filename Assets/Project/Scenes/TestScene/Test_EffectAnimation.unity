@@ -308,7 +308,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1442498757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,7 +446,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2278968784815387265, guid: 04e933d21711edd4eaee0db2baefd543, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -704,9 +704,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c43e2e5fccef85a4d9a49e44f33f2c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sisChannelSprite: {fileID: 21300000, guid: e1747ccd4c780a64f960ad7aabf45f3d, type: 3}
-  _broChannelSprite: {fileID: 21300000, guid: 5514519fd34c08f4c8e86da0bf7fe412, type: 3}
-  _duration: 0.7
+  _sisChannelSprite: {fileID: 21300000, guid: 8d92bc8235ed32246ab3b7785435c78c, type: 3}
+  _broChannelSprite: {fileID: 21300000, guid: 04954857f3533db498bd599f4cc76950, type: 3}
+  _duration: 0.1
+  _delay: 0.4
   _player1: 0
 --- !u!225 &1943849699
 CanvasGroup:
