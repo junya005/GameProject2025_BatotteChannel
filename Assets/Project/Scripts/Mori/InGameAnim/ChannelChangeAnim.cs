@@ -18,7 +18,7 @@ public class ChannelChangeAnim : MonoBehaviour
     private Sprite _broChannelSprite;
     //エフェクトが消えるまでの時間
     [SerializeField]
-    private float _duration = 0.2f;
+    private float _duration = 0.1f;
     //フェードが始まるまでの時間
     [SerializeField]
     private float _delay = 0.4f;
