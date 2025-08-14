@@ -53,6 +53,12 @@ namespace BatotteChannel.InGame.Players
         /// <summary>アニメーションが開始されたか</summary>
         private bool _isAnimationStart;
 
+        /// <summary>
+        /// ビートアニメーションを開始するかのフラグ
+        /// </summary>
+        [SerializeField]
+        private bool _isBeatAnimation;
+
         /// <summary>プレイヤーのグラフィックを格納</summary>
         [SerializeField]
         private SpriteRenderer _playerGraphyic;
@@ -102,7 +108,10 @@ namespace BatotteChannel.InGame.Players
             bool isMusicPlaying = (bool)_musicManager?.GetComponent<AudioSource>().isPlaying;
             if (isMusicPlaying && !_isAnimationStart)
             {
-                // StartBeatAnimation();
+                if (_isBeatAnimation)
+                {
+                    StartBeatAnimation();
+                }
                 _isAnimationStart = true;
                 // リズムに合わせて揺れるアニメーションの開始
                 if (_playerAnimatorParamSetter != null)
