@@ -1,26 +1,48 @@
 {
 	"Version": 3,
 	"Meta": {
-		"Duration": 0.17,
+		"Duration": 0.167,
 		"Fps": 30.0,
 		"Loop": true,
 		"AreBeziersRestricted": true,
-		"CurveCount": 11,
-		"TotalSegmentCount": 14,
-		"TotalPointCount": 37,
+		"CurveCount": 23,
+		"TotalSegmentCount": 26,
+		"TotalPointCount": 61,
 		"UserDataCount": 0,
 		"TotalUserDataSize": 0
 	},
 	"Curves": [
 		{
-			"Target": "Model",
-			"Id": "Opacity",
+			"Target": "Parameter",
+			"Id": "ParamAngleX",
 			"Segments": [
 				0,
-				1,
 				0,
-				0.17,
-				1
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamAngleY",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamAngleZ",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
 			]
 		},
 		{
@@ -73,6 +95,138 @@
 				0.1,
 				1,
 				0.133,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamRotateArmL",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamRotateLowerArmL",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamRotateHandL",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamRotateArmR",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamRotateLowerArmR",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamRotateHandR",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamSwingFoodY",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamBreath",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamSwingHair01",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamSwingHair02",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamSwingHair03",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.167,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "ParamSwingHair04",
+			"Segments": [
+				0,
+				0,
 				0,
 				0.167,
 				0
@@ -134,36 +288,14 @@
 			]
 		},
 		{
-			"Target": "PartOpacity",
-			"Id": "Part3",
+			"Target": "Parameter",
+			"Id": "ParamCharactorSwitch",
 			"Segments": [
 				0,
-				1,
 				0,
-				0.17,
-				1
-			]
-		},
-		{
-			"Target": "PartOpacity",
-			"Id": "Part2",
-			"Segments": [
 				0,
-				1,
-				0,
-				0.17,
-				1
-			]
-		},
-		{
-			"Target": "PartOpacity",
-			"Id": "Part",
-			"Segments": [
-				0,
-				1,
-				0,
-				0.17,
-				1
+				0.167,
+				0
 			]
 		}
 	]
