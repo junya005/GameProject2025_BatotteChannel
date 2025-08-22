@@ -12,10 +12,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GoodEffectFixOrder
       objectReference: {fileID: 0}
-    - target: {fileID: 4960598023859806742, guid: 8c759752261ad5442bb349385cb2346a, type: 3}
-      propertyPath: m_SortingOrder
-      value: 51
-      objectReference: {fileID: 0}
     - target: {fileID: 8415716230510507334, guid: 8c759752261ad5442bb349385cb2346a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
