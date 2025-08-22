@@ -369,7 +369,7 @@ MonoBehaviour:
   - {fileID: 7149122937483210694}
   _moveAnimSpeed: 0.5
   _moveAnimDelay: 0.2
-  _moveAnimAddvalue: 100
+  _moveAnimAddvalue: 70
   _rotAnimSpeed: 2
   _rotAnimDelay: 0
   _rotAnimAddvalue: -360
