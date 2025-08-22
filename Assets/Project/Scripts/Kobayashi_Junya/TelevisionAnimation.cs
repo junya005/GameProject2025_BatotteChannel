@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BatotteChannel.InGame.UI
 {
@@ -40,6 +41,16 @@ namespace BatotteChannel.InGame.UI
             }
 
             _televisionObject.GetComponent<SpriteRenderer>().sprite = _televisionChannnels[_channelIndex];
+        }
+
+        /// <summary>
+        /// チャンネルを指定して変更する
+        /// </summary>
+        /// <param name="channelIndex"></param>
+        public void ChangeChannel(int channelIndex)
+        {
+            if (channelIndex < 0 || channelIndex >= _televisionChannnels.Count) return;
+            _televisionObject.GetComponent<SpriteRenderer>().sprite = _televisionChannnels[channelIndex];
         }
     }
 }

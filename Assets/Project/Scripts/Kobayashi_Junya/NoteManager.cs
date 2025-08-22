@@ -10,11 +10,17 @@ using Unity.VisualScripting;
 namespace BatotteChannel.InGame.Notes
 {
     /// <summary>
-    /// ノーツが取得されたときのコールバック
+    /// ノーツがGood判定で取得されたときのコールバック
     /// </summary>
     /// <param name="playerNumber">プレイヤー番号を取得できる</param>
     /// <returns>判定結果</returns>
     public delegate void GetGoodNoteCallBack(PlayerNumberState playerNumber);
+
+    /// <summary>
+    /// ノーツがMiss判定で取得されたときのコールバック
+    /// </summary>
+    /// <param name="playerNumber">プレイヤー番号</param>
+    public delegate void GetMissNoteCallBack(PlayerNumberState playerNumber);
 
     /// <summary>
     /// ノーツの管理に関するクラス
@@ -25,6 +31,8 @@ namespace BatotteChannel.InGame.Notes
         #region 変数
 
         public GetGoodNoteCallBack getNoteCallBack;
+
+        public GetMissNoteCallBack getMissNoteCallBack;
 
         [SerializeField]
         private bool isAutoPlayMode = false;
@@ -84,6 +92,8 @@ namespace BatotteChannel.InGame.Notes
 
         /// <summary>スタン秒数のプロパティ</summary>
         public float StanTimeSecond { get { return _stanTimeSecond; } }
+
+        private List<int> _buttonNumberList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
         #endregion
 
@@ -156,6 +166,7 @@ namespace BatotteChannel.InGame.Notes
             // if (noteController.IsDummyNotes) return;
 
             if (!noteController.CheckButtonEnable()) return;
+            int channelIndex = buttonNumber - 1;
 
             noteController.JudgementNote(buttonNumber, out var judgement);
             Debug.Log(judgement);
@@ -164,8 +175,8 @@ namespace BatotteChannel.InGame.Notes
             {
                 // 効果音の再生
                 SoundManager.Instance?.PlaySE("button26");
-                // チャンネルの切り替え(現在は次のチャンネルへ移動させる仕様)
-                _televisionAnimation?.NextChannnel();
+                // チャンネルの切り替え
+                _televisionAnimation?.ChangeChannel(channelIndex);
 
                 CountGotNote(judgement);
                 RemoveNoteInGenerateList(0);
@@ -184,8 +195,9 @@ namespace BatotteChannel.InGame.Notes
                 // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
                 RemoveNoteInGenerateList(0);
                 SetDummyNoteFromList(_stanTimeSecond);
-            }
 
+                getMissNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+            }
         }
 
         /// <summary>
@@ -209,6 +221,8 @@ namespace BatotteChannel.InGame.Notes
             // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
             RemoveNoteInGenerateList(0);
             SetDummyNoteFromList(_stanTimeSecond);
+
+            getMissNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
         }
 
         /// <summary>

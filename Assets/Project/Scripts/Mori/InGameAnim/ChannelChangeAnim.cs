@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class ChannelChangeAnim : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class ChannelChangeAnim : MonoBehaviour
     private Image _image;
     private CanvasGroup _imageCG;
     //差し替え用エフェクトイメージ
-    [SerializeField,Label("姉用イメージ")]
+    [SerializeField, Label("姉用イメージ")]
     private Sprite _sisChannelSprite;
     [SerializeField, Label("弟用イメージ")]
     private Sprite _broChannelSprite;
@@ -37,7 +36,7 @@ public class ChannelChangeAnim : MonoBehaviour
         _imageCG = _image.GetComponent<CanvasGroup>();
         _imageCG.alpha = 0;
     }
-    
+
     //debug
     [Button]
     private void ChangeAnimTest()
@@ -61,7 +60,7 @@ public class ChannelChangeAnim : MonoBehaviour
         }
         else
         {
-            _image.sprite= _broChannelSprite;
+            _image.sprite = _broChannelSprite;
         }
         _imageCG.alpha = 1;
         _tween = _imageCG.DOFade(0, _duration).SetEase(Ease.InOutCubic).SetDelay(_delay);

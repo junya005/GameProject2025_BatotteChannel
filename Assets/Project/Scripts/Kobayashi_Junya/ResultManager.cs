@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using BatotteChannel.DataAssets;
 using BatotteChannel.AudioSystem;
+using System.Collections.Generic;
 
 
 namespace BatotteChannel.GameManager
@@ -37,25 +38,17 @@ namespace BatotteChannel.GameManager
         private ResultData _resultDataP2;
 
         [Tooltip("Player1のスコアを表示するテキストを設定"), SerializeField]
-        private TextMeshProUGUI _scoreTextP1;
+        private List<TextMeshProUGUI> _scoreTextP1 = new List<TextMeshProUGUI>();
 
         [Tooltip("Player2のスコアを表示するテキストを設定"), SerializeField]
-        private TextMeshProUGUI _scoreTextP2;
+        private List<TextMeshProUGUI> _scoreTextP2 = new List<TextMeshProUGUI>();
 
         [SerializeField]
-        private Image _winOrLoseBackGround;
+        private GameObject _drawBG;
         [SerializeField]
-        private Image _winOrLoseDisplayP1;
+        private GameObject _winP1;
         [SerializeField]
-        private Image _winOrLoseDisplayP2;
-
-        [SerializeField] private Sprite _backGroundP1Win;
-        [SerializeField] private Sprite _backGroundP2Win;
-        [SerializeField] private Sprite _backGroundDraw;
-        [SerializeField] private Sprite _winSpriteP1;
-        [SerializeField] private Sprite _winSpriteP2;
-        [SerializeField] private Sprite _loseSpriteP1;
-        [SerializeField] private Sprite _loseSpriteP2;
+        private GameObject _winP2;
 
         private EWinnerState _winnerState = EWinnerState.Draw;
 
@@ -63,6 +56,10 @@ namespace BatotteChannel.GameManager
         {
             // フレームレートの設定
             GameSettingManager.Instance.SetAppFrameRateLimit(GameSettingManager.EnumFrameRateLimitState.Thirty);
+
+            // BGMの再生
+            SoundManager.Instance.StopBGM();
+            SoundManager.Instance.PlayBGM("Kira_Kira_Cotton_Candy");
 
             // Player1のスコアデータを整える
             SRoundedInitiativeTime _roundedInitiativeTimeP1 = new SRoundedInitiativeTime();
@@ -75,17 +72,15 @@ namespace BatotteChannel.GameManager
             _winnerState = JudgeWinOrLose(_resultDataP1, _resultDataP2);
 
             // テキスト表示
-            _scoreTextP1.text = "Player1\n" +
-                            $"{_roundedInitiativeTimeP1.initiativeMinutes}:" +
-                            $"{_roundedInitiativeTimeP1.initiativeSeconds.ToString("F0").PadLeft(2, '0')}\n" +
-                            $"Good: {_resultDataP1.goodCount}\n" +
-                            $"Miss:{_resultDataP1.missCount}";
+            _scoreTextP1[0].text = $"{_roundedInitiativeTimeP1.initiativeMinutes}:" +
+                                    $"{_roundedInitiativeTimeP1.initiativeSeconds.ToString("F0").PadLeft(2, '0')} ";
+            _scoreTextP1[1].text = $"{_resultDataP1.goodCount}";
+            _scoreTextP1[2].text = $"{_resultDataP1.missCount}";
             // テキスト表示
-            _scoreTextP2.text = "Player2\n" +
-                            $"{_roundedInitiativeTimeP2.initiativeMinutes}:" +
-                            $"{_roundedInitiativeTimeP2.initiativeSeconds.ToString("F0").PadLeft(2, '0')}\n" +
-                            $"Good:{_resultDataP2.goodCount}\n" +
-                            $"Miss: {_resultDataP2.missCount} ";
+            _scoreTextP2[0].text = $"{_roundedInitiativeTimeP2.initiativeMinutes}:" +
+                                    $"{_roundedInitiativeTimeP2.initiativeSeconds.ToString("F0").PadLeft(2, '0')}";
+            _scoreTextP2[1].text = $"{_resultDataP2.goodCount}";
+            _scoreTextP2[2].text = $"{_resultDataP2.missCount}";
 
             DisplayWinOrLose(_winnerState);
         }
@@ -125,10 +120,11 @@ namespace BatotteChannel.GameManager
         /// <returns>勝者</returns>
         private EWinnerState JudgeWinOrLose(ResultData resultP1, ResultData resultP2)
         {
+            if (Mathf.FloorToInt(resultP1.initiativeTime) == Mathf.FloorToInt(resultP2.initiativeTime))
+                return EWinnerState.Draw;
+
             if (resultP1.initiativeTime >= resultP2.initiativeTime)
-            {
                 return EWinnerState.P1;
-            }
 
             return EWinnerState.P2;
         }
@@ -139,17 +135,25 @@ namespace BatotteChannel.GameManager
         /// <param name="winnerState"></param>
         private void DisplayWinOrLose(EWinnerState winnerState)
         {
-            if (winnerState == EWinnerState.P1)
+            if (winnerState == EWinnerState.Draw)
             {
-                _winOrLoseBackGround.sprite = _backGroundP1Win;
-                _winOrLoseDisplayP1.sprite = _winSpriteP1;
-                _winOrLoseDisplayP2.sprite = _loseSpriteP2;
+                _drawBG.SetActive(true);
+                _winP1.SetActive(false);
+                _winP2.SetActive(false);
                 return;
             }
 
-            _winOrLoseBackGround.sprite = _backGroundP2Win;
-            _winOrLoseDisplayP2.sprite = _winSpriteP2;
-            _winOrLoseDisplayP1.sprite = _loseSpriteP1;
+            if (winnerState == EWinnerState.P1)
+            {
+                _drawBG.SetActive(false);
+                _winP1.SetActive(true);
+                _winP2.SetActive(false);
+                return;
+            }
+
+            _drawBG.SetActive(false);
+            _winP1.SetActive(false);
+            _winP2.SetActive(true);
         }
 
         /// <summary>
