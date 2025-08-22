@@ -28,10 +28,10 @@
 			"Id": "ParamBodyAngleX",
 			"Segments": [
 				0,
-				0,
+				-8,
 				0,
 				0.167,
-				0
+				-8
 			]
 		},
 		{
@@ -39,10 +39,10 @@
 			"Id": "ParamBodyAngleY",
 			"Segments": [
 				0,
-				0,
+				10,
 				0,
 				0.167,
-				0
+				10
 			]
 		},
 		{
@@ -50,10 +50,10 @@
 			"Id": "ParamBodyAngleZ",
 			"Segments": [
 				0,
-				0,
+				-6,
 				0,
 				0.167,
-				0
+				-6
 			]
 		},
 		{

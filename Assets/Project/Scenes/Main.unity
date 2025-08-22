@@ -1234,7 +1234,7 @@ PrefabInstance:
       objectReference: {fileID: 1537294406}
     - target: {fileID: 1346162367672829753, guid: aad55937fdd0e784f9975ed4db58044b, type: 3}
       propertyPath: _isBeatAnimation
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1350258891456120021, guid: aad55937fdd0e784f9975ed4db58044b, type: 3}
       propertyPath: m_Mesh
@@ -1318,7 +1318,7 @@ PrefabInstance:
       objectReference: {fileID: 1036571390}
     - target: {fileID: 3254967670549153694, guid: aad55937fdd0e784f9975ed4db58044b, type: 3}
       propertyPath: _isBeatAnimation
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3269016149483887062, guid: aad55937fdd0e784f9975ed4db58044b, type: 3}
       propertyPath: m_Mesh
@@ -9583,6 +9583,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3743609185345329713, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5017732826584946863, guid: e1d86a54ffbd2ff4ebf403b57c64c95b, type: 3}
       propertyPath: _isPlayTutorial
       value: 0

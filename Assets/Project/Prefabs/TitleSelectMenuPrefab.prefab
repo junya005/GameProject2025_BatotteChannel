@@ -206,7 +206,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1617,8 +1617,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 942f7b7f7b81a2548b9ec92ee411fe3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPlayTutorial: 0
   _titleCanvas: {fileID: 4327779616971764629}
   _selectCanvas: {fileID: 6933827862610287448}
+  _tutorialCanvas: {fileID: 2810463180360001500}
   _ingameCanvas: {fileID: 4003517479674929733}
   _camSizeSpeed: 1
   _canvasFadeSpeed: 0.15

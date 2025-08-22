@@ -181,6 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerNumber: 0
   _noteManagerForThisPlayer: {fileID: 6709578763777366442}
+  _isBeatAnimation: 0
   _playerGraphyic: {fileID: 2848414650530070888}
   _idleSprite: {fileID: 21300000, guid: 20e1dd6e91e5b5045b4665a075875a5e, type: 3}
   _remoconSprite: {fileID: 21300000, guid: 83a8145d3c2a4db4cbfb98cc413e8515, type: 3}
