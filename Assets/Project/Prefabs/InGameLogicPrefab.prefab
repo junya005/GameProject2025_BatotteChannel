@@ -280,7 +280,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 11
+  m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1097,6 +1097,7 @@ MonoBehaviour:
   _p1ScoreTMPro: {fileID: 7549512430738282114}
   _p2ScoreTMPro: {fileID: 1494835085372401818}
   _endTextObj: {fileID: 7441934546119639885}
+  _MusicData: {fileID: 0}
   _generateSettingDataBase: {fileID: 11400000, guid: 3476689dcb6ad33499d54178cb641bce, type: 2}
   _noteManagerP1: {fileID: 7034262999471414399}
   _noteManagerP2: {fileID: 6781234384545455320}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MusicDataBase
   m_EditorClassIdentifier: 
   musicDataScriptableObjects:
+  - {fileID: 11400000, guid: a38cf15b05d4ec44d811f2a54368b696, type: 2}
   - {fileID: 11400000, guid: d20bad0a143407b44bda2d9a572a93a4, type: 2}
   - {fileID: 11400000, guid: 1d6fddd4d9408d641ac5bd5439516aae, type: 2}
   - {fileID: 11400000, guid: d0b098db241988542863fa274c6db91f, type: 2}

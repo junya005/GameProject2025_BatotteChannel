@@ -135,7 +135,7 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// ノーツを生成する
         /// </summary>
-        public void GenerateNote(Vector2 generatePos)
+        public GameObject GenerateNote(Vector2 generatePos)
         {
             if (_isStopNoteGenerate == true)
             {
@@ -143,13 +143,14 @@ namespace BatotteChannel.InGame.Notes
                 dummyNote.GetComponent<NoteController>().SetIsDummyNotes(true);
                 _generatedDummyNotes.Add(dummyNote);
                 Debug.Log("スタン中のため、ダミーノーツを生成しました。");
-                return;
+                return dummyNote;
             }
             GameObject note = Instantiate(_notePrefab, generatePos, Quaternion.identity);
             _generateNotes.Add(note);
 #if UNITY_EDITOR
             Debug.Log($"ノーツの生成が完了しました(生成座標：{generatePos})");
 #endif
+            return note;
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace BatotteChannel.InGame.Notes
 #if UNITY_EDITOR
                 Debug.Log("主導権者の変更を指示します。");
 #endif
-                getNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+                getNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
             }
             else if (judgement == JudgementState.MISS)
             {
@@ -196,7 +197,7 @@ namespace BatotteChannel.InGame.Notes
                 RemoveNoteInGenerateList(0);
                 SetDummyNoteFromList(_stanTimeSecond);
 
-                getMissNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+                getMissNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
             }
         }
 
@@ -222,7 +223,7 @@ namespace BatotteChannel.InGame.Notes
             RemoveNoteInGenerateList(0);
             SetDummyNoteFromList(_stanTimeSecond);
 
-            getMissNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+            getMissNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
         }
 
         /// <summary>
