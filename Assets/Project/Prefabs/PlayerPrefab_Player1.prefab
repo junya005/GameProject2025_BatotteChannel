@@ -260,6 +260,7 @@ MonoBehaviour:
   _gotNoteCount: 0
   _gotGoodCount: 0
   _gotMissCount: 0
+  _stanTimeSecond: 0
 --- !u!1001 &3110944310864807785
 PrefabInstance:
   m_ObjectHideFlags: 0

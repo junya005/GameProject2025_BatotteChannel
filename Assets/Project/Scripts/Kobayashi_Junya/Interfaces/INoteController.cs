@@ -45,5 +45,7 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         /// <param name="boolean"></param>
         void SetIsDummyNotes(bool boolean);
+
+        float GodDistance { get; }
     }
 }

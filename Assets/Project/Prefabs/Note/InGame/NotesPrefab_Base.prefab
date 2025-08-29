@@ -138,7 +138,9 @@ MonoBehaviour:
   _body: {fileID: 8284206557817687500}
   _buttonNumberDisplay: {fileID: 4391443010529132225}
   _judgementDisplay: {fileID: 951539720640148458}
+  _buttonEnableDistance: 0.4
   _buttonNumImages:
+  - {fileID: 0}
   - {fileID: 21300000, guid: 0cbadf2e2c6f0174685ee2244724073e, type: 3}
   - {fileID: 21300000, guid: c89d944f3f30a3f418c6a374d86ba5b6, type: 3}
   - {fileID: 21300000, guid: 154277a13158075459e6eaa544e1eeab, type: 3}
@@ -150,8 +152,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 53aa5899f0193754894417d781416f29, type: 3}
   _goodJudgementImage: {fileID: 21300000, guid: 1a95371bde96f694e8e8c926005eb24d, type: 3}
   _missJudgementImage: {fileID: 21300000, guid: 08a4477893c01b14e9dcd3e2ff59349b, type: 3}
-  _goodEffectPrefab: {fileID: 4002234839686743882, guid: 6d735b45041bd5045aefb051bcd091f0, type: 3}
-  _missEffectPrefab: {fileID: 3339032500463955483, guid: ca78a22710a02934a9681a651318c50f, type: 3}
+  _goodEffectPrefab: {fileID: 1394697561563053247, guid: 8c759752261ad5442bb349385cb2346a, type: 3}
+  _missEffectPrefab: {fileID: 6934200198551048148, guid: cf499b474bf5a7e46a290841a8ee2a67, type: 3}
+  _notePlayerState: 0
 --- !u!1 &3291753611606999690
 GameObject:
   m_ObjectHideFlags: 0

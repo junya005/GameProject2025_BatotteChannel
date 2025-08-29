@@ -3,22 +3,8 @@ using UnityEngine;
 
 namespace BatotteChannel.InGame.Notes
 {
-    /// <summary>判定の種類</summary>
-    public enum JudgementState
-    {
-        None,
-        Good,
-        MISS
-    }
-
-    public enum ENotePlayerState
-    {
-        Player1,
-        Player2
-    }
-
     /// <summary>ノーツを動きに関するクラス</summary>
-    public class NoteController : MonoBehaviour, INoteController
+    public class NoteControllerForTutorial : MonoBehaviour, INoteController
     {
         #region 定数
 
@@ -129,12 +115,6 @@ namespace BatotteChannel.InGame.Notes
         [SerializeField]
         private ENotePlayerState _notePlayerState = ENotePlayerState.Player1;
 
-        /// <summary>trueであればボタン番号がないノーツに</summary>
-        private bool _isNoneButtonNum = false;
-
-        /// <summary>trueであれば必ずミスになるノーツに</summary>
-        private bool _isGetNotPossible = false;
-
         public float GodDistance { get; private set; }
 
         #endregion
@@ -226,7 +206,7 @@ namespace BatotteChannel.InGame.Notes
                 GiveButtonNumber();
                 return;
             }
-            int buttonNumImageIndex = _buttonNumber;
+            int buttonNumImageIndex = _buttonNumber - 1;
             _buttonNumberSpriteRenderer.sprite = _buttonNumImages[buttonNumImageIndex];
             SetLastButtonNum(_buttonNumber, _notePlayerState);
 #if UNITY_EDITOR
@@ -253,16 +233,7 @@ namespace BatotteChannel.InGame.Notes
         /// <param name="judgement">判定結果を返す</param>
         public void JudgementNote(int buttonNumber, out JudgementState judgement)
         {
-            // 取得不可能なノーツであれば判定しない
-            if (_isGetNotPossible)
-            {
-                judgement = JudgementState.None;
-                return;
-            }
-
-            // ボタン判定
-            // ボタンが不一致で、かつボタン番号が設定されている場合はミス判定
-            if (buttonNumber != _buttonNumber && _isNoneButtonNum == false)
+            if (buttonNumber != _buttonNumber)
             {
                 HideNote();
                 judgement = JudgementState.MISS;
@@ -274,20 +245,14 @@ namespace BatotteChannel.InGame.Notes
                 return;
             }
 
-            // タイミングの判定
             HideNote();
-            GodDistance = _distance;
             float distance = Mathf.Abs(_distance);
             judgement = distance <= _goodJudgmentRange ? JudgementState.Good : JudgementState.MISS;
-
-            // 判定結果の表示
             string judgementText = distance <= _goodJudgmentRange ? TEXT_JUDGEMENT_GOOD : TEXT_JUDGEMENT_MISS;
             DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
             Debug.Log($"ノーツを判定しました(判定結果：{judgement}, 距離：{_distance}, GOODの距離：{_goodJudgmentRange}[絶対値])");
 #endif
-
-            // ノーツ削除
             DeleteThisNote(1.0f);
         }
 
@@ -370,29 +335,9 @@ namespace BatotteChannel.InGame.Notes
 
         public void SetButtonNumber(int buttonNumber)
         {
-            // 0の場合、ボタン番号はない状態にする
-            if (buttonNumber == 0)
-            {
-                _isNoneButtonNum = true;
-                _buttonNumber = 0;
-            }
-            else
-            {
-                _buttonNumber = buttonNumber;
-            }
-
-            // ボタン画像の設定
-            _buttonNumberSpriteRenderer.sprite = _buttonNumImages[_buttonNumber];
+            _buttonNumber = buttonNumber;
+            _buttonNumberSpriteRenderer.sprite = _buttonNumImages[_buttonNumber - 1];
             _isGaveButton = true;
-        }
-
-        /// <summary>
-        /// 必ずミスにするかどうかをセットする
-        /// </summary>
-        /// <param name="value"></param>
-        public void SetIsGetNotPossible(bool value)
-        {
-            _isGetNotPossible = value;
         }
 
         #endregion

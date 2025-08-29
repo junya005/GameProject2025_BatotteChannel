@@ -6,14 +6,6 @@ using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
 
-public enum ETutorialState
-{
-    Start,
-    Explain,
-    Play,
-    End
-}
-
 /// <summary>
 /// チュートリアルの管理クラス
 /// </summary>

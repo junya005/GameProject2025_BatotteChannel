@@ -51,7 +51,7 @@ namespace BatotteChannel.AudioSystem
 
         /// <summary>
         /// BGMを再生する、再生されているBGMがある場合はReturnされる
-        /// よって、これを実行する前にStopBGMメゾットを実行しておくことを推奨する
+        /// よって、これを実行する前にStopBGMメゾットを実行しておくことを推奨します
         /// </summary>
         /// <param name="name">効果音ファイル名(拡張子を除く)</param>
         public void PlayBGM(string name)

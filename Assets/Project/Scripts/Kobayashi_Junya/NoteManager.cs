@@ -88,12 +88,15 @@ namespace BatotteChannel.InGame.Notes
         }
 
         /// <summary>スタン秒数</summary>
+        [SerializeField]
         private float _stanTimeSecond;
 
         /// <summary>スタン秒数のプロパティ</summary>
         public float StanTimeSecond { get { return _stanTimeSecond; } }
 
         private List<int> _buttonNumberList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+        public float CorrectionValue { get; private set; }
 
         #endregion
 
@@ -104,6 +107,8 @@ namespace BatotteChannel.InGame.Notes
             // 初期化
             _generateNotes = new List<GameObject>();
             _generatedDummyNotes = new List<GameObject>();
+
+            CorrectionValue = 0.0f;
         }
 
         void Update()
@@ -114,6 +119,11 @@ namespace BatotteChannel.InGame.Notes
             }
             CheckNoteIsDeletingDistance();
             CheckDummyNoteIsDeletingDistance();
+        }
+
+        private void OnDisable()
+        {
+            DeleteAllNotes();
         }
 
         #endregion
@@ -179,6 +189,8 @@ namespace BatotteChannel.InGame.Notes
                 // チャンネルの切り替え
                 _televisionAnimation?.ChangeChannel(channelIndex);
 
+                CorrectionValue += noteController.GodDistance;
+
                 CountGotNote(judgement);
                 RemoveNoteInGenerateList(0);
 #if UNITY_EDITOR
@@ -197,7 +209,9 @@ namespace BatotteChannel.InGame.Notes
                 RemoveNoteInGenerateList(0);
                 SetDummyNoteFromList(_stanTimeSecond);
 
-                getMissNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+                PlayerController player;
+                if (player = transform.parent.gameObject.GetComponent<PlayerController>())
+                    getMissNoteCallBack.Invoke(player.PlayerNumber);
             }
         }
 
@@ -223,7 +237,9 @@ namespace BatotteChannel.InGame.Notes
             RemoveNoteInGenerateList(0);
             SetDummyNoteFromList(_stanTimeSecond);
 
-            getMissNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+            PlayerController player;
+            if (player = transform.parent.gameObject.GetComponent<PlayerController>())
+                getMissNoteCallBack.Invoke(player.PlayerNumber);
         }
 
         /// <summary>
@@ -281,7 +297,6 @@ namespace BatotteChannel.InGame.Notes
                     noteController.DeleteThisNote(0);
                     RemoveNoteInGenerateList(i);
                 }
-
             }
 
             StartCoroutine(StopGenerateNote(hideTime));
@@ -338,6 +353,32 @@ namespace BatotteChannel.InGame.Notes
             if (noteController.Distance >= 0.0f)
             {
                 JudgeMentNoteFromList(noteController.ButtonNumber);
+            }
+        }
+
+        /// <summary>
+        /// リストに格納されているオブジェクトを直接削除する
+        /// </summary>
+        public void DeleteAllNotes()
+        {
+            if (_generateNotes.Count != 0)
+            {
+                for (int i = 0; i < _generateNotes.Count; i++)
+                {
+                    Debug.Log($"リストから{i}番目のノートを削除します。");
+                    Destroy(_generateNotes[i]);
+                    RemoveNoteInGenerateList(i);
+                }
+            }
+
+            if (_generatedDummyNotes.Count != 0)
+            {
+                for (int i = 0; i < _generatedDummyNotes.Count; i++)
+                {
+                    Debug.Log($"リストから{i}番目のダミーノートを削除します。");
+                    Destroy(_generatedDummyNotes[i]);
+                    RemoveNoteInGenerateList(i, true);
+                }
             }
         }
 
