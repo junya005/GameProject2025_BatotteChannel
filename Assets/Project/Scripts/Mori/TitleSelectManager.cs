@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.MusicSystem;
-using System;
+using BatotteChannel.Tutorial;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -26,6 +26,12 @@ public class TitleSelectManager : MonoBehaviour
     /// ボタンを押せる状態かのBool
     /// </summary>
     private bool _canPushButton = false;
+
+    /// <summary>
+    /// チュートリアルを再生するかどうか
+    /// </summary>
+    [SerializeField]
+    private bool _isPlayTutorial = false;
     /// <summary>
     /// メインカメラオブジェクト
     /// </summary>
@@ -49,6 +55,15 @@ public class TitleSelectManager : MonoBehaviour
     /// 難易度選択画面CanvasGroup
     /// </summary>
     private CanvasGroup _selectCanvasGroup;
+    /// <summary>
+    /// チュートリアル画面Canvas
+    /// </summary>
+    [SerializeField, Label("選択画面UICanvas")]
+    private Canvas _tutorialCanvas;
+    /// <summary>
+    /// チュートリアル画面CanvasGroup
+    /// </summary>
+    private CanvasGroup _tutorialCanvasGroup;
     /// <summary>
     /// ゲーム画面UICanvas
     /// </summary>
@@ -85,6 +100,7 @@ public class TitleSelectManager : MonoBehaviour
         _mainCamera = Camera.main;
         _titleCanvasGroup = _titleCanvas.GetComponent<CanvasGroup>();
         _selectCanvasGroup = _selectCanvas.GetComponent<CanvasGroup>();
+        _tutorialCanvasGroup = _tutorialCanvas.GetComponent<CanvasGroup>();
         _ingameCanvasGroup = _ingameCanvas.GetComponent<CanvasGroup>();
         _canPushButton = true;
         //タイトル表示からスタート
@@ -92,6 +108,7 @@ public class TitleSelectManager : MonoBehaviour
         _mainCamera.orthographicSize = _inCameraSize;
         _titleCanvasGroup.alpha = 1.0f;
         _selectCanvasGroup.alpha = 0f;
+        _tutorialCanvasGroup.alpha = 0.0f;
         _ingameCanvasGroup.alpha = 0f;
         // BGM再生
         SoundManager.Instance.SetBgmVolume(0.5f);
@@ -111,12 +128,19 @@ public class TitleSelectManager : MonoBehaviour
         {
             //スタート状態なら返す
             if (_gameScene == GameStatus.GameSceneEnum.Title) return;
-            ToTitle();
+            TransitionCanvas(GameStatus.GameSceneEnum.Select, GameStatus.GameSceneEnum.Title);
         }
         //Enterを押されたら遷移
         else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            ToSelect();
+            if (_gameScene != GameStatus.GameSceneEnum.Title) return;
+            if (_isPlayTutorial)
+            {
+                TransitionCanvas(GameStatus.GameSceneEnum.Title, GameStatus.GameSceneEnum.Tutorial);
+                return;
+            }
+
+            TransitionCanvas(GameStatus.GameSceneEnum.Title, GameStatus.GameSceneEnum.Select);
         }
     }
 
@@ -164,6 +188,28 @@ public class TitleSelectManager : MonoBehaviour
         Debug.Log("Compreat:ToTitle");
     }
 
+    public async void ToTutorial()
+    {
+        if (_gameScene != GameStatus.GameSceneEnum.Select) return;
+        // 効果音を再生
+        SoundManager.Instance.PlaySE("push_determining_button_53");
+        //ボタンを押せなくする
+        _canPushButton = false;
+        //選択画面UIを非表示　フェード
+        await Fade(_selectCanvasGroup, 0, _canvasFadeSpeed);
+        //カメラ動作を入れるならここ
+        // 小林：カメラ動作をズームインに変更
+        // await CamSize(_inCameraSize, _camSizeSpeed);
+        //終わったらタイトルUIを表示　フェード
+        await Fade(_tutorialCanvasGroup, 1, _canvasFadeSpeed);
+        //ボタンを押せるようにする
+        _canPushButton = true;
+
+        //ゲームモードを変更
+        _gameScene = GameStatus.GameSceneEnum.Tutorial;
+        Debug.Log("Compreat:ToTutorial");
+    }
+
     //debug
     /// <summary>
     /// ゲーム画面へ遷移
@@ -180,6 +226,26 @@ public class TitleSelectManager : MonoBehaviour
         //カメラ動作を入れるならここ
         // 小林：カメラ動作をズームインに変更
         // await CamSize(_inCameraSize, _camSizeSpeed);
+        //終わったらタイトルUIを表示　フェード
+        await Fade(_ingameCanvasGroup, 1, _canvasFadeSpeed);
+        //ボタンを押せるようにする
+        _canPushButton = true;
+
+        //ゲームモードを変更
+        _gameScene = GameStatus.GameSceneEnum.Game;
+        Debug.Log("Compreat:ToGame");
+    }
+
+    public async void ToGameFromTutorial()
+    {
+        if (_gameScene != GameStatus.GameSceneEnum.Tutorial) return;
+        // 効果音を再生
+        SoundManager.Instance.PlaySE("push_determining_button_53");
+        //ボタンを押せなくする
+        _canPushButton = false;
+        //選択画面UIを非表示　フェード
+        await Fade(_tutorialCanvasGroup, 0, _canvasFadeSpeed);
+        //カメラ動作を入れるならここ
         //終わったらタイトルUIを表示　フェード
         await Fade(_ingameCanvasGroup, 1, _canvasFadeSpeed);
         //ボタンを押せるようにする
@@ -228,8 +294,78 @@ public class TitleSelectManager : MonoBehaviour
     [SerializeField]
     private MusicManager _musicManager;
 
+    [SerializeField]
+    private TutorialFlowManager _tutorialManager;
+
+    public async void TransitionCanvas(GameStatus.GameSceneEnum fromGameStatus, GameStatus.GameSceneEnum toGameStatus)
+    {
+        if (_gameScene != fromGameStatus) return;
+
+        CanvasGroup fromCanvas = null;
+
+        switch (fromGameStatus)
+        {
+            case GameStatus.GameSceneEnum.Title:
+                fromCanvas = _titleCanvasGroup;
+                break;
+            case GameStatus.GameSceneEnum.Select:
+                fromCanvas = _selectCanvasGroup;
+                SoundManager.Instance?.StopBGM();
+                SoundManager.Instance?.PlayBGM("be_efficient");
+                break;
+            case GameStatus.GameSceneEnum.Tutorial:
+                fromCanvas = _tutorialCanvasGroup;
+                _tutorialManager.SetCanPlayTutorial(false);
+                break;
+            case GameStatus.GameSceneEnum.Game:
+                fromCanvas = _ingameCanvasGroup;
+                break;
+            default:
+                break;
+        }
+
+        CanvasGroup toCanvas = null;
+
+        switch (toGameStatus)
+        {
+            case GameStatus.GameSceneEnum.Title:
+                toCanvas = _titleCanvasGroup;
+                break;
+            case GameStatus.GameSceneEnum.Select:
+                toCanvas = _selectCanvasGroup;
+                SoundManager.Instance?.StopBGM();
+                SoundManager.Instance?.PlayBGM("bgm_temp_one_cut_reminder");
+                break;
+            case GameStatus.GameSceneEnum.Tutorial:
+                toCanvas = _tutorialCanvasGroup;
+                _tutorialManager.SetCanPlayTutorial(true);
+                break;
+            case GameStatus.GameSceneEnum.Game:
+                toCanvas = _ingameCanvasGroup;
+                break;
+            default:
+                break;
+        }
+
+        // 効果音を再生
+        SoundManager.Instance.PlaySE("push_determining_button_53");
+        //ボタンを押せなくする
+        _canPushButton = false;
+        //選択画面UIを非表示　フェード
+        await Fade(fromCanvas, 0, _canvasFadeSpeed);
+        //カメラ動作を入れるならここ
+        //終わったらタイトルUIを表示　フェード
+        await Fade(toCanvas, 1, _canvasFadeSpeed);
+        //ボタンを押せるようにする
+        _canPushButton = true;
+
+        //ゲームモードを変更
+        _gameScene = toGameStatus;
+        Debug.Log("Compreat:ToGame");
+    }
+
     /// <summary>
-    /// 難易度をEasyにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// 難易度をEasyにセットしたうえでインゲームへ移行、ボタンへのバインドを想定
     /// </summary>
     public void ToGameEasy()
     {
@@ -237,11 +373,12 @@ public class TitleSelectManager : MonoBehaviour
         MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
         _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
         _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
-        ToGame();
+
+        ToNextSceneFromSelect();
     }
 
     /// <summary>
-    /// 難易度をNomalにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// 難易度をNomalにセットしたうえでインゲームへ移行、ボタンへのバインドを想定
     /// </summary>
     public void ToGameNomal()
     {
@@ -249,11 +386,12 @@ public class TitleSelectManager : MonoBehaviour
         MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
         _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
         _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
-        ToGame();
+
+        ToNextSceneFromSelect();
     }
 
     /// <summary>
-    /// 難易度をHardにセットしたうえでタイトルへ移行、ボタンへのバインドを想定
+    /// 難易度をHardにセットしたうえでインゲームへ移行、ボタンへのバインドを想定
     /// </summary>
     public void ToGameHard()
     {
@@ -261,6 +399,18 @@ public class TitleSelectManager : MonoBehaviour
         MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
         _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
         _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+
+        ToNextSceneFromSelect();
+    }
+
+    private void ToNextSceneFromSelect()
+    {
+        // if (_isPlayTutorial)
+        // {
+        //     ToTutorial();
+        //     return;
+        // }
+
         ToGame();
     }
 

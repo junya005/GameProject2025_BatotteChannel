@@ -5,7 +5,6 @@ using BatotteChannel.GameState;
 using BatotteChannel.DataAssets;
 using BatotteChannel.InGame.Players;
 using System.Collections;
-using Unity.VisualScripting;
 
 namespace BatotteChannel.InGame.MusicSystem
 {
@@ -88,6 +87,9 @@ namespace BatotteChannel.InGame.MusicSystem
 
         [Tooltip("ENDテキストを表示させるオブジェクト"), SerializeField]
         private GameObject _endTextObj;
+
+        [Tooltip("楽曲データを設定"), SerializeField]
+        private MusicDataScriptableObject _MusicData;
 
         [Tooltip("楽曲のノーツ生成データベースを設定"), SerializeField]
         private GenerateSettingDataBase _generateSettingDataBase;
@@ -196,6 +198,7 @@ namespace BatotteChannel.InGame.MusicSystem
             // 初期設定
             SetAudioClip(_audioClip);
             // 一旦仮で実数値で設定してます
+
             _remainingTimeManager.SetMusicTime(0, 48);
             SetStanSecondsToNoteManagers();
             _endTextObj.SetActive(false);
@@ -420,6 +423,7 @@ namespace BatotteChannel.InGame.MusicSystem
         /// <param name="playerNumber"></param>
         private void GivePlayerInitiative(PlayerNumberState playerNumber)
         {
+            // 最後のノーツであればだれも主導権を握っていない状態に
             if (_generateSettingDataBase.generateSettingList.Count <= _genSetIndex)
             {
                 SetInitiativePlayerState(EInitiativePlayerState.None);

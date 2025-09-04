@@ -10,11 +10,17 @@ using Unity.VisualScripting;
 namespace BatotteChannel.InGame.Notes
 {
     /// <summary>
-    /// ノーツが取得されたときのコールバック
+    /// ノーツがGood判定で取得されたときのコールバック
     /// </summary>
     /// <param name="playerNumber">プレイヤー番号を取得できる</param>
     /// <returns>判定結果</returns>
     public delegate void GetGoodNoteCallBack(PlayerNumberState playerNumber);
+
+    /// <summary>
+    /// ノーツがMiss判定で取得されたときのコールバック
+    /// </summary>
+    /// <param name="playerNumber">プレイヤー番号</param>
+    public delegate void GetMissNoteCallBack(PlayerNumberState playerNumber);
 
     /// <summary>
     /// ノーツの管理に関するクラス
@@ -25,6 +31,8 @@ namespace BatotteChannel.InGame.Notes
         #region 変数
 
         public GetGoodNoteCallBack getNoteCallBack;
+
+        public GetMissNoteCallBack getMissNoteCallBack;
 
         [SerializeField]
         private bool isAutoPlayMode = false;
@@ -80,10 +88,15 @@ namespace BatotteChannel.InGame.Notes
         }
 
         /// <summary>スタン秒数</summary>
+        [SerializeField]
         private float _stanTimeSecond;
 
         /// <summary>スタン秒数のプロパティ</summary>
         public float StanTimeSecond { get { return _stanTimeSecond; } }
+
+        private List<int> _buttonNumberList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+        public float CorrectionValue { get; private set; }
 
         #endregion
 
@@ -94,6 +107,8 @@ namespace BatotteChannel.InGame.Notes
             // 初期化
             _generateNotes = new List<GameObject>();
             _generatedDummyNotes = new List<GameObject>();
+
+            CorrectionValue = 0.0f;
         }
 
         void Update()
@@ -104,6 +119,11 @@ namespace BatotteChannel.InGame.Notes
             }
             CheckNoteIsDeletingDistance();
             CheckDummyNoteIsDeletingDistance();
+        }
+
+        private void OnDisable()
+        {
+            DeleteAllNotes();
         }
 
         #endregion
@@ -125,7 +145,7 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// ノーツを生成する
         /// </summary>
-        public void GenerateNote(Vector2 generatePos)
+        public GameObject GenerateNote(Vector2 generatePos)
         {
             if (_isStopNoteGenerate == true)
             {
@@ -133,13 +153,14 @@ namespace BatotteChannel.InGame.Notes
                 dummyNote.GetComponent<NoteController>().SetIsDummyNotes(true);
                 _generatedDummyNotes.Add(dummyNote);
                 Debug.Log("スタン中のため、ダミーノーツを生成しました。");
-                return;
+                return dummyNote;
             }
             GameObject note = Instantiate(_notePrefab, generatePos, Quaternion.identity);
             _generateNotes.Add(note);
 #if UNITY_EDITOR
             Debug.Log($"ノーツの生成が完了しました(生成座標：{generatePos})");
 #endif
+            return note;
         }
 
         /// <summary>
@@ -168,12 +189,14 @@ namespace BatotteChannel.InGame.Notes
                 // チャンネルの切り替え
                 _televisionAnimation?.ChangeChannel(channelIndex);
 
+                CorrectionValue += noteController.GodDistance;
+
                 CountGotNote(judgement);
                 RemoveNoteInGenerateList(0);
 #if UNITY_EDITOR
                 Debug.Log("主導権者の変更を指示します。");
 #endif
-                getNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+                getNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
             }
             else if (judgement == JudgementState.MISS)
             {
@@ -185,8 +208,11 @@ namespace BatotteChannel.InGame.Notes
                 // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
                 RemoveNoteInGenerateList(0);
                 SetDummyNoteFromList(_stanTimeSecond);
-            }
 
+                PlayerController player;
+                if (player = transform.parent.gameObject.GetComponent<PlayerController>())
+                    getMissNoteCallBack.Invoke(player.PlayerNumber);
+            }
         }
 
         /// <summary>
@@ -210,6 +236,10 @@ namespace BatotteChannel.InGame.Notes
             // この行がないとMISS判定が表示されない(ミスしたノーツが即削除されてしまうため)
             RemoveNoteInGenerateList(0);
             SetDummyNoteFromList(_stanTimeSecond);
+
+            PlayerController player;
+            if (player = transform.parent.gameObject.GetComponent<PlayerController>())
+                getMissNoteCallBack.Invoke(player.PlayerNumber);
         }
 
         /// <summary>
@@ -267,7 +297,6 @@ namespace BatotteChannel.InGame.Notes
                     noteController.DeleteThisNote(0);
                     RemoveNoteInGenerateList(i);
                 }
-
             }
 
             StartCoroutine(StopGenerateNote(hideTime));
@@ -324,6 +353,32 @@ namespace BatotteChannel.InGame.Notes
             if (noteController.Distance >= 0.0f)
             {
                 JudgeMentNoteFromList(noteController.ButtonNumber);
+            }
+        }
+
+        /// <summary>
+        /// リストに格納されているオブジェクトを直接削除する
+        /// </summary>
+        public void DeleteAllNotes()
+        {
+            if (_generateNotes.Count != 0)
+            {
+                for (int i = 0; i < _generateNotes.Count; i++)
+                {
+                    Debug.Log($"リストから{i}番目のノートを削除します。");
+                    Destroy(_generateNotes[i]);
+                    RemoveNoteInGenerateList(i);
+                }
+            }
+
+            if (_generatedDummyNotes.Count != 0)
+            {
+                for (int i = 0; i < _generatedDummyNotes.Count; i++)
+                {
+                    Debug.Log($"リストから{i}番目のダミーノートを削除します。");
+                    Destroy(_generatedDummyNotes[i]);
+                    RemoveNoteInGenerateList(i, true);
+                }
             }
         }
 

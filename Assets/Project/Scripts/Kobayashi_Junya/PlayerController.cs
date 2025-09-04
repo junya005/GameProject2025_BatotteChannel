@@ -3,19 +3,10 @@ using UnityEngine.InputSystem;
 using BatotteChannel.InGame.Notes;
 using System.Collections;
 using BatotteChannel.InGame.MusicSystem;
+using BatotteChannel.Player;
 
 namespace BatotteChannel.InGame.Players
 {
-    /// <summary>
-    /// プレイヤー番号のステートマシン
-    /// PlayerController.csに記述されています
-    /// </summary>
-    public enum PlayerNumberState
-    {
-        One,
-        Two
-    }
-
     /// <summary>プレイヤー入力に関するクラス</summary>
     public class PlayerController : MonoBehaviour
     {
@@ -52,6 +43,12 @@ namespace BatotteChannel.InGame.Players
         /// <summary>アニメーションが開始されたか</summary>
         private bool _isAnimationStart;
 
+        /// <summary>
+        /// ビートアニメーションを開始するかのフラグ
+        /// </summary>
+        [SerializeField]
+        private bool _isBeatAnimation;
+
         /// <summary>プレイヤーのグラフィックを格納</summary>
         [SerializeField]
         private SpriteRenderer _playerGraphyic;
@@ -66,12 +63,21 @@ namespace BatotteChannel.InGame.Players
         private MusicManager _musicManager;
 
         /// <summary>
+        /// アニメーションクラスを設定する
+        /// </summary>
+        [SerializeField]
+        private AnimatorParamSetter _playerAnimatorParamSetter;
+
+        /// <summary>
         /// プレイヤー番号のプロパティ
         /// </summary>
         public PlayerNumberState PlayerNumber
         {
             get { return _playerNumber; }
         }
+
+        [SerializeField]
+        private PlayerMissedAnimation _playerMissedAnim;
 
         #endregion
 
@@ -84,6 +90,8 @@ namespace BatotteChannel.InGame.Players
 
             // 初期設定
             RegisterButton();
+
+            _noteManager.getMissNoteCallBack += PlayMissAnimation;
         }
 
         void Update()
@@ -93,8 +101,14 @@ namespace BatotteChannel.InGame.Players
             bool isMusicPlaying = (bool)_musicManager?.GetComponent<AudioSource>().isPlaying;
             if (isMusicPlaying && !_isAnimationStart)
             {
-                StartBeatAnimation();
+                if (_isBeatAnimation)
+                {
+                    StartBeatAnimation();
+                }
                 _isAnimationStart = true;
+                // リズムに合わせて揺れるアニメーションの開始
+                if (_playerAnimatorParamSetter != null)
+                    _playerAnimatorParamSetter.SetAnimationBool("isPlaying", true);
             }
         }
 
@@ -140,8 +154,21 @@ namespace BatotteChannel.InGame.Players
         /// <param name="buttonNumber">ボタン番号</param>
         private void GetNote(int buttonNumber)
         {
-            StartCoroutine(RemoconPushAnimation());
+            // StartCoroutine(RemoconPushAnimation());
+            if (_playerAnimatorParamSetter != null)
+                _playerAnimatorParamSetter.SetAnimationTrigger("Click");
             _noteManager.JudgeMentNoteFromList(buttonNumber);
+        }
+
+        /// <summary>
+        /// miss時のアニメーションの再生
+        /// </summary>
+        private void PlayMissAnimation(PlayerNumberState playerNumber)
+        {
+            // if (_playerAnimatorParamSetter != null)
+            //     _playerAnimatorParamSetter.SetAnimationTrigger("Missed");
+
+            _playerMissedAnim?.StartAnimation();
         }
 
         /// <summary>プレイヤー操作の取得</summary>
