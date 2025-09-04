@@ -73,6 +73,12 @@ public class TutorialNotesManager : MonoBehaviour
 #endif
     }
 
+    public void DeleteAllNotes()
+    {
+        _noteManagerPlayer1.DeleteAllNotes();
+        _noteManagerPlayer2.DeleteAllNotes();
+    }
+
     /// <summary>
     /// 現在番号から順番にノーツを生成する
     /// </summary>

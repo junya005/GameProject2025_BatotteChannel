@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.MusicSystem;
+using BatotteChannel.Tutorial;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -136,7 +137,6 @@ public class TitleSelectManager : MonoBehaviour
             if (_isPlayTutorial)
             {
                 TransitionCanvas(GameStatus.GameSceneEnum.Title, GameStatus.GameSceneEnum.Tutorial);
-                _isPlayTutorial = false;
                 return;
             }
 
@@ -294,10 +294,14 @@ public class TitleSelectManager : MonoBehaviour
     [SerializeField]
     private MusicManager _musicManager;
 
+    [SerializeField]
+    private TutorialFlowManager _tutorialManager;
+
     public async void TransitionCanvas(GameStatus.GameSceneEnum fromGameStatus, GameStatus.GameSceneEnum toGameStatus)
     {
-        CanvasGroup fromCanvas = null;
+        if (_gameScene != fromGameStatus) return;
 
+        CanvasGroup fromCanvas = null;
 
         switch (fromGameStatus)
         {
@@ -311,6 +315,7 @@ public class TitleSelectManager : MonoBehaviour
                 break;
             case GameStatus.GameSceneEnum.Tutorial:
                 fromCanvas = _tutorialCanvasGroup;
+                _tutorialManager.SetCanPlayTutorial(false);
                 break;
             case GameStatus.GameSceneEnum.Game:
                 fromCanvas = _ingameCanvasGroup;
@@ -333,6 +338,7 @@ public class TitleSelectManager : MonoBehaviour
                 break;
             case GameStatus.GameSceneEnum.Tutorial:
                 toCanvas = _tutorialCanvasGroup;
+                _tutorialManager.SetCanPlayTutorial(true);
                 break;
             case GameStatus.GameSceneEnum.Game:
                 toCanvas = _ingameCanvasGroup;
@@ -341,7 +347,6 @@ public class TitleSelectManager : MonoBehaviour
                 break;
         }
 
-        if (_gameScene != fromGameStatus) return;
         // å¯â âπÇçƒê∂
         SoundManager.Instance.PlaySE("push_determining_button_53");
         //É{É^ÉìÇâüÇπÇ»Ç≠Ç∑ÇÈ

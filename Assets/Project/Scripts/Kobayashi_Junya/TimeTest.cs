@@ -19,8 +19,6 @@ public class TimeTest : MonoBehaviour
     {
         if (isCount)
             time += Time.deltaTime;
-
-        Debug.Log(time);
     }
 
     public static void SetIsCount(bool value)

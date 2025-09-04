@@ -2181,6 +2181,7 @@ MonoBehaviour:
   _canvasFadeSpeed: 0.15
   _musicName: ThemeParken
   _musicManager: {fileID: 0}
+  _tutorialManager: {fileID: 5017732826584946863}
 --- !u!1 &8106301749356555059
 GameObject:
   m_ObjectHideFlags: 0

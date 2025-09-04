@@ -28,6 +28,11 @@ namespace BatotteChannel.Tutorial
         /// </summary>
         private bool _isStartTutorial;
 
+        /// <summary>
+        /// チュートリアルが再生可能かどうかのフラグ
+        /// </summary>
+        private bool _canPlayTutorial;
+
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         // Start is called before the first frame update
@@ -39,7 +44,27 @@ namespace BatotteChannel.Tutorial
         // Update is called once per frame
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Escape))
+                ReturnToTitle();
+
             CheckTutrorialState();
+        }
+
+        private void ReturnToTitle()
+        {
+            if (_isStartTutorial != true) return;
+
+#if UNITY_EDITOR
+            Debug.Log("チュートリアルを終了し、タイトルに戻ります。");
+#endif
+
+            _cancellationTokenSource.Cancel();
+            _tutorialPlayerManager.SetCanPlayerPressEnter(false);
+            _tutorialPlayerManager.ResetCanPlayersEnterPressed();
+            _tutorialNotesManager.DeleteAllNotes();
+            _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Tutorial, GameStatus.GameSceneEnum.Title);
+            _isStartTutorial = false;
+            _tutorialPlayerManager.ResetImages();
         }
 
         /// <summary>
@@ -57,13 +82,19 @@ namespace BatotteChannel.Tutorial
         /// </summary>
         private void CheckTutrorialState()
         {
-            if (_isStartTutorial == true) { return; }
+            if (_canPlayTutorial == false) return;
+            if (_isStartTutorial == true) return;
             if (_titleSelectManager.GameSceneState != GameStatus.GameSceneEnum.Tutorial) return;
 
             _isStartTutorial = true;
             _cancellationTokenSource = new CancellationTokenSource();
             var token = _cancellationTokenSource.Token;
             PlayTutorialAnimation(token);
+        }
+
+        public void SetCanPlayTutorial(bool value)
+        {
+            _canPlayTutorial = value;
         }
 
         /// <summary>
@@ -74,6 +105,7 @@ namespace BatotteChannel.Tutorial
             Debug.Log("チュートリアルを開始");
 
             // 準備
+            _tutorialPlayerManager.SetCanPlayerPressEnter(true);
             _tutorialNotesManager.SetCanGenerate(true);
             _tutorialLog.SetLogSprite(0);
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: token);
@@ -100,11 +132,27 @@ namespace BatotteChannel.Tutorial
 
         public void OnSkipTutorial()
         {
+            // プレイヤー操作を無効化
             _tutorialPlayerManager.SetCanPlayersInput(false);
+            _tutorialPlayerManager.SetCanPlayerPressEnter(false);
+
+            // UniTaskをキャンセル
             _cancellationTokenSource.Cancel();
+
+            // ノートマネージャーが生成できないように設定
             _tutorialNotesManager.SetCanGenerate(false);
-            _tutorialNotesManager.gameObject.SetActive(false);
+
+            // 画面移動を依頼
             _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Tutorial, GameStatus.GameSceneEnum.Select);
+
+            // チュートリアルが再生されたかのフラグをオフに
+            _isStartTutorial = false;
+
+            // _tutorialPlayerManager.SetCanPlayersInput(false);
+            // _cancellationTokenSource.Cancel();
+            // _tutorialNotesManager.SetCanGenerate(false);
+            // _tutorialNotesManager.gameObject.SetActive(false);
+
         }
     }
 }

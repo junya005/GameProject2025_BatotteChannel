@@ -11,6 +11,10 @@ namespace BatotteChannel.Tutorial
         public delegate void SkipTutorialEvent();
         public event SkipTutorialEvent _skipTutorialEventHandler;
 
+        private bool _canPlayerPressEnter = false;
+
+        public bool CanPlayerPressEnter { get { return _canPlayerPressEnter; } }
+
         [SerializeField]
         private Player _player1;
 
@@ -42,15 +46,27 @@ namespace BatotteChannel.Tutorial
 
         }
 
-        public void Initialize()
+        private void Initialize()
         {
             _player1._enterPressedEventHandler += OnPlayerEnterPressed;
             _player2._enterPressedEventHandler += OnPlayerEnterPressed;
+
+            ResetImages();
+        }
+
+        public void ResetImages()
+        {
+            Debug.Log("イメージをリセットします。");
 
             _player1PushImage.gameObject.SetActive(true);
             _player1OkImage.gameObject.SetActive(false);
             _player2PushImage.gameObject.SetActive(true);
             _player2OkImage.gameObject.SetActive(false);
+        }
+
+        public void SetCanPlayerPressEnter(bool value)
+        {
+            _canPlayerPressEnter = value;
         }
 
         void OnDisable()
@@ -73,6 +89,8 @@ namespace BatotteChannel.Tutorial
 
         private void OnPlayerEnterPressed(PlayerNumberState playerNumber)
         {
+            if (_canPlayerPressEnter == false) return;
+
             if (playerNumber == PlayerNumberState.One)
             {
                 _player1EnterPressed = true;
