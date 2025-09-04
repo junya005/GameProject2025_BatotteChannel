@@ -120,10 +120,11 @@ namespace BatotteChannel.GameManager
         /// <returns>勝者</returns>
         private EWinnerState JudgeWinOrLose(ResultData resultP1, ResultData resultP2)
         {
+            if (Mathf.FloorToInt(resultP1.initiativeTime) == Mathf.FloorToInt(resultP2.initiativeTime))
+                return EWinnerState.Draw;
+
             if (resultP1.initiativeTime >= resultP2.initiativeTime)
-            {
                 return EWinnerState.P1;
-            }
 
             return EWinnerState.P2;
         }
@@ -134,6 +135,14 @@ namespace BatotteChannel.GameManager
         /// <param name="winnerState"></param>
         private void DisplayWinOrLose(EWinnerState winnerState)
         {
+            if (winnerState == EWinnerState.Draw)
+            {
+                _drawBG.SetActive(true);
+                _winP1.SetActive(false);
+                _winP2.SetActive(false);
+                return;
+            }
+
             if (winnerState == EWinnerState.P1)
             {
                 _drawBG.SetActive(false);

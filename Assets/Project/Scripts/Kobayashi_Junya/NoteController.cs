@@ -3,55 +3,18 @@ using UnityEngine;
 
 namespace BatotteChannel.InGame.Notes
 {
-    /// <summary>NoteControllerのプロパティと機能を使用する場合はこれを経由する</summary>
-    public interface INoteController
-    {
-        /// <summary>削除距離フラグのゲッター</summary>
-        bool IsDeletingDistance { get; }
-        /// <summary>削除指示フラグのゲッター</summary>
-        bool IsDeletingScheduled { get; }
-        /// <summary>判定種類のインスタンスのゲッター</summary>
-        JudgementState NoteJudgement { get; }
-        /// <summary>ダミーノーツか否か</summary>
-        bool IsDummyNotes { get; }
-
-        /// <summary>
-        /// このノートを判定する
-        /// その後、このノートを1秒後に削除する
-        /// </summary>
-        /// <param name="judgement">判定結果を返す</param>
-        void JudgementNote(int buttonNumber, out JudgementState judgement);
-
-        /// <summary>
-        /// このノーツを判定する(入力期間を過ぎた場合はこちらを使用)
-        /// </summary>
-        /// <param name="judgement">判定結果を返す</param>
-        void JudgementNote(out JudgementState judgement);
-
-        /// <summary>
-        /// このノートを削除する
-        /// </summary>
-        /// <param name="t">削除までの時間</param>
-        void DeleteThisNote(float t, bool isTimeElapsed = false);
-
-        /// <summary>
-        /// ボタン入力が有効な範囲かチェックする
-        /// </summary>
-        /// <returns>ボタン入力が有効化</returns>
-        bool CheckButtonEnable();
-
-        /// <summary>
-        /// ダミーノーツにセットする
-        /// </summary>
-        /// <param name="boolean"></param>
-        void SetIsDummyNotes(bool boolean);
-    }
-
     /// <summary>判定の種類</summary>
     public enum JudgementState
     {
+        None,
         Good,
         MISS
+    }
+
+    public enum ENotePlayerState
+    {
+        Player1,
+        Player2
     }
 
     /// <summary>ノーツを動きに関するクラス</summary>
@@ -115,11 +78,15 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>ダミーノートかどうかのゲッタープロパティ</summary>
         public bool IsDummyNotes { get { return _isDummyNotes; } }
 
+        /// <summary>ボタン番号が付与されたか</summary>
+        private bool _isGaveButton = false;
+
         /// <summary>
         /// 前回のボタン番号
         /// staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
         /// </summary>
-        private static int _lastButtonNum;
+        private static int _lastButtonNumForPlayerOne;
+        private static int _lastButtonNumForPlayerTwo;
 
         [Header("オブジェクト参照")]
         [Tooltip("フレームのオブジェクトを設定してください"), SerializeField]
@@ -159,16 +126,30 @@ namespace BatotteChannel.InGame.Notes
         [Tooltip("Miss判定エフェクトのオブジェクトを格納"), SerializeField]
         private GameObject _missEffectPrefab;
 
+        [SerializeField]
+        private ENotePlayerState _notePlayerState = ENotePlayerState.Player1;
+
+        /// <summary>trueであればボタン番号がないノーツに</summary>
+        private bool _isNoneButtonNum = false;
+
+        /// <summary>trueであれば必ずミスになるノーツに</summary>
+        private bool _isGetNotPossible = false;
+
+        public float GodDistance { get; private set; }
+
         #endregion
 
         #region イベント関数
 
-        private void Start()
+        private void Awake()
         {
             // キャッシュ
             _buttonNumberSpriteRenderer = _buttonNumberDisplay.GetComponent<SpriteRenderer>();
             _judgementDisplaySpriteRenderer = _judgementDisplay.GetComponent<SpriteRenderer>();
+        }
 
+        private void Start()
+        {
             // 初期設定
             _outerFrame.transform.localScale = _defaltFrameSize;
             _judgementDisplaySpriteRenderer.sortingOrder = 51;
@@ -195,9 +176,12 @@ namespace BatotteChannel.InGame.Notes
         /// 前回のボタン番号を設定
         /// </summary>
         /// <param name="value"></param>
-        public void SetLastButtonNum(int value)
+        public void SetLastButtonNum(int value, ENotePlayerState playerState)
         {
-            _lastButtonNum = value;
+            if (playerState == ENotePlayerState.Player1)
+                _lastButtonNumForPlayerOne = value;
+            else
+                _lastButtonNumForPlayerTwo = value;
         }
 
         /// <summary>
@@ -221,10 +205,10 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         private void SettingDummyNote()
         {
-            Color halfAlpha = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-            _body.GetComponent<SpriteRenderer>().color = halfAlpha;
-            _outerFrame.GetComponent<SpriteRenderer>().color = halfAlpha;
-            _buttonNumberDisplay.GetComponent<SpriteRenderer>().color = halfAlpha;
+            Color halfColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+            _body.GetComponent<SpriteRenderer>().color = halfColor;
+            _outerFrame.GetComponent<SpriteRenderer>().color = halfColor;
+            _buttonNumberDisplay.GetComponent<SpriteRenderer>().color = halfColor;
         }
 
         /// <summary>
@@ -232,18 +216,23 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         private void GiveButtonNumber()
         {
+            if (_isGaveButton) return;
+
             _buttonNumber = Random.Range(1, 10);
+            int lastButtonNum = _notePlayerState == ENotePlayerState.Player1 ? _lastButtonNumForPlayerOne : _lastButtonNumForPlayerTwo;
             // ボタン番号が前回生成したノーツと被っていれば再帰する。
-            if (_buttonNumber == _lastButtonNum)
+            if (_buttonNumber == lastButtonNum)
             {
                 GiveButtonNumber();
+                return;
             }
-            int buttonNumImageIndex = _buttonNumber - 1;
+            int buttonNumImageIndex = _buttonNumber;
             _buttonNumberSpriteRenderer.sprite = _buttonNumImages[buttonNumImageIndex];
-            _lastButtonNum = _buttonNumber;
+            SetLastButtonNum(_buttonNumber, _notePlayerState);
 #if UNITY_EDITOR
             Debug.Log($"ノーツ番号を付与：{_buttonNumber}");
 #endif
+            _isGaveButton = true;
         }
 
         /// <summary>
@@ -264,7 +253,16 @@ namespace BatotteChannel.InGame.Notes
         /// <param name="judgement">判定結果を返す</param>
         public void JudgementNote(int buttonNumber, out JudgementState judgement)
         {
-            if (buttonNumber != _buttonNumber)
+            // 取得不可能なノーツであれば判定しない
+            if (_isGetNotPossible)
+            {
+                judgement = JudgementState.None;
+                return;
+            }
+
+            // ボタン判定
+            // ボタンが不一致で、かつボタン番号が設定されている場合はミス判定
+            if (buttonNumber != _buttonNumber && _isNoneButtonNum == false)
             {
                 HideNote();
                 judgement = JudgementState.MISS;
@@ -276,14 +274,20 @@ namespace BatotteChannel.InGame.Notes
                 return;
             }
 
+            // タイミングの判定
             HideNote();
+            GodDistance = _distance;
             float distance = Mathf.Abs(_distance);
             judgement = distance <= _goodJudgmentRange ? JudgementState.Good : JudgementState.MISS;
+
+            // 判定結果の表示
             string judgementText = distance <= _goodJudgmentRange ? TEXT_JUDGEMENT_GOOD : TEXT_JUDGEMENT_MISS;
             DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
-            Debug.Log($"ノーツを判定しました(判定結果：{judgement}, 距離：{_distance}, GOODの距離：|{_goodJudgmentRange}|)");
+            Debug.Log($"ノーツを判定しました(判定結果：{judgement}, 距離：{_distance}, GOODの距離：{_goodJudgmentRange}[絶対値])");
 #endif
+
+            // ノーツ削除
             DeleteThisNote(1.0f);
         }
 
@@ -362,6 +366,33 @@ namespace BatotteChannel.InGame.Notes
             Debug.Log($"ボタン入力が有効な範囲です距離:{_distance}");
 #endif
             return true;
+        }
+
+        public void SetButtonNumber(int buttonNumber)
+        {
+            // 0の場合、ボタン番号はない状態にする
+            if (buttonNumber == 0)
+            {
+                _isNoneButtonNum = true;
+                _buttonNumber = 0;
+            }
+            else
+            {
+                _buttonNumber = buttonNumber;
+            }
+
+            // ボタン画像の設定
+            _buttonNumberSpriteRenderer.sprite = _buttonNumImages[_buttonNumber];
+            _isGaveButton = true;
+        }
+
+        /// <summary>
+        /// 必ずミスにするかどうかをセットする
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetIsGetNotPossible(bool value)
+        {
+            _isGetNotPossible = value;
         }
 
         #endregion

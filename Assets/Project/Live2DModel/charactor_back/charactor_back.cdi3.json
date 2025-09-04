@@ -1,0 +1,145 @@
+{
+	"Version": 3,
+	"Parameters": [
+		{
+			"Id": "ParamAngleX",
+			"GroupId": "",
+			"Name": "角度 X"
+		},
+		{
+			"Id": "ParamAngleY",
+			"GroupId": "",
+			"Name": "角度 Y"
+		},
+		{
+			"Id": "ParamAngleZ",
+			"GroupId": "",
+			"Name": "角度 Z"
+		},
+		{
+			"Id": "ParamBodyAngleX",
+			"GroupId": "",
+			"Name": "体の回転 X"
+		},
+		{
+			"Id": "ParamBodyAngleY",
+			"GroupId": "",
+			"Name": "体の回転 Y"
+		},
+		{
+			"Id": "ParamBodyAngleZ",
+			"GroupId": "",
+			"Name": "体の回転 Z"
+		},
+		{
+			"Id": "ParamThumbPush",
+			"GroupId": "",
+			"Name": "親指push"
+		},
+		{
+			"Id": "ParamRotateArmL",
+			"GroupId": "",
+			"Name": "左腕の回転"
+		},
+		{
+			"Id": "ParamRotateLowerArmL",
+			"GroupId": "",
+			"Name": "左ひじの回転"
+		},
+		{
+			"Id": "ParamRotateHandL",
+			"GroupId": "",
+			"Name": "左手首の回転"
+		},
+		{
+			"Id": "ParamRotateArmR",
+			"GroupId": "",
+			"Name": "右腕の回転"
+		},
+		{
+			"Id": "ParamRotateLowerArmR",
+			"GroupId": "",
+			"Name": "右ひじの回転"
+		},
+		{
+			"Id": "ParamRotateHandR",
+			"GroupId": "",
+			"Name": "右手首の回転"
+		},
+		{
+			"Id": "ParamSwingFoodY",
+			"GroupId": "",
+			"Name": "フード/襟の揺れ"
+		},
+		{
+			"Id": "ParamBreath",
+			"GroupId": "",
+			"Name": "呼吸"
+		},
+		{
+			"Id": "ParamSwingHair01",
+			"GroupId": "",
+			"Name": "髪の毛揺れ1"
+		},
+		{
+			"Id": "ParamSwingHair02",
+			"GroupId": "",
+			"Name": "髪の毛揺れ2"
+		},
+		{
+			"Id": "ParamSwingHair03",
+			"GroupId": "",
+			"Name": "髪の毛揺れ3"
+		},
+		{
+			"Id": "ParamSwingHair04",
+			"GroupId": "",
+			"Name": "髪の毛揺れ4"
+		},
+		{
+			"Id": "Paramreflein",
+			"GroupId": "",
+			"Name": "反転"
+		},
+		{
+			"Id": "ParamscaleX",
+			"GroupId": "",
+			"Name": "全体伸縮X"
+		},
+		{
+			"Id": "ParamscaleY",
+			"GroupId": "",
+			"Name": "全体伸縮Y"
+		},
+		{
+			"Id": "ParamCharactorSwitch",
+			"GroupId": "",
+			"Name": "キャラ切り替え"
+		}
+	],
+	"ParameterGroups": [],
+	"Parts": [
+		{
+			"Id": "Part3",
+			"Name": "girl_back.psd"
+		},
+		{
+			"Id": "Part",
+			"Name": "男"
+		},
+		{
+			"Id": "Part2",
+			"Name": "女"
+		}
+	],
+	"CombinedParameters": [
+		[
+			"ParamAngleX",
+			"ParamAngleY"
+		],
+		[
+			"ParamscaleX",
+			"ParamscaleY"
+		]
+	]
+}
