@@ -65,6 +65,8 @@ namespace BatotteChannel.Tutorial
             _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Tutorial, GameStatus.GameSceneEnum.Title);
             _isStartTutorial = false;
             _tutorialPlayerManager.ResetImages();
+            _tutorialPlayerManager.ResetCanPlayersEnterPressed();
+
         }
 
         /// <summary>
@@ -147,6 +149,12 @@ namespace BatotteChannel.Tutorial
 
             // チュートリアルが再生されたかのフラグをオフに
             _isStartTutorial = false;
+
+            // Readyイメージをリセット
+            _tutorialPlayerManager.ResetImages();
+
+            // エンター押下状態をリセット
+            _tutorialPlayerManager.ResetCanPlayersEnterPressed();
 
             // _tutorialPlayerManager.SetCanPlayersInput(false);
             // _cancellationTokenSource.Cancel();
