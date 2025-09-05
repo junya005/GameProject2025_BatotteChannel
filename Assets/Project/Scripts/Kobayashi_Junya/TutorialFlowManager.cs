@@ -144,6 +144,9 @@ namespace BatotteChannel.Tutorial
             // ノートマネージャーが生成できないように設定
             _tutorialNotesManager.SetCanGenerate(false);
 
+            // 現在のノーツをすべて削除
+            _tutorialNotesManager.DeleteAllNotes();
+
             // 画面移動を依頼
             _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Tutorial, GameStatus.GameSceneEnum.Select);
 
