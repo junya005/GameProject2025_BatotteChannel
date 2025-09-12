@@ -7,6 +7,7 @@ namespace BatotteChannel.InGame.Notes
     public enum JudgementState
     {
         None,
+        Pass,
         Good,
         MISS
     }
@@ -271,9 +272,9 @@ namespace BatotteChannel.InGame.Notes
                 HideNote();
                 judgement = JudgementState.MISS;
 
-                // キッズノーツであればGoodに
+                // キッズノーツであればPassに
                 if (_isKidsNotes)
-                    judgement = JudgementState.Good;
+                    judgement = JudgementState.Pass;
 
                 DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
@@ -289,9 +290,9 @@ namespace BatotteChannel.InGame.Notes
             float distance = Mathf.Abs(_distance);
             judgement = distance <= _goodJudgmentRange ? JudgementState.Good : JudgementState.MISS;
 
-            // キッズノーツであればGoodに
-            if (_isKidsNotes)
-                judgement = JudgementState.Good;
+            // キッズノーツであればPassに
+            if (_isKidsNotes && judgement == JudgementState.MISS)
+                judgement = JudgementState.Pass;
 
             // 判定結果の表示
             string judgementText = distance <= _goodJudgmentRange ? TEXT_JUDGEMENT_GOOD : TEXT_JUDGEMENT_MISS;
@@ -331,7 +332,7 @@ namespace BatotteChannel.InGame.Notes
             Debug.Log($"次の判定結果を表示します：{judgementState}");
 #endif
 
-            if (judgementState == JudgementState.Good)
+            if (judgementState == JudgementState.Good || judgementState == JudgementState.Pass)
             {
                 Instantiate(_goodEffectPrefab, transform.position, Quaternion.identity);
                 return;

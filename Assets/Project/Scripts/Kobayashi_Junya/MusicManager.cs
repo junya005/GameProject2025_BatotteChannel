@@ -439,8 +439,18 @@ namespace BatotteChannel.InGame.MusicSystem
         /// コールバック関数として実装する
         /// </summary>
         /// <param name="playerNumber">プレイヤーの番号</param>
-        public void OnGetNote(PlayerNumberState playerNumber)
+        public void OnGetNote(PlayerNumberState playerNumber, float correctionValue)
         {
+            // 誤差分スコアに反映させる
+            if (playerNumber == PlayerNumberState.One)
+            {
+                _initiativeTimeP1 += correctionValue;
+            }
+            else if (playerNumber == PlayerNumberState.Two)
+            {
+                _initiativeTimeP2 += correctionValue;
+            }
+
             GivePlayerInitiative(playerNumber);
             PlayChannelChangeEffect(playerNumber);
         }

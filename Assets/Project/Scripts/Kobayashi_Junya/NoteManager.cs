@@ -12,7 +12,7 @@ namespace BatotteChannel.InGame.Notes
     /// </summary>
     /// <param name="playerNumber">プレイヤー番号を取得できる</param>
     /// <returns>判定結果</returns>
-    public delegate void GetGoodNoteCallBack(PlayerNumberState playerNumber);
+    public delegate void GetGoodNoteCallBack(PlayerNumberState playerNumber, float correctionValue);
 
     /// <summary>
     /// ノーツがMiss判定で取得されたときのコールバック
@@ -236,7 +236,21 @@ namespace BatotteChannel.InGame.Notes
 #if UNITY_EDITOR
                 Debug.Log("主導権者の変更を指示します。");
 #endif
-                getNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+                getNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber, CorrectionValue);
+            }
+            else if (judgement == JudgementState.Pass)
+            {
+                // 効果音の再生
+                SoundManager.Instance?.PlaySE("button26");
+
+                CorrectionValue += noteController.GodDistance;
+
+                CountGotNote(judgement);
+                RemoveNoteInGenerateList(0);
+#if UNITY_EDITOR
+                Debug.Log("主導権者の変更を指示します。");
+#endif
+                getNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber, CorrectionValue);
             }
             else if (judgement == JudgementState.MISS)
             {
