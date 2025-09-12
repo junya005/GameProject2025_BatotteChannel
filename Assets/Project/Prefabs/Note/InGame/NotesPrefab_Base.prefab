@@ -155,6 +155,10 @@ MonoBehaviour:
   _goodEffectPrefab: {fileID: 1394697561563053247, guid: 8c759752261ad5442bb349385cb2346a, type: 3}
   _missEffectPrefab: {fileID: 6934200198551048148, guid: cf499b474bf5a7e46a290841a8ee2a67, type: 3}
   _notePlayerState: 0
+  _spriteRenderers:
+  - {fileID: 5770215157672971006}
+  - {fileID: 8812766219855025278}
+  - {fileID: 21260017271825287}
 --- !u!1 &3291753611606999690
 GameObject:
   m_ObjectHideFlags: 0
