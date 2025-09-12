@@ -4,8 +4,6 @@ using UnityEngine;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.Players;
 using BatotteChannel.InGame.UI;
-using UnityEngine.Rendering.Universal;
-using Unity.VisualScripting;
 
 namespace BatotteChannel.InGame.Notes
 {
@@ -106,6 +104,9 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>生成番号(ノーツの重ね順決定時に使用)</summary>
         private int _genNum;
 
+        /// <summary>キッズモードかどうか</summary>
+        private bool _isKidsMode = false;
+
         #endregion
 
         #region イベント関数
@@ -170,6 +171,8 @@ namespace BatotteChannel.InGame.Notes
                 NoteController noteControllerOfDummyNote = dummyNote.GetComponent<NoteController>();
                 noteControllerOfDummyNote.SetIsDummyNotes(true);                                        // ダミーノーツに設定
                 noteControllerOfDummyNote.SetOrderInLayer(orderNum);                                    // ノーツの重ね順を設定
+                if (_isKidsMode)
+                    noteControllerOfDummyNote.SetIsKidsNotes(true);                                     // キッズモードの場合はキッズノーツに設定する
 
                 // リストに生成したノーツを格納
                 _generatedDummyNotes.Add(dummyNote);
@@ -188,6 +191,8 @@ namespace BatotteChannel.InGame.Notes
             // 生成したノーツの各種設定等
             NoteController noteControllerOfNote = note.GetComponent<NoteController>();
             noteControllerOfNote.SetOrderInLayer(orderNum);                                 // ノーツの重ね順を設定
+            if (_isKidsMode)
+                noteControllerOfNote.SetIsKidsNotes(true);                                  // キッズモードの場合はキッズノーツに設定する
 
             // リストに生成したノーツを格納
             _generateNotes.Add(note);
@@ -424,6 +429,19 @@ namespace BatotteChannel.InGame.Notes
         public void SetGenNum(int value)
         {
             _genNum = value;
+        }
+
+        /// <summary>
+        /// キッズモードにするかどうかを設定する
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetKidsMode(bool value)
+        {
+            _isKidsMode = value;
+
+#if UNITY_EDITOR
+            Debug.Log($"キッズモードを{_isKidsMode}に設定しました。");
+#endif
         }
 
         #endregion

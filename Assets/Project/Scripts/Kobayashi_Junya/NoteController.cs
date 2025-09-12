@@ -81,11 +81,10 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>ボタン番号が付与されたか</summary>
         private bool _isGaveButton = false;
 
-        /// <summary>
-        /// 前回のボタン番号
-        /// staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
-        /// </summary>
+        // staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
+        /// <summary>前回のボタン番号(プレイヤー1)</summary>
         private static int _lastButtonNumForPlayerOne;
+        /// <summary>前回のボタン番号(プレイヤー2)</summary>
         private static int _lastButtonNumForPlayerTwo;
 
         [Header("オブジェクト参照")]
@@ -142,6 +141,9 @@ namespace BatotteChannel.InGame.Notes
         [SerializeField, Tooltip("重ね順通りにRendererを設定してください")]
         private List<SpriteRenderer> _spriteRenderers;
 
+        /// <summary>キッズモード用のノーツかどうか</summary>
+        private bool _isKidsNotes = false;
+
         #endregion
 
         #region イベント関数
@@ -192,17 +194,14 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// ダミーノーツに設定する
         /// </summary>
-        /// <param name="boolean">ダミーノーツにするかどうか</param>
-        public void SetIsDummyNotes(bool boolean)
+        /// <param name="isSetDummy">ダミーノーツにするかどうか</param>
+        public void SetIsDummyNotes(bool isSetDummy)
         {
 #if UNITY_EDITOR
-            if (boolean) Debug.Log("このノートはダミーノートに設定されました。ダミーノートは入力を受け付けず、判定結果にも影響しません。");
+            if (isSetDummy) Debug.Log("このノートはダミーノートに設定されました。ダミーノートは入力を受け付けず、判定結果にも影響しません。");
 #endif
-            _isDummyNotes = boolean;
-            if (_isDummyNotes)
-            {
-                SettingDummyNote();
-            }
+            _isDummyNotes = isSetDummy;
+            SettingDummyNote();
         }
 
         /// <summary>
@@ -271,6 +270,11 @@ namespace BatotteChannel.InGame.Notes
             {
                 HideNote();
                 judgement = JudgementState.MISS;
+
+                // キッズノーツであればGoodに
+                if (_isKidsNotes)
+                    judgement = JudgementState.Good;
+
                 DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
                 Debug.Log("ノーツを判定しました(判定結果：ボタンの不一致)");
@@ -284,6 +288,10 @@ namespace BatotteChannel.InGame.Notes
             GodDistance = _distance;
             float distance = Mathf.Abs(_distance);
             judgement = distance <= _goodJudgmentRange ? JudgementState.Good : JudgementState.MISS;
+
+            // キッズノーツであればGoodに
+            if (_isKidsNotes)
+                judgement = JudgementState.Good;
 
             // 判定結果の表示
             string judgementText = distance <= _goodJudgmentRange ? TEXT_JUDGEMENT_GOOD : TEXT_JUDGEMENT_MISS;
@@ -412,6 +420,15 @@ namespace BatotteChannel.InGame.Notes
                 orderNum++;
 
             }
+        }
+
+        /// <summary>
+        /// キッズノーツにするかどうかを設定する
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetIsKidsNotes(bool value)
+        {
+            _isKidsNotes = value;
         }
 
         #endregion

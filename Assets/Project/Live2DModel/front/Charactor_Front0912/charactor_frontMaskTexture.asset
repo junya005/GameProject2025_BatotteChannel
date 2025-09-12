@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 978cd553a03c19b4ca50425afaf6c8d0, type: 3}
-  m_Name: BGM1_KZ_GenerateSettings_6
+  m_Script: {fileID: 11500000, guid: b7106950a06563f4a893b4e239e2e1ac, type: 3}
+  m_Name: charactor_frontMaskTexture
   m_EditorClassIdentifier: 
-  player: 1
-  timing: 48
-  isUseSubBeat: 0
-  subTiming: 0
-  generatePos: {x: -1.9798322, y: -1.130419, z: 0}
+  _size: 1024
+  _subdivisions: 3
+  _renderTextureCount: 0

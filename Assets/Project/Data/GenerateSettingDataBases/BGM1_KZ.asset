@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: BGM1_KZ
   m_EditorClassIdentifier: 
   generateSettingList:
-  - {fileID: 11400000, guid: 6963952c1fb7a3b46bcddba83919a2cd, type: 2}
   - {fileID: 11400000, guid: 473b43287abce9544adc43a31f4adac7, type: 2}
   - {fileID: 11400000, guid: a30c063df0e378045b7a0fcb83c41e77, type: 2}
   - {fileID: 11400000, guid: 3db0da10c915cb64c9ba7b8bb863dd15, type: 2}
@@ -25,3 +24,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d38e11add43ee284d9e79a202840a60d, type: 2}
   - {fileID: 11400000, guid: 344c3bb5de857fd42a622b3b05e2bcdd, type: 2}
   - {fileID: 11400000, guid: 06256f91265e32b458e68d97091b5548, type: 2}
+  - {fileID: 11400000, guid: 8ae58123b063db540bed7530260f763d, type: 2}

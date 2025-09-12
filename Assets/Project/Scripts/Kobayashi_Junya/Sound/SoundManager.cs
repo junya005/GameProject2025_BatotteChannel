@@ -6,8 +6,10 @@ namespace BatotteChannel.AudioSystem
 {
     /// <summary>
     /// サウンドドライバー
-    /// ファイル名をstringで引数に指定し、PlayBGM, PlaySE関数で実行することで音を再生できる
     /// </summary>
+    /// <remarks>
+    /// ファイル名をstringで引数に指定し、PlayBGM, PlaySE関数で実行することで音を再生できる
+    /// </remarks>
     public class SoundManager : Singleton<SoundManager>
     {
         [Header("アセット参照")]
@@ -28,6 +30,7 @@ namespace BatotteChannel.AudioSystem
 
             if (_isInitialized) return;
 
+            // BGM配列の作成
             foreach (var clip in _audioList.BGMList)
             {
                 var audioSource = this.gameObject.AddComponent<AudioSource>();
@@ -37,6 +40,7 @@ namespace BatotteChannel.AudioSystem
                 _bgmAudioSources.Add(audioSource.clip.name, audioSource);
             }
 
+            // SE配列の作成
             foreach (var clip in _audioList.SEList)
             {
                 var audioSource = this.gameObject.AddComponent<AudioSource>();
@@ -50,9 +54,11 @@ namespace BatotteChannel.AudioSystem
         }
 
         /// <summary>
-        /// BGMを再生する、再生されているBGMがある場合はReturnされる
-        /// よって、これを実行する前にStopBGMメゾットを実行しておくことを推奨します
+        /// BGMを再生する、再生されているBGMがある場合は処理がスキップされます
         /// </summary>
+        /// <remarks>
+        /// よって、これを実行する前にStopBGMメゾットを実行しておくことを推奨します
+        /// </remarks>
         /// <param name="name">効果音ファイル名(拡張子を除く)</param>
         public void PlayBGM(string name)
         {
@@ -83,6 +89,10 @@ namespace BatotteChannel.AudioSystem
             }
         }
 
+        /// <summary>
+        /// BGMのボリュームを設定する
+        /// </summary>
+        /// <param name="volume"></param>
         public void SetBgmVolume(float volume)
         {
             foreach (var audioSource in _bgmAudioSources)
