@@ -440,10 +440,10 @@ MonoBehaviour:
   - {fileID: 6288718824292041342}
   _moveAnimSpeed: 1.5
   _moveAnimDelay: 0.3
-  _moveAnimAddvalue: 50
+  _moveAnimAddvalue: 20
   _moveAcceAnimSpeed: 0.5
-  _moveAcceAnimDelay: 0.2
-  _moveAcceAnimAddvalueOffset: {x: 50, y: 50}
+  _moveAcceAnimDelay: 0.4
+  _moveAcceAnimAddvalueOffset: {x: 15, y: 15}
 --- !u!1 &8315899029674843651
 GameObject:
   m_ObjectHideFlags: 0

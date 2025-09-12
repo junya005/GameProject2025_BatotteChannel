@@ -316,7 +316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5682720393411327351
 RectTransform:
   m_ObjectHideFlags: 0
@@ -367,10 +367,10 @@ MonoBehaviour:
   - {fileID: 8102941105320692778}
   - {fileID: 82263480946359982}
   - {fileID: 7149122937483210694}
-  _moveAnimSpeed: 0.5
+  _moveAnimSpeed: 0.3
   _moveAnimDelay: 0.2
-  _moveAnimAddvalue: 70
-  _rotAnimSpeed: 2
+  _moveAnimAddvalue: 20
+  _rotAnimSpeed: 2.5
   _rotAnimDelay: 0
   _rotAnimAddvalue: -360
 --- !u!1 &3255161996715449142
