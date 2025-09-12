@@ -135,7 +135,12 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>trueであれば必ずミスになるノーツに</summary>
         private bool _isGetNotPossible = false;
 
+        /// <summary>ノーツ取得時の距離ゲッター</summary>
         public float GodDistance { get; private set; }
+
+        /// <summary>ノーツのレンダラーを格納</summary>
+        [SerializeField, Tooltip("重ね順通りにRendererを設定してください")]
+        private List<SpriteRenderer> _spriteRenderers;
 
         #endregion
 
@@ -393,6 +398,20 @@ namespace BatotteChannel.InGame.Notes
         public void SetIsGetNotPossible(bool value)
         {
             _isGetNotPossible = value;
+        }
+
+        /// <summary>スプライトの重ね順を設定する</summary>
+        public void SetOrderInLayer(int startValue)
+        {
+            int orderNum = startValue;
+
+            // スプライトの重ね順を順番に設定
+            foreach (SpriteRenderer renderer in _spriteRenderers)
+            {
+                renderer.sortingOrder = orderNum;
+                orderNum++;
+
+            }
         }
 
         #endregion
