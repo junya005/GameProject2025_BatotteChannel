@@ -6,6 +6,7 @@ using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.MusicSystem;
 using BatotteChannel.Tutorial;
 using BatotteChannel.DataAssets;
+using UnityEngine.EventSystems;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -74,6 +75,15 @@ public class TitleSelectManager : MonoBehaviour
     /// ゲーム画面UICanvasGroup
     /// </summary>
     private CanvasGroup _ingameCanvasGroup;
+    /// <summary>
+    /// ゲーム画面UICanvas
+    /// </summary>
+    [SerializeField, Label("ストーリー画面UICanvas")]
+    private Canvas _storyCanvas;
+    /// <summary>
+    /// ゲーム画面UICanvasGroup
+    /// </summary>
+    private CanvasGroup _storyCanvasGroup;
 
     /// <summary>
     /// ズームイン画面カメラサイズ
@@ -103,14 +113,17 @@ public class TitleSelectManager : MonoBehaviour
         _selectCanvasGroup = _selectCanvas.GetComponent<CanvasGroup>();
         _tutorialCanvasGroup = _tutorialCanvas.GetComponent<CanvasGroup>();
         _ingameCanvasGroup = _ingameCanvas.GetComponent<CanvasGroup>();
+        _storyCanvasGroup = _storyCanvas.GetComponent<CanvasGroup>();
         _canPushButton = true;
         //タイトル表示からスタート
         _gameScene = GameStatus.GameSceneEnum.Title;
+        _titleSelectEventSystem.enabled = false;
         _mainCamera.orthographicSize = _inCameraSize;
         _titleCanvasGroup.alpha = 1.0f;
         _selectCanvasGroup.alpha = 0f;
         _tutorialCanvasGroup.alpha = 0.0f;
         _ingameCanvasGroup.alpha = 0f;
+        _storyCanvasGroup.alpha = 0f;
         // BGM再生
         SoundManager.Instance.SetBgmVolume(0.5f);
         SoundManager.Instance.StopBGM();
@@ -302,9 +315,8 @@ public class TitleSelectManager : MonoBehaviour
     [SerializeField]
     private TutorialFlowManager _tutorialManager;
 
-    /// <summary>ストーリーのキャンバス</summary>
     [SerializeField]
-    private CanvasGroup _storyCanvas;
+    private EventSystem _titleSelectEventSystem;
 
     /// <summary>
     /// 画面を遷移させる
@@ -324,6 +336,10 @@ public class TitleSelectManager : MonoBehaviour
             return;
         }
 
+#if UNITY_EDITOR
+        Debug.Log($"{fromGameStatus}から{toGameStatus}へ遷移します");
+#endif
+
         // ゲームステータスが追加されたら、それぞれのSwitch文を追記してください
         // 元(現在)の画面のキャンバスを取得
         CanvasGroup fromCanvas = null;
@@ -336,6 +352,7 @@ public class TitleSelectManager : MonoBehaviour
                 fromCanvas = _selectCanvasGroup;
                 SoundManager.Instance?.StopBGM();
                 SoundManager.Instance?.PlayBGM("be_efficient");
+                _titleSelectEventSystem.enabled = false;
                 break;
             case GameStatus.GameSceneEnum.Tutorial:
                 fromCanvas = _tutorialCanvasGroup;
@@ -345,7 +362,7 @@ public class TitleSelectManager : MonoBehaviour
                 fromCanvas = _ingameCanvasGroup;
                 break;
             case GameStatus.GameSceneEnum.Story:
-                fromCanvas = _storyCanvas;
+                fromCanvas = _storyCanvasGroup;
                 break;
             default:
                 // ステートが無効な範囲であればエラーを出力し処理を中断
@@ -366,6 +383,7 @@ public class TitleSelectManager : MonoBehaviour
                 toCanvas = _selectCanvasGroup;
                 SoundManager.Instance?.StopBGM();
                 SoundManager.Instance?.PlayBGM("Chearful_Fight");
+                _titleSelectEventSystem.enabled = true;
                 break;
             case GameStatus.GameSceneEnum.Tutorial:
                 toCanvas = _tutorialCanvasGroup;
@@ -375,7 +393,7 @@ public class TitleSelectManager : MonoBehaviour
                 toCanvas = _ingameCanvasGroup;
                 break;
             case GameStatus.GameSceneEnum.Story:
-                toCanvas = _storyCanvas;
+                toCanvas = _storyCanvasGroup;
                 break;
             default:
                 // ステートが無効な範囲であればエラーを出力し処理を中断
@@ -469,10 +487,12 @@ public class TitleSelectManager : MonoBehaviour
     /// </remarks>
     private void ToNextSceneFromSelect()
     {
+        Debug.Log("次の画面へ遷移します");
+
         // ストーリー画面へ遷移
         TransitionCanvas(_gameScene, GameStatus.GameSceneEnum.Story);
 
-        //ToGame();
+        // ToGame();
     }
 
     #endregion

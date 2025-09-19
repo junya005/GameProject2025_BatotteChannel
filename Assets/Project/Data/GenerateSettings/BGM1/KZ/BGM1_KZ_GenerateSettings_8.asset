@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BGM1_KZ_GenerateSettings_8
   m_EditorClassIdentifier: 
   player: 1
-  timing: 64
+  timing: 65
   isUseSubBeat: 0
   subTiming: 0
   generatePos: {x: 0.3127016, y: 0.5392546, z: 0}

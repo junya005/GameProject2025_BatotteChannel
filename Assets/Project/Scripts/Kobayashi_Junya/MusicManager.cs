@@ -208,6 +208,11 @@ namespace BatotteChannel.InGame.MusicSystem
             // 秒数換算に使用します
             _noteManagerP1.getNoteCallBack += OnGetNote;
             _noteManagerP2.getNoteCallBack += OnGetNote;
+
+            // ノーツをミスした時のイベント処理を登録
+            // 秒数計上終了時に使用
+            _noteManagerP1.getMissNoteCallBack += OnMissNote;
+            _noteManagerP2.getMissNoteCallBack += OnMissNote;
         }
 
         /// <summary>
@@ -436,7 +441,7 @@ namespace BatotteChannel.InGame.MusicSystem
         }
 
         /// <summary>
-        /// コールバック関数として実装する
+        /// ノーツ取得時の処理(NoteManagerのイベントへバインド)
         /// </summary>
         /// <param name="playerNumber">プレイヤーの番号</param>
         public void OnGetNote(PlayerNumberState playerNumber, float correctionValue)
@@ -453,6 +458,19 @@ namespace BatotteChannel.InGame.MusicSystem
 
             GivePlayerInitiative(playerNumber);
             PlayChannelChangeEffect(playerNumber);
+        }
+
+        /// <summary>
+        /// ノーツミス時の処理(NoteManagerのイベントへバインド)
+        /// </summary>
+        public void OnMissNote(PlayerNumberState playerNumber)
+        {
+            // 最後のノーツであればだれも主導権を握っていない状態に
+            if (_generateSettingDataBase.generateSettingList.Count <= _genSetIndex)
+            {
+                SetInitiativePlayerState(EInitiativePlayerState.None);
+                return;
+            }
         }
 
         /// <summary>

@@ -96,6 +96,13 @@ public class StoryAnimManager : MonoBehaviour
     private float sisbroY4;
     #endregion
 
+    #region イベント変数
+
+    public delegate void CompleteAnimEvent();
+    public event CompleteAnimEvent completeAnimEventHandler;
+
+    #endregion
+
     void Start()
     {
         //TweenAnimation();
@@ -159,7 +166,7 @@ public class StoryAnimManager : MonoBehaviour
         scene4.DOFade(0, objFadeTime);
         //終了時に呼ぶ処理
 
-
+        completeAnimEventHandler.Invoke();
     }
 
     /// <summary>
@@ -232,7 +239,7 @@ public class StoryAnimManager : MonoBehaviour
         sister_3rd.localPosition = new Vector2(sister_3rd.localPosition.x, -1000);
         brother_3rd.localPosition = new Vector2(brother_3rd.localPosition.x, -1000);
         tv_3rd.localPosition = new Vector2(tv_3rd.localPosition.x, 1000);
-        for(int i = 0; i < piList.Count; i++)
+        for (int i = 0; i < piList.Count; i++)
         {
             piList[i].localScale = new Vector2(0.0f, 0.0f);
         }
