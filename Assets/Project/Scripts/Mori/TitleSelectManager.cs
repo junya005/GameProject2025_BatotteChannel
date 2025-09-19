@@ -126,6 +126,7 @@ public class TitleSelectManager : MonoBehaviour
         _storyCanvasGroup.alpha = 0f;
         // BGM再生
         SoundManager.Instance.SetBgmVolume(0.5f);
+        SoundManager.Instance.SetBgmVolume(1.0f, "Chearful_Fight");
         SoundManager.Instance.StopBGM();
         SoundManager.Instance.PlayBGM("be_efficient");
     }
@@ -148,13 +149,16 @@ public class TitleSelectManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             if (_gameScene != GameStatus.GameSceneEnum.Title) return;
-            if (_isPlayTutorial)
-            {
-                TransitionCanvas(GameStatus.GameSceneEnum.Title, GameStatus.GameSceneEnum.Tutorial);
-                return;
-            }
 
-            TransitionCanvas(GameStatus.GameSceneEnum.Title, GameStatus.GameSceneEnum.Select);
+            // チュートリアルはスキップ可能になったためコメントにします
+            // if (_isPlayTutorial)
+            // {
+            //     TransitionCanvas(GameStatus.GameSceneEnum.Title, GameStatus.GameSceneEnum.Tutorial);
+            //     return;
+            // }
+
+            // タイトルの次の画面へ移動(変更する場合は第2引数を編集する)
+            TransitionCanvas(GameStatus.GameSceneEnum.Title, GameStatus.GameSceneEnum.Story);
         }
     }
 
@@ -490,9 +494,9 @@ public class TitleSelectManager : MonoBehaviour
         Debug.Log("次の画面へ遷移します");
 
         // ストーリー画面へ遷移
-        TransitionCanvas(_gameScene, GameStatus.GameSceneEnum.Story);
+        // TransitionCanvas(_gameScene, GameStatus.GameSceneEnum.Story);
 
-        // ToGame();
+        ToGame();
     }
 
     #endregion

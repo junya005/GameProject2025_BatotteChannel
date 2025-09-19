@@ -223,6 +223,13 @@ namespace BatotteChannel.InGame.Notes
         {
             if (_isGaveButton) return;
 
+            // キッズモードであれば番号表示はなくす
+            if (_isKidsNotes)
+            {
+                SetButtonNumber(0);
+                return;
+            }
+
             _buttonNumber = Random.Range(1, 10);
             int lastButtonNum = _notePlayerState == ENotePlayerState.Player1 ? _lastButtonNumForPlayerOne : _lastButtonNumForPlayerTwo;
             // ボタン番号が前回生成したノーツと被っていれば再帰する。

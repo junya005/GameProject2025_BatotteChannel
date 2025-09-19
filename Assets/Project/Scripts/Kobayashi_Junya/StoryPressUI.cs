@@ -13,20 +13,23 @@ public class StoryPressUI : MonoBehaviour
     [SerializeField]
     private GameObject _pressReadyUIP2;
 
+    /// <summary>押されたUI(Player1)</summary>
     [SerializeField]
     private GameObject _pressedUIP1;
 
+    /// <summary>押されたUI(Player1)</summary>
     [SerializeField]
     private GameObject _pressedUIP2;
 
     void Start()
     {
-        _pressReadyUIP1.SetActive(true);
-        _pressReadyUIP2.SetActive(true);
-        _pressedUIP1.SetActive(false);
-        _pressedUIP2.SetActive(false);
+        ResetPressUI();
     }
 
+    /// <summary>
+    /// 押下された状態を表示する
+    /// </summary>
+    /// <param name="playerNumber"></param>
     public void DisplayPress(PlayerNumberState playerNumber)
     {
         if (playerNumber == PlayerNumberState.One)
@@ -38,5 +41,16 @@ public class StoryPressUI : MonoBehaviour
 
         _pressReadyUIP2.SetActive(false);
         _pressedUIP2.SetActive(true);
+    }
+
+    /// <summary>
+    /// 押下状態UIを初期状態に設定
+    /// </summary>
+    public void ResetPressUI()
+    {
+        _pressReadyUIP1.SetActive(true);
+        _pressReadyUIP2.SetActive(true);
+        _pressedUIP1.SetActive(false);
+        _pressedUIP2.SetActive(false);
     }
 }

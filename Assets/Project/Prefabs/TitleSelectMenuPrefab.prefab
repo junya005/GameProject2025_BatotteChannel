@@ -1729,7 +1729,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -60, y: 110}
-  m_SizeDelta: {x: 1344, y: 756}
+  m_SizeDelta: {x: 1536, y: 864}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1126452368035839480
 CanvasRenderer:
@@ -1858,7 +1858,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 220, y: 120}
-  m_SizeDelta: {x: 400, y: 400}
+  m_SizeDelta: {x: 480, y: 480}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2301747845826520972
 CanvasRenderer:
@@ -3483,6 +3483,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7634442889904988225, guid: 0983aa511d7af4f4f8d16f8dcdf2999d, type: 3}
+      propertyPath: _titleSelectManager
+      value: 
+      objectReference: {fileID: 8924995396696019353}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

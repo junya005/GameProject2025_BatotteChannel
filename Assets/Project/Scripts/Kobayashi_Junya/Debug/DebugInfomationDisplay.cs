@@ -9,14 +9,14 @@ using System;
 /// </summary>
 public class DebugInfomationDisplay : Singleton<DebugInfomationDisplay>
 {
+    /// <summary>デバック情報を表示するテキスト</summary>
     [SerializeField]
     private TextMeshProUGUI _debugInfoText;
 
-    // Update is called once per frame
     void Update()
     {
         // fpsとメモリを表示
-        float fps = 1.0f / Time.deltaTime;
+        int fps = Mathf.RoundToInt(1.0f / Time.deltaTime);
         _debugInfoText.text = $"FPS : {fps}\nMemory : {Mathf.Round(GC.GetTotalMemory(false) / 1000000.0f)}Mib";
     }
 }

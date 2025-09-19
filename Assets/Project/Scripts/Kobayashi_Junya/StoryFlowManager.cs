@@ -35,8 +35,19 @@ public class StoryFlowManager : MonoBehaviour
 
     void Update()
     {
-        // 条件に当てはまらなければ処理しない
-        if (_titleSelectManager.GameSceneState != GameStatus.GameSceneEnum.Story) return;
+        // 画面がStoryでないならこのif文以降の処理をしない
+        if (_titleSelectManager.GameSceneState != GameStatus.GameSceneEnum.Story)
+        {
+            // すでにアニメーションが再生されているなら
+            // 次に再生できるようにフラグをリセットしておく
+            if (_isPlayAnim)
+            {
+                _isPlayAnim = false;
+                _isSkipAnim = false;
+            }
+
+            return;
+        }
 
         if (_isPlayAnim)
         {
@@ -52,6 +63,7 @@ public class StoryFlowManager : MonoBehaviour
                 _storyPressUI.DisplayPress(PlayerNumberState.Two);
             }
 
+            // スキップ処理を依頼
             if (_isSkipAnim) return;
             if (_isPressedEnterP1 && _isPressedEnterP2)
             {
@@ -72,12 +84,23 @@ public class StoryFlowManager : MonoBehaviour
         _storyAnimManager.completeAnimEventHandler -= OnCompleteAnimation;
     }
 
+    public void ResetPressedFrag()
+    {
+        _isPressedEnterP1 = false;
+        _isPressedEnterP2 = false;
+    }
+
     /// <summary>
     /// アニメーション終了時イベントにバインド
     /// </summary>
     private void OnCompleteAnimation()
     {
         // 画面遷移を実行
-        _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Story, GameStatus.GameSceneEnum.Game);
+        _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Story, GameStatus.GameSceneEnum.Tutorial);
+
+        // 初期状態に設定しておく
+        ResetPressedFrag();
+        _storyPressUI.ResetPressUI();
+        _storyAnimManager.TweenReset();
     }
 }
