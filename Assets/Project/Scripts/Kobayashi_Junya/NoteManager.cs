@@ -4,8 +4,6 @@ using UnityEngine;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.Players;
 using BatotteChannel.InGame.UI;
-using UnityEngine.Rendering.Universal;
-using Unity.VisualScripting;
 
 namespace BatotteChannel.InGame.Notes
 {
@@ -14,7 +12,7 @@ namespace BatotteChannel.InGame.Notes
     /// </summary>
     /// <param name="playerNumber">プレイヤー番号を取得できる</param>
     /// <returns>判定結果</returns>
-    public delegate void GetGoodNoteCallBack(PlayerNumberState playerNumber);
+    public delegate void GetGoodNoteCallBack(PlayerNumberState playerNumber, float correctionValue);
 
     /// <summary>
     /// ノーツがMiss判定で取得されたときのコールバック
@@ -28,6 +26,12 @@ namespace BatotteChannel.InGame.Notes
     /// </summary>
     public class NoteManager : MonoBehaviour
     {
+        #region 定数
+
+        private const int INITIAL_ORDER_IN_LAYER_NUMBER = 100;
+
+        #endregion
+
         #region 変数
 
         public GetGoodNoteCallBack getNoteCallBack;
@@ -88,12 +92,20 @@ namespace BatotteChannel.InGame.Notes
         }
 
         /// <summary>スタン秒数</summary>
+        [SerializeField]
         private float _stanTimeSecond;
 
         /// <summary>スタン秒数のプロパティ</summary>
         public float StanTimeSecond { get { return _stanTimeSecond; } }
 
-        private List<int> _buttonNumberList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        /// <summary>ノーツタイミングの誤差</summary>
+        public float CorrectionValue { get; private set; }
+
+        /// <summary>生成番号(ノーツの重ね順決定時に使用)</summary>
+        private int _genNum;
+
+        /// <summary>キッズモードかどうか</summary>
+        private bool _isKidsMode = false;
 
         #endregion
 
@@ -104,16 +116,26 @@ namespace BatotteChannel.InGame.Notes
             // 初期化
             _generateNotes = new List<GameObject>();
             _generatedDummyNotes = new List<GameObject>();
+
+            CorrectionValue = 0.0f;
         }
 
         void Update()
         {
+            // オートプレイの実行
             if (isAutoPlayMode)
             {
                 AutoPlay();
             }
+
+            // 取りこぼしたノーツの削除処理
             CheckNoteIsDeletingDistance();
             CheckDummyNoteIsDeletingDistance();
+        }
+
+        private void OnDisable()
+        {
+            DeleteAllNotes();
         }
 
         #endregion
@@ -135,21 +157,50 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// ノーツを生成する
         /// </summary>
-        public void GenerateNote(Vector2 generatePos)
+        public GameObject GenerateNote(Vector2 generatePos)
         {
+            // 重ね順決定用にOrderInLayerの開始値を計算
+            int orderNum = INITIAL_ORDER_IN_LAYER_NUMBER + _genNum * 3 + 1;     // ノーツのSpriteRendererの数(_getNumの係数)
+
+            // スタン時であればダミーノーツを生成
             if (_isStopNoteGenerate == true)
             {
                 GameObject dummyNote = Instantiate(_dummyNotePrefab, generatePos, Quaternion.identity);
-                dummyNote.GetComponent<NoteController>().SetIsDummyNotes(true);
+
+                // 生成したノーツの各種設定等
+                NoteController noteControllerOfDummyNote = dummyNote.GetComponent<NoteController>();
+                noteControllerOfDummyNote.SetIsDummyNotes(true);                                        // ダミーノーツに設定
+                noteControllerOfDummyNote.SetOrderInLayer(orderNum);                                    // ノーツの重ね順を設定
+                if (_isKidsMode)
+                    noteControllerOfDummyNote.SetIsKidsNotes(true);                                     // キッズモードの場合はキッズノーツに設定する
+
+                // リストに生成したノーツを格納
                 _generatedDummyNotes.Add(dummyNote);
+
+#if UNITY_EDITOR
                 Debug.Log("スタン中のため、ダミーノーツを生成しました。");
-                return;
+#endif
+
+                // 生成したノーツをreturn
+                return dummyNote;
             }
+
+            // 通常の生成処理
             GameObject note = Instantiate(_notePrefab, generatePos, Quaternion.identity);
+
+            // 生成したノーツの各種設定等
+            NoteController noteControllerOfNote = note.GetComponent<NoteController>();
+            noteControllerOfNote.SetOrderInLayer(orderNum);                                 // ノーツの重ね順を設定
+            if (_isKidsMode)
+                noteControllerOfNote.SetIsKidsNotes(true);                                  // キッズモードの場合はキッズノーツに設定する
+
+            // リストに生成したノーツを格納
             _generateNotes.Add(note);
+
 #if UNITY_EDITOR
             Debug.Log($"ノーツの生成が完了しました(生成座標：{generatePos})");
 #endif
+            return note;
         }
 
         /// <summary>
@@ -178,12 +229,28 @@ namespace BatotteChannel.InGame.Notes
                 // チャンネルの切り替え
                 _televisionAnimation?.ChangeChannel(channelIndex);
 
+                CorrectionValue += noteController.GodDistance;
+
                 CountGotNote(judgement);
                 RemoveNoteInGenerateList(0);
 #if UNITY_EDITOR
                 Debug.Log("主導権者の変更を指示します。");
 #endif
-                getNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+                getNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber, CorrectionValue);
+            }
+            else if (judgement == JudgementState.Pass)
+            {
+                // 効果音の再生
+                SoundManager.Instance?.PlaySE("button26");
+
+                CorrectionValue += noteController.GodDistance;
+
+                CountGotNote(judgement);
+                RemoveNoteInGenerateList(0);
+#if UNITY_EDITOR
+                Debug.Log("主導権者の変更を指示します。");
+#endif
+                getNoteCallBack?.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber, CorrectionValue);
             }
             else if (judgement == JudgementState.MISS)
             {
@@ -196,7 +263,9 @@ namespace BatotteChannel.InGame.Notes
                 RemoveNoteInGenerateList(0);
                 SetDummyNoteFromList(_stanTimeSecond);
 
-                getMissNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+                PlayerController player;
+                if (player = transform.parent.gameObject.GetComponent<PlayerController>())
+                    getMissNoteCallBack.Invoke(player.PlayerNumber);
             }
         }
 
@@ -222,7 +291,9 @@ namespace BatotteChannel.InGame.Notes
             RemoveNoteInGenerateList(0);
             SetDummyNoteFromList(_stanTimeSecond);
 
-            getMissNoteCallBack.Invoke(transform.parent.gameObject.GetComponent<PlayerController>().PlayerNumber);
+            PlayerController player;
+            if (player = transform.parent.gameObject.GetComponent<PlayerController>())
+                getMissNoteCallBack.Invoke(player.PlayerNumber);
         }
 
         /// <summary>
@@ -280,7 +351,6 @@ namespace BatotteChannel.InGame.Notes
                     noteController.DeleteThisNote(0);
                     RemoveNoteInGenerateList(i);
                 }
-
             }
 
             StartCoroutine(StopGenerateNote(hideTime));
@@ -338,6 +408,54 @@ namespace BatotteChannel.InGame.Notes
             {
                 JudgeMentNoteFromList(noteController.ButtonNumber);
             }
+        }
+
+        /// <summary>
+        /// リストに格納されているオブジェクトを直接削除する
+        /// </summary>
+        public void DeleteAllNotes()
+        {
+            if (_generateNotes.Count != 0)
+            {
+                for (int i = 0; i < _generateNotes.Count; i++)
+                {
+                    Debug.Log($"リストから{i}番目のノートを削除します。");
+                    Destroy(_generateNotes[i]);
+                    RemoveNoteInGenerateList(i);
+                }
+            }
+
+            if (_generatedDummyNotes.Count != 0)
+            {
+                for (int i = 0; i < _generatedDummyNotes.Count; i++)
+                {
+                    Debug.Log($"リストから{i}番目のダミーノートを削除します。");
+                    Destroy(_generatedDummyNotes[i]);
+                    RemoveNoteInGenerateList(i, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 生成番号を設定する
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetGenNum(int value)
+        {
+            _genNum = value;
+        }
+
+        /// <summary>
+        /// キッズモードにするかどうかを設定する
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetKidsMode(bool value)
+        {
+            _isKidsMode = value;
+
+#if UNITY_EDITOR
+            Debug.Log($"キッズモードを{_isKidsMode}に設定しました。");
+#endif
         }
 
         #endregion

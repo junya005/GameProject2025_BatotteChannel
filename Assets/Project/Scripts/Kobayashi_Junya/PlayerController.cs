@@ -7,16 +7,6 @@ using BatotteChannel.Player;
 
 namespace BatotteChannel.InGame.Players
 {
-    /// <summary>
-    /// プレイヤー番号のステートマシン
-    /// PlayerController.csに記述されています
-    /// </summary>
-    public enum PlayerNumberState
-    {
-        One,
-        Two
-    }
-
     /// <summary>プレイヤー入力に関するクラス</summary>
     public class PlayerController : MonoBehaviour
     {
@@ -85,6 +75,9 @@ namespace BatotteChannel.InGame.Players
         {
             get { return _playerNumber; }
         }
+
+        [SerializeField]
+        private PlayerMissedAnimation _playerMissedAnim;
 
         #endregion
 
@@ -172,8 +165,10 @@ namespace BatotteChannel.InGame.Players
         /// </summary>
         private void PlayMissAnimation(PlayerNumberState playerNumber)
         {
-            if (_playerAnimatorParamSetter != null)
-                _playerAnimatorParamSetter.SetAnimationTrigger("Missed");
+            // if (_playerAnimatorParamSetter != null)
+            //     _playerAnimatorParamSetter.SetAnimationTrigger("Missed");
+
+            _playerMissedAnim?.StartAnimation();
         }
 
         /// <summary>プレイヤー操作の取得</summary>

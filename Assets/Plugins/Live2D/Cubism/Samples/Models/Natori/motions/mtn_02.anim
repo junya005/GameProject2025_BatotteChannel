@@ -9104,8 +9104,8 @@ AnimationClip:
   m_Events:
   - time: 0
     functionName: InstanceId
-    data: 
+    data:
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 41418
+    intParameter: 34466
     messageOptions: 1

@@ -11,6 +11,7 @@ public class GameStatus : MonoBehaviour
         Select,
         Tutorial,
         Game,
+        Story,
         //Result ï ÉVÅ[Éì
     }
 }

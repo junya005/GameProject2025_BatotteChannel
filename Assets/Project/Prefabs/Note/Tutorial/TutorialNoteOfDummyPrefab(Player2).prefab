@@ -1,0 +1,123 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8211736008755232358
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _goodEffectPrefab
+      value: 
+      objectReference: {fileID: 4002234839686743882, guid: 6d735b45041bd5045aefb051bcd091f0, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _missEffectPrefab
+      value: 
+      objectReference: {fileID: 3339032500463955483, guid: ca78a22710a02934a9681a651318c50f, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: cabd6ca59dd939a419e52c3d66c969c9, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300000, guid: cd70da92216a1f7449c28f6052e16088, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300000, guid: 7a73dc8aab58f99479b29edc0aa3b166, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300000, guid: b4fcba31b8420f0408676c781f12e7d5, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300000, guid: d8a612d86344b464ebc636f7bd515317, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300000, guid: f9c5b69ec87570a4f8f4bc5b4a6ad407, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[7]
+      value: 
+      objectReference: {fileID: 21300000, guid: 1c963d16f07548f48866b37f2d6ec165, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[8]
+      value: 
+      objectReference: {fileID: 21300000, guid: 3e1153ce5f05dbf409b934bc8cf65e35, type: 3}
+    - target: {fileID: 5232089945003868784, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: _buttonNumImages.Array.data[9]
+      value: 
+      objectReference: {fileID: 21300000, guid: e95c0f2a8828cd14a9bae5aa473cb3ec, type: 3}
+    - target: {fileID: 8178182458948841667, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_Name
+      value: TutorialNoteOfDummyPrefab(Player2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203204869223050941, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a88ae96c3f5b3ea4ba290d0fd85af903, type: 3}

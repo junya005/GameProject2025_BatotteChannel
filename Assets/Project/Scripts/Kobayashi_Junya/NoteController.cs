@@ -3,54 +3,11 @@ using UnityEngine;
 
 namespace BatotteChannel.InGame.Notes
 {
-    /// <summary>NoteControllerのプロパティと機能を使用する場合はこれを経由する</summary>
-    public interface INoteController
-    {
-        /// <summary>削除距離フラグのゲッター</summary>
-        bool IsDeletingDistance { get; }
-        /// <summary>削除指示フラグのゲッター</summary>
-        bool IsDeletingScheduled { get; }
-        /// <summary>判定種類のインスタンスのゲッター</summary>
-        JudgementState NoteJudgement { get; }
-        /// <summary>ダミーノーツか否か</summary>
-        bool IsDummyNotes { get; }
-
-        /// <summary>
-        /// このノートを判定する
-        /// その後、このノートを1秒後に削除する
-        /// </summary>
-        /// <param name="judgement">判定結果を返す</param>
-        void JudgementNote(int buttonNumber, out JudgementState judgement);
-
-        /// <summary>
-        /// このノーツを判定する(入力期間を過ぎた場合はこちらを使用)
-        /// </summary>
-        /// <param name="judgement">判定結果を返す</param>
-        void JudgementNote(out JudgementState judgement);
-
-        /// <summary>
-        /// このノートを削除する
-        /// </summary>
-        /// <param name="t">削除までの時間</param>
-        void DeleteThisNote(float t, bool isTimeElapsed = false);
-
-        /// <summary>
-        /// ボタン入力が有効な範囲かチェックする
-        /// </summary>
-        /// <returns>ボタン入力が有効化</returns>
-        bool CheckButtonEnable();
-
-        /// <summary>
-        /// ダミーノーツにセットする
-        /// </summary>
-        /// <param name="boolean"></param>
-        void SetIsDummyNotes(bool boolean);
-    }
-
     /// <summary>判定の種類</summary>
     public enum JudgementState
     {
         None,
+        Pass,
         Good,
         MISS
     }
@@ -122,11 +79,13 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>ダミーノートかどうかのゲッタープロパティ</summary>
         public bool IsDummyNotes { get { return _isDummyNotes; } }
 
-        /// <summary>
-        /// 前回のボタン番号
-        /// staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
-        /// </summary>
+        /// <summary>ボタン番号が付与されたか</summary>
+        private bool _isGaveButton = false;
+
+        // staticに設定することで、オブジェクトの生成を跨いで値を共有しています。
+        /// <summary>前回のボタン番号(プレイヤー1)</summary>
         private static int _lastButtonNumForPlayerOne;
+        /// <summary>前回のボタン番号(プレイヤー2)</summary>
         private static int _lastButtonNumForPlayerTwo;
 
         [Header("オブジェクト参照")]
@@ -170,16 +129,35 @@ namespace BatotteChannel.InGame.Notes
         [SerializeField]
         private ENotePlayerState _notePlayerState = ENotePlayerState.Player1;
 
+        /// <summary>trueであればボタン番号がないノーツに</summary>
+        private bool _isNoneButtonNum = false;
+
+        /// <summary>trueであれば必ずミスになるノーツに</summary>
+        private bool _isGetNotPossible = false;
+
+        /// <summary>ノーツ取得時の距離ゲッター</summary>
+        public float GodDistance { get; private set; }
+
+        /// <summary>ノーツのレンダラーを格納</summary>
+        [SerializeField, Tooltip("重ね順通りにRendererを設定してください")]
+        private List<SpriteRenderer> _spriteRenderers;
+
+        /// <summary>キッズモード用のノーツかどうか</summary>
+        private bool _isKidsNotes = false;
+
         #endregion
 
         #region イベント関数
 
-        private void Start()
+        private void Awake()
         {
             // キャッシュ
             _buttonNumberSpriteRenderer = _buttonNumberDisplay.GetComponent<SpriteRenderer>();
             _judgementDisplaySpriteRenderer = _judgementDisplay.GetComponent<SpriteRenderer>();
+        }
 
+        private void Start()
+        {
             // 初期設定
             _outerFrame.transform.localScale = _defaltFrameSize;
             _judgementDisplaySpriteRenderer.sortingOrder = 51;
@@ -217,17 +195,14 @@ namespace BatotteChannel.InGame.Notes
         /// <summary>
         /// ダミーノーツに設定する
         /// </summary>
-        /// <param name="boolean">ダミーノーツにするかどうか</param>
-        public void SetIsDummyNotes(bool boolean)
+        /// <param name="isSetDummy">ダミーノーツにするかどうか</param>
+        public void SetIsDummyNotes(bool isSetDummy)
         {
 #if UNITY_EDITOR
-            if (boolean) Debug.Log("このノートはダミーノートに設定されました。ダミーノートは入力を受け付けず、判定結果にも影響しません。");
+            if (isSetDummy) Debug.Log("このノートはダミーノートに設定されました。ダミーノートは入力を受け付けず、判定結果にも影響しません。");
 #endif
-            _isDummyNotes = boolean;
-            if (_isDummyNotes)
-            {
-                SettingDummyNote();
-            }
+            _isDummyNotes = isSetDummy;
+            SettingDummyNote();
         }
 
         /// <summary>
@@ -246,6 +221,8 @@ namespace BatotteChannel.InGame.Notes
         /// </summary>
         private void GiveButtonNumber()
         {
+            if (_isGaveButton) return;
+
             _buttonNumber = Random.Range(1, 10);
             int lastButtonNum = _notePlayerState == ENotePlayerState.Player1 ? _lastButtonNumForPlayerOne : _lastButtonNumForPlayerTwo;
             // ボタン番号が前回生成したノーツと被っていれば再帰する。
@@ -254,12 +231,13 @@ namespace BatotteChannel.InGame.Notes
                 GiveButtonNumber();
                 return;
             }
-            int buttonNumImageIndex = _buttonNumber - 1;
+            int buttonNumImageIndex = _buttonNumber;
             _buttonNumberSpriteRenderer.sprite = _buttonNumImages[buttonNumImageIndex];
             SetLastButtonNum(_buttonNumber, _notePlayerState);
 #if UNITY_EDITOR
             Debug.Log($"ノーツ番号を付与：{_buttonNumber}");
 #endif
+            _isGaveButton = true;
         }
 
         /// <summary>
@@ -280,10 +258,24 @@ namespace BatotteChannel.InGame.Notes
         /// <param name="judgement">判定結果を返す</param>
         public void JudgementNote(int buttonNumber, out JudgementState judgement)
         {
-            if (buttonNumber != _buttonNumber)
+            // 取得不可能なノーツであれば判定しない
+            if (_isGetNotPossible)
+            {
+                judgement = JudgementState.None;
+                return;
+            }
+
+            // ボタン判定
+            // ボタンが不一致で、かつボタン番号が設定されている場合はミス判定
+            if (buttonNumber != _buttonNumber && _isNoneButtonNum == false)
             {
                 HideNote();
                 judgement = JudgementState.MISS;
+
+                // キッズノーツであればPassに
+                if (_isKidsNotes)
+                    judgement = JudgementState.Pass;
+
                 DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
                 Debug.Log("ノーツを判定しました(判定結果：ボタンの不一致)");
@@ -292,14 +284,24 @@ namespace BatotteChannel.InGame.Notes
                 return;
             }
 
+            // タイミングの判定
             HideNote();
+            GodDistance = _distance;
             float distance = Mathf.Abs(_distance);
             judgement = distance <= _goodJudgmentRange ? JudgementState.Good : JudgementState.MISS;
+
+            // キッズノーツであればPassに
+            if (_isKidsNotes && judgement == JudgementState.MISS)
+                judgement = JudgementState.Pass;
+
+            // 判定結果の表示
             string judgementText = distance <= _goodJudgmentRange ? TEXT_JUDGEMENT_GOOD : TEXT_JUDGEMENT_MISS;
             DisplayJudgementResult(judgement);
 #if UNITY_EDITOR
-            Debug.Log($"ノーツを判定しました(判定結果：{judgement}, 距離：{_distance}, GOODの距離：|{_goodJudgmentRange}|)");
+            Debug.Log($"ノーツを判定しました(判定結果：{judgement}, 距離：{_distance}, GOODの距離：{_goodJudgmentRange}[絶対値])");
 #endif
+
+            // ノーツ削除
             DeleteThisNote(1.0f);
         }
 
@@ -330,7 +332,7 @@ namespace BatotteChannel.InGame.Notes
             Debug.Log($"次の判定結果を表示します：{judgementState}");
 #endif
 
-            if (judgementState == JudgementState.Good)
+            if (judgementState == JudgementState.Good || judgementState == JudgementState.Pass)
             {
                 Instantiate(_goodEffectPrefab, transform.position, Quaternion.identity);
                 return;
@@ -378,6 +380,56 @@ namespace BatotteChannel.InGame.Notes
             Debug.Log($"ボタン入力が有効な範囲です距離:{_distance}");
 #endif
             return true;
+        }
+
+        public void SetButtonNumber(int buttonNumber)
+        {
+            // 0の場合、ボタン番号はない状態にする
+            if (buttonNumber == 0)
+            {
+                _isNoneButtonNum = true;
+                _buttonNumber = 0;
+            }
+            else
+            {
+                _buttonNumber = buttonNumber;
+            }
+
+            // ボタン画像の設定
+            _buttonNumberSpriteRenderer.sprite = _buttonNumImages[_buttonNumber];
+            _isGaveButton = true;
+        }
+
+        /// <summary>
+        /// 必ずミスにするかどうかをセットする
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetIsGetNotPossible(bool value)
+        {
+            _isGetNotPossible = value;
+        }
+
+        /// <summary>スプライトの重ね順を設定する</summary>
+        public void SetOrderInLayer(int startValue)
+        {
+            int orderNum = startValue;
+
+            // スプライトの重ね順を順番に設定
+            foreach (SpriteRenderer renderer in _spriteRenderers)
+            {
+                renderer.sortingOrder = orderNum;
+                orderNum++;
+
+            }
+        }
+
+        /// <summary>
+        /// キッズノーツにするかどうかを設定する
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetIsKidsNotes(bool value)
+        {
+            _isKidsNotes = value;
         }
 
         #endregion
