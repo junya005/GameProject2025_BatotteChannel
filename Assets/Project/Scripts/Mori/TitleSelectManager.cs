@@ -302,6 +302,10 @@ public class TitleSelectManager : MonoBehaviour
     [SerializeField]
     private TutorialFlowManager _tutorialManager;
 
+    /// <summary>ストーリーのキャンバス</summary>
+    [SerializeField]
+    private CanvasGroup _storyCanvas;
+
     /// <summary>
     /// 画面を遷移させる
     /// </summary>
@@ -311,6 +315,16 @@ public class TitleSelectManager : MonoBehaviour
     {
         if (_gameScene != fromGameStatus) return;
 
+        // 遷移元と遷移先が同じであればエラーを出力し処理を中断
+        if (fromGameStatus == toGameStatus)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("遷移元と遷移先のゲームステートが同じです");
+#endif
+            return;
+        }
+
+        // ゲームステータスが追加されたら、それぞれのSwitch文を追記してください
         // 元(現在)の画面のキャンバスを取得
         CanvasGroup fromCanvas = null;
         switch (fromGameStatus)
@@ -330,8 +344,15 @@ public class TitleSelectManager : MonoBehaviour
             case GameStatus.GameSceneEnum.Game:
                 fromCanvas = _ingameCanvasGroup;
                 break;
-            default:
+            case GameStatus.GameSceneEnum.Story:
+                fromCanvas = _storyCanvas;
                 break;
+            default:
+                // ステートが無効な範囲であればエラーを出力し処理を中断
+#if UNITY_EDITOR
+                Debug.LogError("指定したゲームステートが無効です");
+#endif
+                return;
         }
 
         // 次の画面のキャンバスを取得
@@ -353,8 +374,15 @@ public class TitleSelectManager : MonoBehaviour
             case GameStatus.GameSceneEnum.Game:
                 toCanvas = _ingameCanvasGroup;
                 break;
-            default:
+            case GameStatus.GameSceneEnum.Story:
+                toCanvas = _storyCanvas;
                 break;
+            default:
+                // ステートが無効な範囲であればエラーを出力し処理を中断
+#if UNITY_EDITOR
+                Debug.LogError("指定したゲームステートが無効です");
+#endif
+                return;
         }
 
         // 効果音を再生
@@ -441,7 +469,10 @@ public class TitleSelectManager : MonoBehaviour
     /// </remarks>
     private void ToNextSceneFromSelect()
     {
-        ToGame();
+        // ストーリー画面へ遷移
+        TransitionCanvas(_gameScene, GameStatus.GameSceneEnum.Story);
+
+        //ToGame();
     }
 
     #endregion
