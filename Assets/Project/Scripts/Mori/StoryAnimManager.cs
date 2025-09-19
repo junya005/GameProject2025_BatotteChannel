@@ -49,18 +49,29 @@ public class StoryAnimManager : MonoBehaviour
     [Header("アニメーションオブジェクト")]
     [SerializeField, Foldout("4th")]
     private RectTransform sisbro_4th;
+
+    private AudioSource audioSource => this.GetComponent<AudioSource>();
+    [SerializeField, Foldout("SE")]
+    [Header("効果音")]
+    private AudioClip _sePi;
+    [SerializeField, Foldout("SE")]
+    private AudioClip _seSpark;
     #endregion
 
     #region パラメータ変数
     [Header("パラメータ")]
-    [SerializeField, Foldout("General")]
+    [SerializeField, Foldout("General"), Label("スライドインにかかる時間/秒")]
     private float slideInTime = 0.5f;
-    [SerializeField, Foldout("General")]
+    [SerializeField, Foldout("General"), Label("ピがでるのにかかる時間/秒")]
     private float PiScaleUpTime = 0.2f;
-    [SerializeField, Foldout("General")]
+    [SerializeField, Foldout("General"), Label("フェードインにかかる時間/秒")]
     private float objFadeTime = 0.2f;
-    [SerializeField, Foldout("General")]
+    [SerializeField, Foldout("General"), Label("次シーンにフェードするまでの待機時間/秒")]
     private float fadeDelay = 0.5f;
+    [SerializeField, Foldout("General"), Label("アニメーション終わりの待機時間/秒")]
+    private float finishDelay = 1.5f;
+    [SerializeField, Foldout("General"), Label("スライドインの動き方")]
+    private Ease ease = Ease.OutCubic;
 
     #endregion
 
@@ -90,33 +101,43 @@ public class StoryAnimManager : MonoBehaviour
         //TweenAnimation();
     }
 
-    private void Update()
+    void Update()
     {
 
     }
 
+    /// <summary>
+    /// Tweenリセット
+    /// </summary>
     [Button]
-    private void TweenReset()
+    public void TweenReset()
     {
-        scene1.alpha = 1.0f;
+        scene1.alpha = 0f;
         scene2.alpha = 0;
         scene3.alpha = 0;
         scene4.alpha = 0;
+        audioSource.Stop();
     }
 
+    /// <summary>
+    /// Tweenスキップ
+    /// </summary>
     [Button]
-    private void TweenSkip()
+    public void TweenSkip()
     {
         //Tweenスキップ(兄弟喧嘩図まで)
         Allsequence.Complete();
+        Allsequence.Append(DOVirtual.DelayedCall(finishDelay, CompleteAnimation));
+        audioSource.Stop();
     }
 
     [Button]
     /// <summary>
-    /// 全体tween実行
+    /// 全体tween実行(リセット、設定、実行)
     /// </summary>
-    private void TweenAnimation()
+    public void TweenAnimation()
     {
+        TweenReset();
         //設定
         SetFirstAnim();
         SetSecondAnim();
@@ -129,7 +150,16 @@ public class StoryAnimManager : MonoBehaviour
         Allsequence.Append(sequence2);
         Allsequence.Append(sequence3);
         Allsequence.Append(sequence4);
+        Allsequence.Append(DOVirtual.DelayedCall(finishDelay, CompleteAnimation));
         Allsequence.Play();
+    }
+
+    private void CompleteAnimation()
+    {
+        scene4.DOFade(0, objFadeTime);
+        //終了時に呼ぶ処理
+
+
     }
 
     /// <summary>
@@ -148,12 +178,15 @@ public class StoryAnimManager : MonoBehaviour
 
         sequence1 = DOTween.Sequence();
 
+        //一瞬でフェードイン
+        sequence1.Append(scene1.DOFade(1, objFadeTime).SetDelay(fadeDelay));
         //姉くる
-        sequence1.Append(sister_1st.DOAnchorPosY(sisY1, slideInTime).SetEase(Ease.OutCubic));
+        sequence1.Append(sister_1st.DOAnchorPosY(sisY1, slideInTime).SetEase(ease));
         //テレビくる
-        sequence1.Append(tv_1st.DOAnchorPosY(tvY1, slideInTime).SetEase(Ease.OutCubic));
+        sequence1.Append(tv_1st.DOAnchorPosY(tvY1, slideInTime).SetEase(ease));
         //ピ
         sequence1.Append(pi_1st.DOScale(Vector2.one, PiScaleUpTime).SetEase(Ease.OutBack));
+        sequence1.JoinCallback(() => { audioSource.PlayOneShot(_sePi); });
         //一瞬でフェードアウト
         sequence1.Append(scene1.DOFade(0, objFadeTime).SetDelay(fadeDelay));
     }
@@ -176,11 +209,12 @@ public class StoryAnimManager : MonoBehaviour
         //一瞬でフェードイン
         sequence2.Append(scene2.DOFade(1, objFadeTime).SetDelay(fadeDelay));
         //弟くる
-        sequence2.Append(brother_2nd.DOAnchorPosY(broY2, slideInTime).SetEase(Ease.OutCubic));
+        sequence2.Append(brother_2nd.DOAnchorPosY(broY2, slideInTime).SetEase(ease));
         //テレビくる
-        sequence2.Append(tv_2nd.DOAnchorPosY(tvY2, slideInTime).SetEase(Ease.OutCubic));
+        sequence2.Append(tv_2nd.DOAnchorPosY(tvY2, slideInTime).SetEase(ease));
         //ピ
         sequence2.Append(pi_2nd.DOScale(Vector2.one, PiScaleUpTime).SetEase(Ease.OutBack));
+        sequence2.JoinCallback(() => { audioSource.PlayOneShot(_sePi); });
         //一瞬でフェードアウト
         sequence2.Append(scene2.DOFade(0, objFadeTime).SetDelay(fadeDelay));
     }
@@ -209,16 +243,17 @@ public class StoryAnimManager : MonoBehaviour
         sequence3.Append(scene3.DOFade(1, objFadeTime).SetDelay(fadeDelay));
         //全部同時
         //弟くる
-        sequence3.Append(brother_3rd.DOAnchorPosY(broY2, slideInTime).SetEase(Ease.OutCubic));
+        sequence3.Append(brother_3rd.DOAnchorPosY(broY2, slideInTime).SetEase(ease));
         //姉くる
-        sequence3.Join(sister_3rd.DOAnchorPosY(broY2, slideInTime).SetEase(Ease.OutCubic));
+        sequence3.Join(sister_3rd.DOAnchorPosY(broY2, slideInTime).SetEase(ease));
         //テレビくる
-        sequence3.Join(tv_3rd.DOAnchorPosY(tvY2, slideInTime).SetEase(Ease.OutCubic));
+        sequence3.Join(tv_3rd.DOAnchorPosY(tvY2, slideInTime).SetEase(ease));
 
         //ピピピピ
         for (int i = 0; i < piList.Count; i++)
         {
             sequence3.Append(piList[i].DOScale(Vector2.one, PiScaleUpTime).SetEase(Ease.OutBack));
+            sequence3.JoinCallback(() => { audioSource.PlayOneShot(_sePi); });
         }
 
         //一瞬でフェードアウト
@@ -240,6 +275,7 @@ public class StoryAnimManager : MonoBehaviour
         //一瞬でフェードイン
         sequence4.Append(scene4.DOFade(1, objFadeTime).SetDelay(fadeDelay));
         //上から喧嘩
-        sequence4.Append(sisbro_4th.DOAnchorPosY(sisbroY4, slideInTime).SetEase(Ease.OutCubic));
+        sequence4.Append(sisbro_4th.DOAnchorPosY(sisbroY4, slideInTime).SetEase(ease));
+        sequence4.AppendCallback(() => { audioSource.PlayOneShot(_seSpark); });
     }
 }
