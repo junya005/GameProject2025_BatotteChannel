@@ -134,6 +134,8 @@ namespace BatotteChannel.Tutorial
             await _tutorialNotesManager.GenerateNoteOrderBySpecified(1, 2, true, 4.0f, token);
             await UniTask.Delay(TimeSpan.FromSeconds(3.0f), cancellationToken: token);
             _tutorialNotesManager.SetCanGenerate(false);
+            _tutorialCharacterAnimation.StopCharacterAnimation();
+
 
             _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Tutorial, GameStatus.GameSceneEnum.Select);
         }
@@ -164,6 +166,9 @@ namespace BatotteChannel.Tutorial
 
             // エンター押下状態をリセット
             _tutorialPlayerManager.ResetCanPlayersEnterPressed();
+
+            // キャラクターのアニメーションをストップ
+            _tutorialCharacterAnimation.StopCharacterAnimation();
 
             // _tutorialPlayerManager.SetCanPlayersInput(false);
             // _cancellationTokenSource.Cancel();

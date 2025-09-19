@@ -23,4 +23,10 @@ public class TutorialCharacterAnimation : MonoBehaviour
         _animatorP1.SetBool("isSpeak", false);
         _animatorP2.SetBool("isSpeak", true);
     }
+
+    public void StopCharacterAnimation()
+    {
+        _animatorP1.SetBool("isSpeak", false);
+        _animatorP2.SetBool("isSpeak", false);
+    }
 }
