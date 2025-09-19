@@ -517,10 +517,10 @@ MonoBehaviour:
   - {fileID: 73652229318224884}
   - {fileID: 648402098206240426}
   - {fileID: 8692206582390201771}
-  _moveAnimSpeed: 0.5
+  _moveAnimSpeed: 0.3
   _moveAnimDelay: 0.2
-  _moveAnimAddvalue: 70
-  _rotAnimSpeed: 2
+  _moveAnimAddvalue: 20
+  _rotAnimSpeed: 2.5
   _rotAnimDelay: 0
   _rotAnimAddvalue: -360
 --- !u!1 &7086837395179305908
