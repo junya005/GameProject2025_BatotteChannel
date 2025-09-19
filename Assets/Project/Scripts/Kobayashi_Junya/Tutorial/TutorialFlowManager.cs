@@ -23,6 +23,9 @@ namespace BatotteChannel.Tutorial
         [SerializeField]
         private TutorialLog _tutorialLog;
 
+        [SerializeField]
+        private TutorialCharacterAnimation _tutorialCharacterAnimation;
+
         /// <summary>
         /// チュートリアルが開始されたかのフラグ
         /// </summary>
@@ -109,6 +112,7 @@ namespace BatotteChannel.Tutorial
             // 準備
             _tutorialPlayerManager.SetCanPlayerPressEnter(true);
             _tutorialNotesManager.SetCanGenerate(true);
+            _tutorialCharacterAnimation.StartSpeakAnimation(true);
             _tutorialLog.SetLogSprite(0);
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: token);
             _tutorialPlayerManager.SetCanPlayersInput(true);
@@ -119,15 +123,19 @@ namespace BatotteChannel.Tutorial
             await UniTask.Delay(TimeSpan.FromSeconds(3.0f), cancellationToken: token);
 
             // 番号の説明
+            _tutorialCharacterAnimation.StartSpeakAnimation(false);
             _tutorialLog.SetLogSpriteWithAnimation(1);
             await _tutorialNotesManager.GenerateNoteOrderBySpecified(1, 3, token: token);
             await UniTask.Delay(TimeSpan.FromSeconds(3.0f), cancellationToken: token);
 
             // スタンの説明
+            _tutorialCharacterAnimation.StartSpeakAnimation(true);
             _tutorialLog.SetLogSpriteWithAnimation(2);
             await _tutorialNotesManager.GenerateNoteOrderBySpecified(1, 2, true, 4.0f, token);
             await UniTask.Delay(TimeSpan.FromSeconds(3.0f), cancellationToken: token);
             _tutorialNotesManager.SetCanGenerate(false);
+            _tutorialCharacterAnimation.StopCharacterAnimation();
+
 
             _titleSelectManager.TransitionCanvas(GameStatus.GameSceneEnum.Tutorial, GameStatus.GameSceneEnum.Select);
         }
@@ -158,6 +166,9 @@ namespace BatotteChannel.Tutorial
 
             // エンター押下状態をリセット
             _tutorialPlayerManager.ResetCanPlayersEnterPressed();
+
+            // キャラクターのアニメーションをストップ
+            _tutorialCharacterAnimation.StopCharacterAnimation();
 
             // _tutorialPlayerManager.SetCanPlayersInput(false);
             // _cancellationTokenSource.Cancel();

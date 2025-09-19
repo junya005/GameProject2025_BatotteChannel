@@ -5,6 +5,7 @@ using DG.Tweening;
 using BatotteChannel.AudioSystem;
 using BatotteChannel.InGame.MusicSystem;
 using BatotteChannel.Tutorial;
+using BatotteChannel.DataAssets;
 
 public class TitleSelectManager : MonoBehaviour
 {
@@ -288,21 +289,44 @@ public class TitleSelectManager : MonoBehaviour
     }
 
     #region Kobayashi
+
+    /// <summary>楽曲名</summary>
     [SerializeField]
     private string _musicName;
 
+    /// <summary>楽曲管理オブジェクト</summary>
     [SerializeField]
     private MusicManager _musicManager;
 
+    /// <summary>チュートリアル管理オブジェクト</summary>
     [SerializeField]
     private TutorialFlowManager _tutorialManager;
 
+    /// <summary>ストーリーのキャンバス</summary>
+    [SerializeField]
+    private CanvasGroup _storyCanvas;
+
+    /// <summary>
+    /// 画面を遷移させる
+    /// </summary>
+    /// <param name="fromGameStatus">元(現在)のゲームステート</param>
+    /// <param name="toGameStatus">次のゲームステート</param>
     public async void TransitionCanvas(GameStatus.GameSceneEnum fromGameStatus, GameStatus.GameSceneEnum toGameStatus)
     {
         if (_gameScene != fromGameStatus) return;
 
-        CanvasGroup fromCanvas = null;
+        // 遷移元と遷移先が同じであればエラーを出力し処理を中断
+        if (fromGameStatus == toGameStatus)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("遷移元と遷移先のゲームステートが同じです");
+#endif
+            return;
+        }
 
+        // ゲームステータスが追加されたら、それぞれのSwitch文を追記してください
+        // 元(現在)の画面のキャンバスを取得
+        CanvasGroup fromCanvas = null;
         switch (fromGameStatus)
         {
             case GameStatus.GameSceneEnum.Title:
@@ -320,12 +344,19 @@ public class TitleSelectManager : MonoBehaviour
             case GameStatus.GameSceneEnum.Game:
                 fromCanvas = _ingameCanvasGroup;
                 break;
-            default:
+            case GameStatus.GameSceneEnum.Story:
+                fromCanvas = _storyCanvas;
                 break;
+            default:
+                // ステートが無効な範囲であればエラーを出力し処理を中断
+#if UNITY_EDITOR
+                Debug.LogError("指定したゲームステートが無効です");
+#endif
+                return;
         }
 
+        // 次の画面のキャンバスを取得
         CanvasGroup toCanvas = null;
-
         switch (toGameStatus)
         {
             case GameStatus.GameSceneEnum.Title:
@@ -334,7 +365,7 @@ public class TitleSelectManager : MonoBehaviour
             case GameStatus.GameSceneEnum.Select:
                 toCanvas = _selectCanvasGroup;
                 SoundManager.Instance?.StopBGM();
-                SoundManager.Instance?.PlayBGM("bgm_temp_one_cut_reminder");
+                SoundManager.Instance?.PlayBGM("Chearful_Fight");
                 break;
             case GameStatus.GameSceneEnum.Tutorial:
                 toCanvas = _tutorialCanvasGroup;
@@ -343,8 +374,15 @@ public class TitleSelectManager : MonoBehaviour
             case GameStatus.GameSceneEnum.Game:
                 toCanvas = _ingameCanvasGroup;
                 break;
-            default:
+            case GameStatus.GameSceneEnum.Story:
+                toCanvas = _storyCanvas;
                 break;
+            default:
+                // ステートが無効な範囲であればエラーを出力し処理を中断
+#if UNITY_EDITOR
+                Debug.LogError("指定したゲームステートが無効です");
+#endif
+                return;
         }
 
         // 効果音を再生
@@ -365,14 +403,25 @@ public class TitleSelectManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 難易度を Kidsにセットしたうえでインゲームへ移行、ボタンへのバインドを想定
+    /// </summary>
+    public void ToGameKids()
+    {
+        string musicDataIndex = _musicName + "_KZ";
+        MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
+        SetUpMusicManager(musicData);
+
+        ToNextSceneFromSelect();
+    }
+
+    /// <summary>
     /// 難易度をEasyにセットしたうえでインゲームへ移行、ボタンへのバインドを想定
     /// </summary>
     public void ToGameEasy()
     {
         string musicDataIndex = _musicName + "_EZ";
         MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
-        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
-        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+        SetUpMusicManager(musicData);
 
         ToNextSceneFromSelect();
     }
@@ -384,8 +433,7 @@ public class TitleSelectManager : MonoBehaviour
     {
         string musicDataIndex = _musicName + "_NL";
         MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
-        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
-        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+        SetUpMusicManager(musicData);
 
         ToNextSceneFromSelect();
     }
@@ -397,21 +445,34 @@ public class TitleSelectManager : MonoBehaviour
     {
         string musicDataIndex = _musicName + "_HD";
         MusicScoreDataManager.musicDataBaseDictionary.TryGetValue(musicDataIndex, out var musicData);
-        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
-        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+        SetUpMusicManager(musicData);
 
         ToNextSceneFromSelect();
     }
 
+    /// <summary>
+    /// 楽曲管理オブジェクトをセットアップする
+    /// </summary>
+    /// <param name="musicData">楽曲データ</param>
+    private void SetUpMusicManager(MusicDataScriptableObject musicData)
+    {
+        _musicManager.SetMusicData(musicData);
+        _musicManager.SetGenerateSettingsDB(musicData.musicGenerateSettingDataBase);
+        _musicManager.SetCurrentDifficultyState(_musicManager.GetDifficulty(musicData));
+    }
+
+    /// <summary>
+    /// 選択画面の次の画面へ移行する
+    /// </summary>
+    /// <remarks>
+    /// インゲーム画面の前に何か画面を挟むならこれを編集する
+    /// </remarks>
     private void ToNextSceneFromSelect()
     {
-        // if (_isPlayTutorial)
-        // {
-        //     ToTutorial();
-        //     return;
-        // }
+        // ストーリー画面へ遷移
+        TransitionCanvas(_gameScene, GameStatus.GameSceneEnum.Story);
 
-        ToGame();
+        //ToGame();
     }
 
     #endregion
