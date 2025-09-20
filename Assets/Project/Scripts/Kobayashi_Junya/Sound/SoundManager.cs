@@ -92,13 +92,26 @@ namespace BatotteChannel.AudioSystem
         /// <summary>
         /// BGMのボリュームを設定する
         /// </summary>
-        /// <param name="volume"></param>
+        /// <param name="volume">ボリューム値</param>
         public void SetBgmVolume(float volume)
         {
             foreach (var audioSource in _bgmAudioSources)
             {
                 audioSource.Value.volume = volume;
             }
+        }
+
+        /// <summary>
+        /// BGMのボリュームを設定する
+        /// </summary>
+        /// <remarks>
+        /// [オーバーロード]BGMを指定して調整できます
+        /// </remarks>
+        /// <param name="volume">ボリューム値</param>
+        /// <param name="bgmName">BGM名</param>
+        public void SetBgmVolume(float volume, string bgmName)
+        {
+            _bgmAudioSources[bgmName].volume = volume;
         }
     }
 }

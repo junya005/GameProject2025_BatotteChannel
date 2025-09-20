@@ -13,6 +13,7 @@ namespace BatotteChannel.InGame.MusicSystem
     {
         #region 定数
 
+        // スタン秒数を難易度ごとに定義
         private const float STAN_TIME_KIDS = 0.0f;
         private const float STAN_TIME_EASY = 3.0f;
         private const float STAN_TIME_NORMAL = 2.0f;
@@ -111,10 +112,13 @@ namespace BatotteChannel.InGame.MusicSystem
         /// <summary>主導権を握ったプレイヤーが変更されたか</summary>
         private bool _isSetInitiativePlayerState = false;
 
+        // 現在の難易度ステート
         private EDifficultyState _currentDifficultyState;
 
+        // 現在難易度のゲッタープロパティ
         public EDifficultyState CurrentDifficultyState { get { return _currentDifficultyState; } }
 
+        /// <summary>チャンネルの切り替えアニメーションクラス</summary>
         [SerializeField]
         private ChannelChangeAnim _channelChangeAnim;
 
@@ -141,10 +145,10 @@ namespace BatotteChannel.InGame.MusicSystem
                 EndRhythmGamePart();
             }
 
-            // ノーツ生成
             if (_genSetIndex == _generateSettingDataBase.generateSettingList.Count) return;
 
-            // 細かいビートを考慮する場合
+            // ここからノーツ生成処理
+            // 細かいタイミングを考慮する場合の生成処理
             if (_generateSettingDataBase.generateSettingList[_genSetIndex].isUseSubBeat)
             {
                 if (_beatCounter.Beat >= _generateSettingDataBase.generateSettingList[_genSetIndex].timing &&
@@ -208,6 +212,11 @@ namespace BatotteChannel.InGame.MusicSystem
             // 秒数換算に使用します
             _noteManagerP1.getNoteCallBack += OnGetNote;
             _noteManagerP2.getNoteCallBack += OnGetNote;
+
+            // ノーツをミスした時のイベント処理を登録
+            // 秒数計上終了時に使用
+            _noteManagerP1.getMissNoteCallBack += OnMissNote;
+            _noteManagerP2.getMissNoteCallBack += OnMissNote;
         }
 
         /// <summary>
@@ -215,8 +224,11 @@ namespace BatotteChannel.InGame.MusicSystem
         /// </summary>
         private void EndRhythmGamePart()
         {
+            // フラグを終了時の状態にセット
             _isPlaying = false;
             _isEndProcessing = true;
+
+            // 終了のUIを表示
             _endTextObj.SetActive(true);
 
             // 最終スコアにデータをセット
@@ -230,6 +242,7 @@ namespace BatotteChannel.InGame.MusicSystem
             _resultDataP2.SetMissCount(_noteManagerP2.GotMissCount);
             _resultDataP2.SetInitiativeTime(_initiativeTimeP2);
 
+            // リザルトへ移行
             InGameStateManager.Instance.SetCurrentInGameState(InGameState.End);
         }
 
@@ -436,7 +449,7 @@ namespace BatotteChannel.InGame.MusicSystem
         }
 
         /// <summary>
-        /// コールバック関数として実装する
+        /// ノーツ取得時の処理(NoteManagerのイベントへバインド)
         /// </summary>
         /// <param name="playerNumber">プレイヤーの番号</param>
         public void OnGetNote(PlayerNumberState playerNumber, float correctionValue)
@@ -451,8 +464,24 @@ namespace BatotteChannel.InGame.MusicSystem
                 _initiativeTimeP2 += correctionValue;
             }
 
+            // 主導権を握るプレイヤーを変更
             GivePlayerInitiative(playerNumber);
+
+            // チャンネルの変更エフェクトを再生
             PlayChannelChangeEffect(playerNumber);
+        }
+
+        /// <summary>
+        /// ノーツミス時の処理(NoteManagerのイベントへバインド)
+        /// </summary>
+        public void OnMissNote(PlayerNumberState playerNumber)
+        {
+            // 最後のノーツであればだれも主導権を握っていない状態に
+            if (_generateSettingDataBase.generateSettingList.Count <= _genSetIndex)
+            {
+                SetInitiativePlayerState(EInitiativePlayerState.None);
+                return;
+            }
         }
 
         /// <summary>
@@ -468,6 +497,7 @@ namespace BatotteChannel.InGame.MusicSystem
                 return;
             }
 
+            // 引数のプレイヤーに主導権を変更
             if (playerNumber == PlayerNumberState.One)
             {
                 if (_initiativePlayerState == EInitiativePlayerState.One) return;
