@@ -455,14 +455,14 @@ namespace BatotteChannel.InGame.MusicSystem
         public void OnGetNote(PlayerNumberState playerNumber, float correctionValue)
         {
             // 誤差分スコアに反映させる
-            if (playerNumber == PlayerNumberState.One)
-            {
-                _initiativeTimeP1 += correctionValue;
-            }
-            else if (playerNumber == PlayerNumberState.Two)
-            {
-                _initiativeTimeP2 += correctionValue;
-            }
+            // if (playerNumber == PlayerNumberState.One)
+            // {
+            //     _initiativeTimeP1 += correctionValue;
+            // }
+            // else if (playerNumber == PlayerNumberState.Two)
+            // {
+            //     _initiativeTimeP2 += correctionValue;
+            // }
 
             // 主導権を握るプレイヤーを変更
             GivePlayerInitiative(playerNumber);
