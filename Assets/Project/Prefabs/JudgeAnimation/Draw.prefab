@@ -283,9 +283,9 @@ MonoBehaviour:
   - {fileID: 2938777036575338859}
   - {fileID: 4694109510207944598}
   - {fileID: 7830802569199674980}
-  _moveAnimSpeed: 0.6
-  _moveAnimDelay: 0.2
-  _moveAnimAddvalue: 50
+  _moveAnimSpeed: 0.4
+  _moveAnimDelay: 0.3
+  _moveAnimAddvalue: 20
 --- !u!1 &6297339834039259665
 GameObject:
   m_ObjectHideFlags: 0

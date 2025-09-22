@@ -48,15 +48,6 @@ public class LoseTextImageAnim : MonoBehaviour
 
         loseSequence.AppendCallback(WaveTextImage());
 
-        //for (int i = 0; i < _moveTImageList.Count; i++)
-        //{
-        //    //自身の座標+上がり幅
-        //    //ゆるやかに上下し、Insert + delayでウェーブに
-        //    loseSequence.Insert(0 + (i * _moveAnimDelay), _moveTImageList[i].DOAnchorPosY(_moveTImageList[i].localPosition.y + _moveAnimAddvalue
-        //                                                    , _moveAnimSpeed)
-        //                                                    .SetEase(Ease.InOutSine).SetLoops(2, LoopType.Yoyo));
-        //}
-
         //汗アニメーション
         //左右に移動する？　ななめも噛む？
         //透明度は変更する？移動だけ？

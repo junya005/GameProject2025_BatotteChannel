@@ -37,13 +37,6 @@ public class ChannelChangeAnim : MonoBehaviour
         _imageCG.alpha = 0;
     }
 
-    //debug
-    [Button]
-    private void ChangeAnimTest()
-    {
-        ChangeAnim(_player1);
-    }
-
     /// <summary>
     /// テレビのチャンネル切替エフェクト発生
     /// 引数：true=Sister false=Brother

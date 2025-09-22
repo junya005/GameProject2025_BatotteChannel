@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 978cd553a03c19b4ca50425afaf6c8d0, type: 3}
   m_Name: BGM1_KZ_GenerateSettings_10
   m_EditorClassIdentifier: 
-  player: 0
-  timing: 80
+  player: 1
+  timing: 81
   isUseSubBeat: 0
   subTiming: 0
   generatePos: {x: 0.26917925, y: -0.7408249, z: 0}
