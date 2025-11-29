@@ -52,12 +52,12 @@ public class StoryFlowManager : MonoBehaviour
         if (_isPlayAnim)
         {
             // 一旦Input.GetKeyで記述
-            if (Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (Input.GetKeyDown(KeyCode.Return))
             {
                 _isPressedEnterP1 = true;
                 _storyPressUI.DisplayPress(PlayerNumberState.One);
             }
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.KeypadEnter))
             {
                 _isPressedEnterP2 = true;
                 _storyPressUI.DisplayPress(PlayerNumberState.Two);

@@ -141,15 +141,15 @@ MonoBehaviour:
   _buttonEnableDistance: 0.4
   _buttonNumImages:
   - {fileID: 0}
-  - {fileID: 21300000, guid: 0cbadf2e2c6f0174685ee2244724073e, type: 3}
-  - {fileID: 21300000, guid: c89d944f3f30a3f418c6a374d86ba5b6, type: 3}
-  - {fileID: 21300000, guid: 154277a13158075459e6eaa544e1eeab, type: 3}
-  - {fileID: 21300000, guid: 8cc3eaeaac49ae34f9c6f8a2c6cad5c1, type: 3}
-  - {fileID: 21300000, guid: cd6f7a50d10d2c14e9a71c9604ff7ef4, type: 3}
-  - {fileID: 21300000, guid: 1cc59c3a26bf1a441acedcccc5033fa5, type: 3}
-  - {fileID: 21300000, guid: 137d5faf1ef399243bb6b886cd46bb8c, type: 3}
-  - {fileID: 21300000, guid: c8853dc02be882940b48782ae320a77f, type: 3}
-  - {fileID: 21300000, guid: 53aa5899f0193754894417d781416f29, type: 3}
+  - {fileID: 21300000, guid: da2c1c0217b98c448bd244f4216aeb34, type: 3}
+  - {fileID: 21300000, guid: d064a98830407a44a9bd369b540c58f3, type: 3}
+  - {fileID: 21300000, guid: 7d70bbfc4f3f80a47ab8ee6206bc5f73, type: 3}
+  - {fileID: 21300000, guid: a32fd1fdcbd4e1e44886219441d64c97, type: 3}
+  - {fileID: 21300000, guid: b6ee79735ee8b9945a2ed6fa0f2ed0a5, type: 3}
+  - {fileID: 21300000, guid: 24402ddea2ad5c140b48a169c0d99197, type: 3}
+  - {fileID: 21300000, guid: aa8d1a32820c6b9409bfa172c17baa32, type: 3}
+  - {fileID: 21300000, guid: 4ca2c080592cc524db3bd29efbb0b9d4, type: 3}
+  - {fileID: 21300000, guid: b351d4a98e7df4743902c3956786d89a, type: 3}
   _goodJudgementImage: {fileID: 21300000, guid: 1a95371bde96f694e8e8c926005eb24d, type: 3}
   _missJudgementImage: {fileID: 21300000, guid: 08a4477893c01b14e9dcd3e2ff59349b, type: 3}
   _goodEffectPrefab: {fileID: 1394697561563053247, guid: 8c759752261ad5442bb349385cb2346a, type: 3}
@@ -316,7 +316,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 102
-  m_Sprite: {fileID: 21300000, guid: 0cbadf2e2c6f0174685ee2244724073e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: da2c1c0217b98c448bd244f4216aeb34, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
