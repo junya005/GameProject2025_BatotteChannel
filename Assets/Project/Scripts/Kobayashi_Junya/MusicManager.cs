@@ -4,6 +4,7 @@ using BatotteChannel.InGame.Notes;
 using BatotteChannel.GameState;
 using BatotteChannel.DataAssets;
 using System.Collections;
+using NaughtyAttributes;
 
 namespace BatotteChannel.InGame.MusicSystem
 {
