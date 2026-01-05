@@ -5,6 +5,8 @@ using BatotteChannel.InGame.MusicSystem;
 using BatotteChannel.InGame.Animation;
 using BatotteChannel.GameState;
 using BatotteChannel.AudioSystem;
+using System;
+using UnityEngine.EventSystems;
 
 namespace BatotteChannel.GameManager
 {
@@ -92,6 +94,34 @@ namespace BatotteChannel.GameManager
             {
                 _isEndInGameProcessing = true;
                 EndInGameAnimation();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (GrobalUIManager.Instance.IsModal) return;
+
+                // ポーズ状態に変更
+                Time.timeScale = 0f;
+                _musicManager.PauseMusic();
+
+                string message = "ゲームを終了しますか？";
+
+                Action onYes = () =>
+                {
+                    Time.timeScale = 1.0f;
+                    SceneManager.LoadScene("Main");
+                };
+
+                Action onNo = () =>
+                {
+                    _musicManager.UnPauseMusic();
+                    Time.timeScale = 1.0f;
+                };
+
+                GrobalUIManager.Instance.ShowModal(message, onYes, onNo);
+
+                Debug.Log(GrobalUIManager.Instance.ModalDefaultButton.gameObject);
+                EventSystem.current.SetSelectedGameObject(GrobalUIManager.Instance.ModalDefaultButton.gameObject);
             }
         }
 

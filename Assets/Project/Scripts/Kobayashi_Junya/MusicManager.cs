@@ -560,6 +560,22 @@ namespace BatotteChannel.InGame.MusicSystem
             _musicData = musicData;
         }
 
+        /// <summary>
+        /// 楽曲を一時停止する
+        /// </summary>
+        public void PauseMusic()
+        {
+            _audioSource.Pause();
+        }
+
+        /// <summary>
+        /// 楽曲の一時停止を解除する
+        /// </summary>
+        public void UnPauseMusic()
+        {
+            _audioSource.UnPause();
+        }
+
         #endregion
     }
 }
